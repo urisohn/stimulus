@@ -19,6 +19,8 @@
           {
           means.obs1 <- aggregate(df[, dv][df[, condition] == u2[1]],list(df[, stimulus][df[, condition] == u2[1]]), mean)
           means.obs2 <- aggregate(df[, dv][df[, condition] == u2[2]],list(df[, stimulus][df[, condition] == u2[2]]), mean)
+          names(means.obs1)=names(means.obs2)=c("condition","x")
+          
           } 
             
       #2.2 Partial out participant id if it is included
@@ -35,7 +37,7 @@
           
           means.obs1 <- aggregate(r1[df2$condition == u2[1]],list(df2$stimulus[df2$condition == u2[1]]), mean)
           means.obs2 <- aggregate(r1[df2$condition == u2[2]],list(df2$stimulus[df2$condition == u2[2]]), mean)
-          
+          names(means.obs1)=names(means.obs2)=c("condition","x")
           intercept = summary(m1)$coefficients[1]
           means.obs1$x = means.obs1$x + intercept
           means.obs2$x = means.obs2$x + intercept
