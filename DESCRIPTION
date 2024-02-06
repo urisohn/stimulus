@@ -1,0 +1,20 @@
+Package: stimulus
+Title: Make Stimulus Plots like Simonsohn, Montealegre & Evangelidis "Stimulus Sampling Reimagined"
+Version: 0.1.0.9001
+Authors@R: c(
+    person(given = "Uri",
+           family = "Simonsohn",
+           role = c("aut", "cre"),
+           email = "urisohn@gmail.com",
+           comment = c(ORCID = "0000-0002-8601-7211")),
+    person(given = "Hugo",
+           family = "Gruson",
+           role = c("ctb", "aut"),
+           email = "hugo.gruson+R@normalesup.org",
+           comment = c(ORCID = "0000-0002-4094-1476"))
+    )
+Description: Build stimulus plots comparing results for individual stimuli in an experiment.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
