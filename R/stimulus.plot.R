@@ -1,4 +1,18 @@
+#' Make stimulus plots as in Simonsohn, Montealegre, & Evangelidis (2024) 
+#' 
+#'Make figure with stimulus level means or effects for experiments with multiple stimuli
+#'
+#'@param df dataframe containing variables to be analyzied
+#'@param dv the dependent variable (e.g., dv='y')
+#'@param condition a string or numeric vector containing the condition indicator (e.g., condition='treatment') 
+#'@param stimulus a string or numeric vector identifying the different stimuli used
+#'@param plot.type can be either "means" or "effects", determines what's plotted in the y-axis
+#'@param flip.sign boolean on whether to sort effect size in reverse order (defaults to FALSE)
+#'@param ylab1,ylab2 string variables for labels on the y-axis (optional)
+#'@param xlab1,xlab2 string variables for labels on the x-axis (optional)
+#'@param decimals numeric (integer), how many decimals to depict in the graph
 
+#' @export
 #4 stimulus.plot (Wrapper function)
   stimulus.plot = function(df, dv, condition, stimulus, 
                     plot.type='means',
