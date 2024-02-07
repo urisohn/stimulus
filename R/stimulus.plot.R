@@ -37,6 +37,13 @@
           df=data.frame(df)
     
           
+        #Drop missing values
+          n1=nrow(df)
+          df = df[!is.na(df[,stimulus]) & !is.na(df[,dv]) & !is.na(df[,condition]),]
+          if (participant!='') df = df[!is.na(df[,participant]),]
+          n2=nrow(df)
+          if (n2<n1) message('stimulus.plot() says:\nA total of ',n1-n2,' observations were dropped because of missing values.')
+          
         #Means
           if (plot.type=='means')
           {
