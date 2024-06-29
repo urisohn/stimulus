@@ -2,13 +2,14 @@
 % Please edit documentation in R/stimulus.plot.R
 \name{stimulus.plot}
 \alias{stimulus.plot}
-\title{Make stimulus plots as in Simonsohn, Montealegre, & Evangelidis (2024)}
+\title{Make stimulus plots as in "Stimulus Sampling Reimagined", Simonsohn, Montealegre, & Evangelidis (2024)}
 \usage{
 stimulus.plot(
-  df,
+  data,
   dv,
   condition,
   stimulus,
+  moderator,
   plot.type = "means",
   flip.sign = FALSE,
   ylab1 = "",
@@ -27,24 +28,36 @@ stimulus.plot(
 )
 }
 \arguments{
-\item{df}{dataframe containing variables to be analyzied}
+\item{data}{dataframe containing variables to be analyzed}
 
-\item{dv}{the dependent variable (e.g., dv='y')}
+\item{dv}{name of the dependent variable (e.g., dv='y'), quotes are not required}
 
-\item{condition}{a string or numeric vector containing the condition indicator (e.g., condition='treatment')}
+\item{condition}{name of the variable containing the condition indicator (e.g., condition='treatment'), quotes are not required}
 
-\item{stimulus}{a string or numeric vector identifying the different stimuli used}
+\item{stimulus}{name of the variable containing the stimulus ID (e.g., stimulus='stim_id'), quotes are not required}
 
-\item{plot.type}{can be either "means" or "effects", determines what's plotted in the y-axis}
+\item{moderator}{name of the variable that may moderate effect across stimuli (character, optional)}
 
-\item{flip.sign}{boolean on whether to sort effect size in reverse order (defaults to FALSE)}
+\item{plot.type}{can be either "means" or "effects", determines what's plotted in the y-axis of the figure}
 
-\item{ylab1, ylab2}{string variables for labels on the y-axis (optional)}
+\item{flip.sign}{whether to sort effect size in reverse order (TRUE/FALSE, defaults to FALSE)}
 
-\item{xlab1, xlab2}{string variables for labels on the x-axis (optional)}
+\item{ylab1, ylab2}{labels on the y-axis (character, optional)}
 
-\item{decimals}{numeric (integer), how many decimals to depict in the graph}
+\item{xlab1, xlab2}{labels on the x-axis (character, optional)}
+
+\item{decimals}{how many decimals to depict in the graph (integer)}
+
+\item{participant}{name of the variable containing participant IDs; if set it's entered as random participant effect
+(character, optional)}
+
+\item{legend.title}{text above legend (character)}
+
+\item{simtot}{number of simulations to rely on for estimating expected heterogeneity of
+observed effect size. Only needed if plot.type='effects' (defaults to 100)}
+
+\item{filename}{path to save figure as an image (optional, character, must has either .svg or .png extension)}
 }
 \description{
-Make figure with stimulus level means or effects for experiments with multiple stimuli
+Make stimulus plots as in "Stimulus Sampling Reimagined", Simonsohn, Montealegre, & Evangelidis (2024)
 }
