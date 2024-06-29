@@ -15,6 +15,8 @@
 #'@param legend.title text above legend (character)
 #'@param simtot number of simulations to rely on for estimating expected heterogeneity of 
 #'observed effect size. Only needed if plot.type='effects' (defaults to 100)
+#'@param supress.version.label set to TRUE to prevent version of {stimulus} package used
+#'to generate figure from appearing in the bottom left of the figure
 #'@param filename path to save figure as an image (optional, character, must has either .svg or .png extension)
 #' @export
 #4 stimulus.plot (Wrapper function)
@@ -28,12 +30,14 @@
                     xlab2='',
                     value.labels.offset = -1,
                     stimuli.numeric.labels=FALSE,
-                    label.low='low',
-                    label.high='high',
+                    label.low='',
+                    label.high='',
                     decimals=2,
                     participant='',
                     legend.title='',
                     simtot=100,
+                    suppress.version.label=FALSE,
+                    filename='',
                     ...
                     )
         {
@@ -92,7 +96,6 @@
                                     legend.title=legend.title,...)
             
     
-              return(invisible(res))
           }
     
         #Effects
@@ -109,11 +112,20 @@
                                     stimuli.numeric.labels=stimuli.numeric.labels,
                                     simtot=simtot,
                                     decimals=decimals,...)
-            return(invisible(res))         
+             
+                 
             }
           
 
-          
+        #Pkg version label
+          if (suppress.version.label==FALSE)
+          {
+            stim_vrs=paste0("{Stimulus v",packageVersion('stimulus'),"}")
+            mtext(side=1,line=-1,cex=.7, stim_vrs ,col='gray66',adj=0,outer=TRUE)
+          }
+           
+            
+          return(res)
 
   } #End of wrapper function
   
