@@ -1,7 +1,7 @@
  stimulus.plot.means = function(df, dv, condition, stimulus, 
                     ylab1, ylab2,  xlab1, xlab2, value.labels.offset, stimuli.numeric.labels,
                     participant,
-                    label.low, label.high, decimals, legend.title, ...)
+                    label.low, label.high, decimals, legend.title, col1,col2,...)
     
       {
    
@@ -99,7 +99,7 @@
     if (matched==TRUE)
     {
     lty=ifelse(y1>y0,1,2)
-    col=ifelse(y1 > y0,'blue','red')
+    col=ifelse(y1 > y0,col1,col2)
     segments(x0=1:n, x1=1:n,y0=y0, y1=y1,lty=lty,col=col)
     }
    
@@ -114,16 +114,20 @@
     
   #9 Value labels
     
-    #Values
+    #high/low values
       bh=pmax(y0,y1)
       bl=pmin(y0,y1)
-   
+      
+    #Color for text
+      col.h = ifelse(bh==y1,adjustcolor(col1,.5),adjustcolor(col2,.5))
+      col.l = ifelse(bl==y0,adjustcolor(col2,.5),adjustcolor(col1,.5))
+
     #offset for y-position
       if (value.labels.offset==-1) value.labels.offset = diff(ylim)*.03
    
     #Labels themselves
-      text(1:n,bh + value.labels.offset,round2(bh,decimals),col='gray60',cex=.65)
-      text(1:n,bl - value.labels.offset,round2(bl,decimals),col='gray60',cex=.65)
+      text(1:n,bh + value.labels.offset,round2(bh,decimals),col=col.h,cex=.65)
+      text(1:n,bl - value.labels.offset,round2(bl,decimals),col=col.l,cex=.65)
    
   #12 Overall means
     m1 = mean(y1)

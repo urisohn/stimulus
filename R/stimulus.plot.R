@@ -17,7 +17,7 @@
 #'observed effect size. Only needed if plot.type='effects' (defaults to 100)
 #'@param supress.version.label set to TRUE to prevent version of {stimulus} package used
 #'to generate figure from appearing in the bottom left of the figure
-#'@param filename path to save figure as an image (optional, character, must has either .svg or .png extension)
+#'@param save.as name of file to save figure as (optional, filename must have extension .svg or .png)
 #' @export
 #4 stimulus.plot (Wrapper function)
   stimulus.plot = function(data, dv, condition, stimulus, 
@@ -37,7 +37,9 @@
                     legend.title='',
                     simtot=100,
                     suppress.version.label=FALSE,
-                    filename='',
+                    save.as = '',
+                    col1='blue',
+                    col2='red',
                     ...
                     )
         {
@@ -80,6 +82,24 @@
           n2=nrow(data)
           if (n2<n1) message('stimulus.plot() says:\nA total of ',n1-n2,' observations were dropped because of missing values.')
           
+          
+       #Save?
+           if (save.as!='') {
+             filename=save.as
+              
+          #Get extension of file name
+              extension= tools::file_ext(filename)
+        
+          #Width and height of file
+              ns = length(unique(data[,stimulus]))  #number of unique stimuli  
+              w  = ns*.7                              #Width
+              h  = 5                               #height
+              
+          #start the figure
+            if (extension=='svg') svg(filename , w,h)
+            if (extension=='png') png(filename , w*1000,h*1000,res=1000)
+             }         
+          
         #Means
           if (plot.type=='means')
           {
@@ -93,7 +113,7 @@
                                     label.low=label.low, label.high=label.high,
                                     decimals=decimals,
                                     participant=participant,
-                                    legend.title=legend.title,...)
+                                    legend.title=legend.title,col1,col2,...)
             
     
           }
@@ -123,9 +143,13 @@
             stim_vrs=paste0("{Stimulus v",packageVersion('stimulus'),"}")
             mtext(side=1,line=-1,cex=.7, stim_vrs ,col='gray66',adj=0,outer=TRUE)
           }
-           
-            
-          return(res)
+     
+      #Save figure        
+        if (save.as!='') {
+            message("Figure was saved as '", save.as,"'")
+           dev.off()
+        }
+        return(res)
 
   } #End of wrapper function
   
