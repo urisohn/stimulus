@@ -21,7 +21,7 @@
               #of stimuli appear in both conditions
               
 
-    
+
     #1 Get the means by condition
       means.obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,participant=participant)
       
@@ -32,6 +32,8 @@
       y1 = means.obs[,3] #The high values condition
       y0 = means.obs[,2] #the low values condition
       n=length(y0)
+      label.high =  sub("^condition_", "", names(means.obs[3]))
+      label.low  =  sub("^condition_", "", names(means.obs[2]))
       
       } else {
         n=nrow(means.obs)/2
@@ -40,6 +42,8 @@
       }
       
 
+
+      
       
     #3 ylim: range of y values in the plot
       ylim = range(c(y0,y1))
