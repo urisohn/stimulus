@@ -38,8 +38,8 @@
                     simtot=100,
                     suppress.version.label=FALSE,
                     save.as = '',
-                    col1='blue',
-                    col2='red',
+                    col1='black',
+                    col2='black',
                     ...
                     )
         {
@@ -92,7 +92,7 @@
         
           #Width and height of file
               ns = length(unique(data[,stimulus]))  #number of unique stimuli  
-              w  = ns*.7                              #Width
+              w  = 3+ns*.4                              #Width
               h  = 5                               #height
               
           #start the figure
@@ -144,12 +144,22 @@
             mtext(side=1,line=-1,cex=.7, stim_vrs ,col='gray66',adj=0,outer=TRUE)
           }
      
-      #Save figure        
+      #If saving to svg or png: 
+          
         if (save.as!='') {
+          #Feedback
             message("Figure was saved as '", save.as,"'")
-           dev.off()
-        }
-        return(res)
+          
+          #Close the graph
+            dev.off()
+           
+          #Redraw on window
+            call <- match.call()    #Get all arguments in the call
+            call$save.as <- ""      #Replace save.as
+            eval(call)              #Call it
+        }#End save as 
+        
+      return(res)
 
   } #End of wrapper function
   

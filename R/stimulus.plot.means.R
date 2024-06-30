@@ -185,7 +185,7 @@
 
         
   #15 Legend
-        leg1 = legend('top',pch=c(16,1),c(label.high,label.low),inset=.03,bty='n')
+        leg1 = legend('top',pch=c(16,1),c(label.high,label.low),inset=.03,bty='n',cex=1.4)
         
         #Legend title?
         if (legend.title!='')
