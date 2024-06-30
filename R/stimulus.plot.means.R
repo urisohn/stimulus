@@ -40,11 +40,7 @@
         y0=means.obs[1:n,2]
         y1=means.obs[(n+1):(2*n),2]
       }
-      
 
-
-      
-      
     #3 ylim: range of y values in the plot
       ylim = range(c(y0,y1))
       dy = diff(ylim)
@@ -56,44 +52,37 @@
         mar.before =  par("mar")
         mar.after  =  mar.before
               
-      #Only change them if they are not the default (so users can over-ride it by choosing their own)
-        mar.default = c(5.1, 4.1, 4.1, 2.1)
-        
+         
       #Label calculations for bottom margin 
-        max.length = max(nchar(unique(df[,stimulus])))
-        xlabel.buffer = max(0,max.length-3)*.3
+        max.x.label = max(nchar(unique(df[,stimulus])))
+        xlabel.buffer = max(0,max.x.label)*.3
         if (stimuli.numeric.labels==TRUE) xlabel.buffer=0
         
-        
+      #Only change margin if not the default (so users can set own in)
+        mar.default = c(5.1, 4.1, 4.1, 2.1)
+    
         if (all(mar.before==mar.default))
         {
-         
-        #4.1 BOTTOM
-            
+        #4.1 Bottom
             mar.after[1] = mar.before[1] + xlabel.buffer
-        }
         
-        
-
-        #4.2 TOP
+        #4.2 Top
           #Drop top margin if there is no main header
-            if (!"main" %in% names(args)) {
-              mar.after[3] = 1
-            }
-          
+            mar.after[3] = ifelse ("main" %in% names(args),3,1)
         
-        #4.3 LEFT
-          if (ylab2!='') mar.after[2]=5.5
+        #4.3 Left
+          width.y.label = nchar(max(y1))
+           mar.after[2] = max(width.y.label/3, 5.1)
+          if (ylab2!='') mar.after[2]= mar.after[2] + 1
           
-          par(mar=mar.after)
-            
+        #4.4 Assigne it
+           par(mar=mar.after)
+           
+        } 
            
   #5 Black dots
        n=length(y1)
-
-      plot(y1,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),...)
-    
-   
+       plot(y1,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),...)
  
   #6 Segments
     if (matched==TRUE)
@@ -106,9 +95,8 @@
   #7 White dots   
       cex=1
       if ('cex' %in% names(args)) cex=args$cex
-    points(y0,pch=21,col='black',bg='white',cex=cex)
-
-    
+      points(y0,pch=21,col='black',bg='white',cex=cex)
+ 
   #8 Redo black dots to cover any red lines
     if (matched==TRUE) points(y1,pch=16,cex=cex)
     
@@ -129,7 +117,7 @@
       text(1:n,bh + value.labels.offset,round2(bh,decimals),col=col.h,cex=.65)
       text(1:n,bl - value.labels.offset,round2(bl,decimals),col=col.l,cex=.65)
    
-  #12 Overall means
+  #10 Overall means
     m1 = mean(y1)
     m0 = mean(y0)
     if (matched==TRUE) segments(x0=n+3, x1=n+3,y0=m0, y1=m1)
@@ -139,23 +127,17 @@
     text(n+3,m1+value.labels.offset*2 , round2(m1,decimals),cex=.8,col='gray50')
     text(n+3,m0-value.labels.offset*2 , round2(m0,decimals),cex=.8,col='gray50')
 
-  #13 Y axis
+  #11 Y axis
       if (!"yaxt" %in% names(args))
       {
-      if (ylab2=="") mtext(side=2,line=2.65,font=2,cex=1.2,ylab1)
-       
-      if (ylab2!="")  
-        {
-        mtext(side=2,line=3.8,font=2,cex=1.2,ylab1)
-        mtext(side=2,line=2.65,font=3,cex=1,ylab2)
-        }
-      
+      mtext(side=2,line=mar.after[2]-1,font=2,cex=1.2,ylab1)
+      mtext(side=2,line=mar.after[2]-2,font=3,cex=1,ylab2)
       }
+
     
+  #12 X-axis
     
-  #14 X-axis
-    
-    #14.1 Stimuli labels
+    #12.1 Stimuli labels
         
         if (stimuli.numeric.labels==TRUE) {
           #All numbers if less than 10
@@ -174,7 +156,7 @@
           
           }
 
-    #14.2 Headers
+    #12.2 Headers
         if (xlab2=="" & matched==TRUE) xlab2='(sorted by effect size)'
         if (xlab2=="" & matched==FALSE) xlab2='(sorted by raw means)'
 
@@ -185,7 +167,7 @@
 
         
   #15 Legend
-        leg1 = legend('top',pch=c(16,1),c(label.high,label.low),inset=.03,bty='n',cex=1.4)
+        leg1 = legend('top',pch=c(16,1),c(label.high,label.low),inset=.03,bty='n',cex=1.1)
         
         #Legend title?
         if (legend.title!='')

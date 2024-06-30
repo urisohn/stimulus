@@ -91,10 +91,12 @@
               extension= tools::file_ext(filename)
         
           #Width and height of file
+              max.x.label = max(nchar(unique(data[,stimulus]))) #length of stimulus name
               ns = length(unique(data[,stimulus]))  #number of unique stimuli  
-              w  = 3+ns*.4                              #Width
-              h  = 5                               #height
-              
+              w  = 3+ns*.4                          #Width
+              h  = 5                                #height
+              h  = h * (1 + max.x.label/40)
+               
           #start the figure
             if (extension=='svg') svg(filename , w,h)
             if (extension=='png') png(filename , w*1000,h*1000,res=1000)
