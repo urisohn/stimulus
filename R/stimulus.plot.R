@@ -126,6 +126,8 @@
              res=stimulus.plot.effects(df=data, dv=dv, condition=condition, stimulus=stimulus, 
                                     participant=participant,
                                     flip.sign=flip.sign,
+                                    label.high=label.high, 
+                                    label.low=label.low,
                                     ylab1=ylab1,
                                     ylab2=ylab2,
                                     xlab1=xlab1,

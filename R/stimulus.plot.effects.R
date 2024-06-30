@@ -1,5 +1,5 @@
  stimulus.plot.effects=function(df,  dv, stimulus, condition, participant , value.labels.offset=-1,
-                                 flip.sign,
+                                 flip.sign, label.high, label.low,
                                  stimuli.numeric.labels,decimals, 
                                  ylab1,ylab2,xlab1,xlab2,simtot,...)
     {
@@ -12,19 +12,19 @@
     #2 Compute means
        obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,participant=participant)
 
-
       #Sort
         obs=obs[order(obs$effect),]
-        
        
-    #Localize variables
+      #Localize variables
         d = obs$effect
         n = length(d)
-        
+        label.high =  sub("^condition_", "", names(obs[3]))
+        label.low  =  sub("^condition_", "", names(obs[2]))
+       
       #2.2 Get the null distribution 
         dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot)
       
-    #3 Flip sign\
+    #3 Flip sign
         if (flip.sign==TRUE)
           { 
           d = -1 * d 
@@ -56,23 +56,23 @@
         xlabel.buffer = max(0,max.length-3)*.3
         if (stimuli.numeric.labels==TRUE) xlabel.buffer=0
         
-      #4.1 BOTTOM
-        if (all(mar.before==mar.default))  {
-          mar.after[1] = mar.before[1] + xlabel.buffer
-        }
-        
+      #4.1 Bottom
+            max.x.label = max(nchar(unique(df[,stimulus])))
+            xlabel.buffer = max(0,max.x.label)*.3
+            if (stimuli.numeric.labels==TRUE) xlabel.buffer=0
+            mar.after[1] = mar.before[1] + xlabel.buffer
       
-      #4.2 TOP
-          #Drop top margin if there is no main header
-            if (!"main" %in% names(args)) {
-              mar.after[3] = 1
-            }
-          
-      #4.3 LEFT
-          if (ylab2!='') mar.after[2]=5.5
-          
-      #4.4 Apply margin
-          par(mar=mar.after)
+     #4.2 Top
+        #Drop top margin if there is no main header
+          mar.after[3] = ifelse ("main" %in% names(args),3,1)
+      
+      #4.3 Left
+         width.y.label = nchar(max(d))
+         mar.after[2] = max(width.y.label/3, 5.1)
+         if (ylab2!='') mar.after[2]= mar.after[2] + 1
+        
+      #4.4 Assign it
+         par(mar=mar.after)
         
      
   #5 Formatting
@@ -116,23 +116,10 @@
       
       if (!"yaxt" %in% names(args))
       {
-        
-      #Default ylabs
-        if (ylab1=="") {
-            ylab1='Effect' 
-            ylab2='(difference of means)'
-            } 
-        
-      
-       
-      if (ylab2!="")  
-        {
-        mtext(side=2,line=3.8,font=2,cex=1.2,ylab1)
-        mtext(side=2,line=2.65,font=3,cex=1,ylab2)
-        }
-      
+      mtext(side=2,line=mar.after[2]-1.5,font=2,cex=1.2,ylab1)
+      mtext(side=2,line=mar.after[2]-2.5,font=3,cex=1,ylab2)
       }
-      
+
       
     #10 x-axis
       #Skip if xaxt='n' is set
@@ -167,13 +154,13 @@
                       lty=c(NA,1,1),
                       lwd=c(NA,1,14),
                       col=c('black','black',adjustcolor('blue',.2)),
-                      c('Observed effects',
+                      c(paste0('Observed effects: ',label.high," - ",label.low),
                         "Expected when all stimuli have same effect", 
                         "95% confidence band"),
                         inset=.03)
     
       
-  
+    par(mar=mar.before)
     return(list(observed=obs, under.null=dnull))     
     
         

@@ -20,13 +20,9 @@
               #this classifies a design as matched if 100%
               #of stimuli appear in both conditions
               
-
-
     #1 Get the means by condition
       means.obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,participant=participant)
       
-
-
     #2 local names
       if (matched==TRUE) {
       y1 = means.obs[,3] #The high values condition
@@ -51,20 +47,18 @@
       #Get current margins
         mar.before =  par("mar")
         mar.after  =  mar.before
-              
          
-      #Label calculations for bottom margin 
-        max.x.label = max(nchar(unique(df[,stimulus])))
-        xlabel.buffer = max(0,max.x.label)*.3
-        if (stimuli.numeric.labels==TRUE) xlabel.buffer=0
-        
+         
       #Only change margin if not the default (so users can set own in)
         mar.default = c(5.1, 4.1, 4.1, 2.1)
     
         if (all(mar.before==mar.default))
         {
         #4.1 Bottom
-            mar.after[1] = mar.before[1] + xlabel.buffer
+            max.x.label = max(nchar(unique(df[,stimulus])))
+            xlabel.buffer = max(0,max.x.label)*.3
+            if (stimuli.numeric.labels==TRUE) xlabel.buffer=0
+             mar.after[1] = mar.before[1] + xlabel.buffer
         
         #4.2 Top
           #Drop top margin if there is no main header
@@ -75,7 +69,7 @@
            mar.after[2] = max(width.y.label/3, 5.1)
           if (ylab2!='') mar.after[2]= mar.after[2] + 1
           
-        #4.4 Assigne it
+        #4.4 Assign it
            par(mar=mar.after)
            
         } 
@@ -166,7 +160,7 @@
         mtext(side=1,line=3.7 + xlabel.buffer   ,font=3,cex=1,xlab2)
 
         
-  #15 Legend
+  #13 Legend
         leg1 = legend('top',pch=c(16,1),c(label.high,label.low),inset=.03,bty='n',cex=1.1)
         
         #Legend title?
@@ -177,10 +171,9 @@
         text(title.x,title.y,legend.title,adj=0,font=2)
         }
     
-  #16 Return margins to where they were
+  #14 Return margins to where they were
     par(mar=mar.before)
-
-
+    
     return(means.obs)
   
   }
