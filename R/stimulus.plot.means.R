@@ -51,13 +51,13 @@
          
       #Only change margin if not the default (so users can set own in)
         mar.default = c(5.1, 4.1, 4.1, 2.1)
-    
+            max.x.label = max(nchar(unique(df[,stimulus])))
+            xlabel.buffer = max(0,max.x.label)*.3
+         
         if (all(mar.before==mar.default))
         {
         #4.1 Bottom
-            max.x.label = max(nchar(unique(df[,stimulus])))
-            xlabel.buffer = max(0,max.x.label)*.3
-            if (stimuli.numeric.labels==TRUE) xlabel.buffer=0
+             if (stimuli.numeric.labels==TRUE) xlabel.buffer=0
              mar.after[1] = mar.before[1] + xlabel.buffer
         
         #4.2 Top

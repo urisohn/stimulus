@@ -18,12 +18,16 @@ stimulus.plot(
   xlab2 = "",
   value.labels.offset = -1,
   stimuli.numeric.labels = FALSE,
-  label.low = "low",
-  label.high = "high",
+  label.low = "",
+  label.high = "",
   decimals = 2,
   participant = "",
   legend.title = "",
   simtot = 100,
+  suppress.version.label = FALSE,
+  save.as = "",
+  col1 = "black",
+  col2 = "black",
   ...
 )
 }
@@ -56,7 +60,10 @@ stimulus.plot(
 \item{simtot}{number of simulations to rely on for estimating expected heterogeneity of
 observed effect size. Only needed if plot.type='effects' (defaults to 100)}
 
-\item{filename}{path to save figure as an image (optional, character, must has either .svg or .png extension)}
+\item{save.as}{name of file to save figure as (optional, filename must have extension .svg or .png)}
+
+\item{supress.version.label}{set to TRUE to prevent version of {stimulus} package used
+to generate figure from appearing in the bottom left of the figure}
 }
 \description{
 Make stimulus plots as in "Stimulus Sampling Reimagined", Simonsohn, Montealegre, & Evangelidis (2024)
