@@ -14,7 +14,7 @@
 
       #Sort
         if (sort.by=='') obs=obs[order(obs$effect),]
-        if (sort.by!='') obs=obs[order(obs$effect),]
+        if (sort.by!='') obs=obs[order(obs[,sort.by]),]
        
       #Localize variables
         d = obs$effect
@@ -23,7 +23,7 @@
         label.low  =  sub(paste0("^",condition,"_"), "", names(obs[2]))
        
       #2.2 Get the null distribution 
-        #REampling if sort.by is not specified
+        #Resampling if sort.by is not specified
             if (sort.by=='') {
                   dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot)
               

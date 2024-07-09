@@ -4,7 +4,8 @@
 #'@param dv name of the dependent variable (e.g., dv='y'), quotes are not required
 #'@param condition name of the variable containing the condition indicator (e.g., condition='treatment'), quotes are not required
 #'@param stimulus name of the variable containing the stimulus ID (e.g., stimulus='stim_id'), quotes are not required
-#'@param sort.by name of the variable that may moderate effect across stimuli (character, optional)
+#'@param sort.by name of the variable to sort stimuli by in the plots. Defaults to sorting by observed effect size.
+#'May be be useful to deviate to explore moderators or sort stimuli alphabetically.
 #'@param participant name of the variable containing participant IDs; if set it's entered as random participant effect
 #' (character, optional)
 #'@param plot.type can be either "means" or "effects", determines what's plotted in the y-axis of the figure

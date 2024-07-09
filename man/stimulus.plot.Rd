@@ -9,7 +9,7 @@ stimulus.plot(
   dv,
   condition,
   stimulus,
-  moderator,
+  sort.by = "",
   plot.type = "means",
   flip.sign = FALSE,
   ylab1 = "",
@@ -40,7 +40,8 @@ stimulus.plot(
 
 \item{stimulus}{name of the variable containing the stimulus ID (e.g., stimulus='stim_id'), quotes are not required}
 
-\item{moderator}{name of the variable that may moderate effect across stimuli (character, optional)}
+\item{sort.by}{name of the variable to sort stimuli by in the plots. Defaults to sorting by observed effect size.
+May be be useful to deviate to explore moderators or sort stimuli alphabetically.}
 
 \item{plot.type}{can be either "means" or "effects", determines what's plotted in the y-axis of the figure}
 
