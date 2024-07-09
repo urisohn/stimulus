@@ -19,24 +19,31 @@
       #Localize variables
         d = obs$effect
         n = length(d)
-        label.high =  sub("^condition_", "", names(obs[3]))
-        label.low  =  sub("^condition_", "", names(obs[2]))
+        label.high =  sub(paste0("^",condition,"_"), "", names(obs[3]))
+        label.low  =  sub(paste0("^",condition,"_"), "", names(obs[2]))
        
       #2.2 Get the null distribution 
-        dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot)
-      
-    #3 Flip sign
-        if (flip.sign==TRUE)
-          { 
-          d = -1 * d 
-          dnull = -1 * dnull
+        #REampling if sort.by is not specified
+            if (sort.by=='') {
+                  dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot)
+              
+                  #Flip sign
+                    if (flip.sign==TRUE)
+                      { 
+                      d = -1 * d 
+                      dnull = -1 * dnull
+                    } #End flip
+                  
+                  }#ENd if sort.by==''
+            
+      #Fixed at 0 if it is
+        if (sort.by!='')
+          {
+          d0=rep(0,length(unique(df[,stimulus])))
+          dnull=data.frame(low=d0,high=d0,mean=d0)
           }
-          
-    
       
     #3 ylim: range of y values in the plot
-      
-        
       ylim = range(c(d , dnull$low , dnull$high))
       dy = diff(ylim)
       ylim[2]=ylim[2]+.28*dy  #Give a 28% buffer on top (for the legend)
@@ -91,9 +98,11 @@
     
    
   #7 Null region
+    if (sort.by=='')
+    {
     points(dnull$mean,type='l')
     polygon(x=c(1:n,n:1),y=c(dnull$low , rev(dnull$high)),col=adjustcolor('blue',.1),border=NA)
-
+    }
   
   #8 Value labels
 
@@ -151,6 +160,8 @@
       
         
   #15 Legend
+        if (sort.by=="")
+        {
         leg1 = legend('top',
                       bty='n',
                       pch=c(16,NA,NA), 
@@ -162,7 +173,20 @@
                         "95% confidence band"),
                         inset=.03)
     
-      
+        } else {
+            leg1 = legend('top',
+                      bty='n',
+                      pch=c(16), 
+                      lty=c(NA),
+                      lwd=c(NA),
+                      col=c('black'),
+                      c(paste0('Observed effects: ',label.high," - ",label.low)),
+                        inset=.03)
+          
+        }
+          
+          
+    
     par(mar=mar.before)
     return(list(observed=obs, under.null=dnull))     
     
