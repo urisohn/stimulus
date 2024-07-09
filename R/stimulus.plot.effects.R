@@ -1,4 +1,4 @@
- stimulus.plot.effects=function(df,  dv, stimulus, condition, participant , value.labels.offset=-1,
+ stimulus.plot.effects=function(df,  dv, stimulus, condition, participant , sort.by, value.labels.offset=-1,
                                  flip.sign, label.high, label.low,
                                  stimuli.numeric.labels,decimals, 
                                  ylab1,ylab2,xlab1,xlab2,simtot,...)
@@ -10,10 +10,11 @@
     
 
     #2 Compute means
-       obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,participant=participant)
+       obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,participant=participant,sort.by=sort.by)
 
       #Sort
-        obs=obs[order(obs$effect),]
+        if (sort.by=='') obs=obs[order(obs$effect),]
+        if (sort.by!='') obs=obs[order(obs$effect),]
        
       #Localize variables
         d = obs$effect
@@ -139,7 +140,9 @@
         }
 
     #14.2 Headers
-        if (xlab2=="" ) xlab2='(sorted by effect size)'
+        if (xlab2=="" & sort.by=='') xlab2='(sorted by effect size)'
+        if (xlab2=="" & sort.by!='') xlab2=paste0('(sorted by ',sort.by,')')
+
         mtext(side=1,line=2.7 + xlabel.buffer , font=2,cex=1.2,xlab1)
         mtext(side=1,line=3.7 + xlabel.buffer   ,font=3,cex=1,xlab2)
 

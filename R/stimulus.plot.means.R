@@ -1,6 +1,7 @@
  stimulus.plot.means = function(df, dv, condition, stimulus, 
+                    participant, sort.by,
                     ylab1, ylab2,  xlab1, xlab2, value.labels.offset, stimuli.numeric.labels,
-                    participant,
+                    
                     label.low, label.high, decimals, legend.title, col1,col2,...)
     
       {
@@ -21,7 +22,7 @@
               #of stimuli appear in both conditions
               
     #1 Get the means by condition
-      means.obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,participant=participant)
+      means.obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,participant=participant,sort.by=sort.by)
       
     #2 local names
       if (matched==TRUE) {
@@ -151,8 +152,9 @@
           }
 
     #12.2 Headers
-        if (xlab2=="" & matched==TRUE) xlab2='(sorted by effect size)'
-        if (xlab2=="" & matched==FALSE) xlab2='(sorted by raw means)'
+        if (xlab2=="" & matched==TRUE  & sort.by=='') xlab2='(sorted by effect size)'
+        if (xlab2=="" & matched==FALSE & sort.by=='') xlab2='(sorted by raw means)'
+        if (xlab2=="" & sort.by!='')                  xlab2=paste0('(sorted by ',sort.by,')')
 
             #For matched stimuli, the default is the above text
         

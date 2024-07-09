@@ -1,7 +1,7 @@
 
   
 
-  get.means.condition <- function(df, dv, stimulus, condition,participant) {
+  get.means.condition <- function(df, dv, stimulus, condition,participant,sort.by) {
         df=as.data.frame(df)      #necessary because tidy tables mess things up
         u2=unique(df[,condition])
      
@@ -74,8 +74,54 @@
         means.obs$effect = means.obs[,3] - means.obs[,2]
         
       # Sort rows
-          means.obs <- means.obs[order(means.obs$effect), ]
+          #Default: effect size
+            if (sort.by=='') {
+              means.obs <- means.obs[order(means.obs$effect), ]
+            }
         
+          #Else, by sort.by
+            if (sort.by!='') 
+            {
+              
+              #Is the sort.by value unique to each stimulus (e.g., alphabetical order)
+                t = table(df[,stimulus],df[,sort.by])
+                
+                #If there are just as many cells with frequencies >0 as there are stimuli, then it is unique
+                  item.unique = FALSE
+                  if (sum(t!=0) == length(unique(df[,stimulus]))) item.unique = TRUE
+        
+        
+              #If unique
+                if (item.unique==TRUE)
+                {
+                  #Dataframe with unique values of sort.by for each stimulus
+                    sort.by.df <- unique(df[,c(stimulus,sort.by)])
+                }
+                
+              #If not unique it's numeric, so we compute the mean
+                if (item.unique==FALSE)
+                  {
+                  #Compute mean by item
+                    sort.by.df <- aggregate(df[, sort.by],list(df[, stimulus]), mean)
+                    names(sort.by.df)=c(stimulus,sort.by) 
+                
+                  #Merge with sort.by
+                    means.obs=merge(means.obs, sort.by.df,by=stimulus)
+
+                } #End if sort.by is not unique to each stimulus
+                  
+                
+        #Sort it
+            means.obs <- means.obs[order(means.obs[,sort.by]), ]
+              
+               
+        
+        } #End if sort.by is not null
+                  
+              
+
+              
+       
                 
       return(means.obs)
   }

@@ -4,7 +4,7 @@
 #'@param dv name of the dependent variable (e.g., dv='y'), quotes are not required
 #'@param condition name of the variable containing the condition indicator (e.g., condition='treatment'), quotes are not required
 #'@param stimulus name of the variable containing the stimulus ID (e.g., stimulus='stim_id'), quotes are not required
-#'@param moderator name of the variable that may moderate effect across stimuli (character, optional)
+#'@param sort.by name of the variable that may moderate effect across stimuli (character, optional)
 #'@param participant name of the variable containing participant IDs; if set it's entered as random participant effect
 #' (character, optional)
 #'@param plot.type can be either "means" or "effects", determines what's plotted in the y-axis of the figure
@@ -21,7 +21,7 @@
 #' @export
 #4 stimulus.plot (Wrapper function)
   stimulus.plot = function(data, dv, condition, stimulus, 
-                    moderator,
+                    sort.by='',
                     plot.type='means',
                     flip.sign=FALSE,
                     ylab1='',
@@ -60,7 +60,7 @@
           if (!"data.frame" %in% class(data)) exit("stimulus.plot() says: the argument data must be a data.frame, but '",dataname,"' is not a dataframe.")
   
       #Check arguments are set and of the right type
-          validate.arguments(data, dv, condition, stimulus, moderator, plot.type, flip.sign,
+          validate.arguments(data, dv, condition, stimulus, sort.by, plot.type, flip.sign,
                   ylab1, ylab2, xlab1, xlab2, value.labels.offset,
                   stimuli.numeric.labels, label.low, label.high, decimals,participant, legend.title,simtot,
                   dataname)
@@ -69,11 +69,12 @@
         dv        <- clean_string(deparse(substitute(dv)))
         condition <- clean_string(deparse(substitute(condition)))
         stimulus  <- clean_string(deparse(substitute(stimulus)))
-        moderator <- clean_string(deparse(substitute(moderator)))
+        sort.by   <- clean_string(deparse(substitute(sort.by)))
+        
       
      #Check data.farme has all the necessary variables
-        validate.data(data, dv, condition, stimulus, moderator,participant,dataname)
-        
+        validate.data(data, dv, condition, stimulus, sort.by,participant,dataname)
+                     
         
         #Drop missing values
           n1=nrow(data)
@@ -106,6 +107,8 @@
           if (plot.type=='means')
           {
             res=stimulus.plot.means(df=data, dv=dv, condition=condition, stimulus=stimulus, 
+                                    participant=participant,
+                                    sort.by=sort.by,
                                     ylab1=ylab1,
                                     ylab2=ylab2,
                                     xlab1=xlab1,
@@ -114,7 +117,6 @@
                                     stimuli.numeric.labels=stimuli.numeric.labels,
                                     label.low=label.low, label.high=label.high,
                                     decimals=decimals,
-                                    participant=participant,
                                     legend.title=legend.title,col1,col2,...)
             
     
@@ -125,6 +127,7 @@
           {
              res=stimulus.plot.effects(df=data, dv=dv, condition=condition, stimulus=stimulus, 
                                     participant=participant,
+                                    sort.by=sort.by,
                                     flip.sign=flip.sign,
                                     label.high=label.high, 
                                     label.low=label.low,
