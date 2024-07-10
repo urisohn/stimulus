@@ -28,7 +28,7 @@
         df2$stimulus_shuffled  <- ave(df2$stimulus, df2$condition, FUN = function(x) sample(x))
       
       #Get means of residualized dv on shuffled stimuli
-        means.k   = get.means.condition(df=df2,dv='r',stimulus='stimulus_shuffled',condition='condition',participant='')
+        means.k   = get.means.condition(df=df2,dv='r',stimulus='stimulus_shuffled',condition='condition',participant='',sort.by='')
         
       #Extract estimates
         means.all[k,] = sort(means.k$effect)

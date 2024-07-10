@@ -119,9 +119,8 @@
       
 
    #print them
-      text(1:n,y.text ,round2(d ,decimals),col='gray60',cex=.65)
+      text(1:n,y.text ,round2(d ,decimals),col='blue4',cex=.65)
 
-  
   #9 Y axis
       
       if (!"yaxt" %in% names(args))
