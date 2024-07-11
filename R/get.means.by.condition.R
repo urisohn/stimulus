@@ -1,7 +1,7 @@
 
   
 
-  get.means.condition <- function(df, dv, stimulus, condition,sort.by) {
+  get.means.condition <- function(df, dv, stimulus, condition,sort.by,flip.sign) {
         u2 = unique(df[,condition])
      
     #1 Is it a matched design?
@@ -10,15 +10,26 @@
           if (mean(t[,1]*t[,2]>0) ==1 ) matched=TRUE
           if (matched==FALSE) exit("The stimuli are not matched across conditions, *effects* for individual stimuli may not be computed.")
           
+    #2 Process stimulus and condition values
+        #Stimulus
+          stimulus.all=unique(df[,stimulus])
+          
+        #Condition
+          ucond=unique(df[,condition])
+          
+          if (flip.sign==FALSE) df[,condition]=factor(df[,condition], levels=ucond)
+          if (flip.sign==TRUE)  df[,condition]=factor(df[,condition], levels=rev(ucond))
+          
+          
+          
     #2 Compute the mean of the dv for each combination of stimulus and condition
           
-          stimulus.all=unique(df[,stimulus])
           k=1
           for (stimk in stimulus.all)
           {
             #Row with tidy t-test (as data.frame row)
-              dfk=df2[df2$stimulus==stimk,]
-               tk=tidy.t(t.test(dfk$dv~dfk$condition))
+               dfk=df[df$stimulus==stimk,]
+               tk=tidy.t(t.test(dfk[,dv]~dfk[,condition]))
                 #tidy.t puts the t-test results in a dataframe | See #utils.r #4
               
             #Start or add
