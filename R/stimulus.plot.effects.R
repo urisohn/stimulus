@@ -9,42 +9,44 @@
       args = list(...)
     
 
+      col.null1='dodgerblue'
+      col.null2=adjustcolor(col.null1,.1)
+      col.ci = 'gray50'
+      
     #2 Compute means
-       obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,participant=participant,sort.by=sort.by)
+       obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,sort.by=sort.by,flip.sign=flip.sign)
 
       #Sort
-        if (sort.by=='') obs=obs[order(obs$effect),]
-        if (sort.by!='') obs=obs[order(obs[,sort.by]),]
+        #if (sort.by=='') obs=obs[order(obs$effect),]
+        #if (sort.by!='') obs=obs[order(obs[,sort.by]),]
+       
+       
+       #unnecessary since it is sorted by get.means.condition() already
+       
        
       #Localize variables
         d = obs$effect
+        ciL = obs$ciL
+        ciH = obs$ciH
         n = length(d)
-        label.high =  sub(paste0("^",condition,"_"), "", names(obs[3]))
-        label.low  =  sub(paste0("^",condition,"_"), "", names(obs[2]))
+        label2  =  sub(paste0("^",condition,"_"), "", names(obs[2]))
+        label1  =  sub(paste0("^",condition,"_"), "", names(obs[1]))
        
-      #2.2 Get the null distribution 
-        #Resampling if sort.by is not specified
-            if (sort.by=='') {
-                  dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot)
-              
-                  #Flip sign
-                    if (flip.sign==TRUE)
-                      { 
-                      d = -1 * d 
-                      dnull = -1 * dnull
-                    } #End flip
-                  
-                  }#ENd if sort.by==''
-            
-      #Fixed at 0 if it is
-        if (sort.by!='')
-          {
-          d0=rep(0,length(unique(df[,stimulus])))
+      #2.2 Get the null distribution  (only if sort.by is not set)
+          d0=rep(d,length(unique(df[,stimulus])))   #make it equal to d just to help with code below, e.g., ylim=range(...)
           dnull=data.frame(low=d0,high=d0,mean=d0)
-          }
-      
+        
+        #Resampling if sort.by is not specified
+            if (sort.by=='') 
+                  {
+                  dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot,flip.sign=flip.sign)
+                  }
+            
     #3 ylim: range of y values in the plot
-      ylim = range(c(d , dnull$low , dnull$high))
+      
+      ylim = range(c(ciL,ciH,dnull))
+      
+          
       dy = diff(ylim)
       ylim[2]=ylim[2]+.28*dy  #Give a 28% buffer on top (for the legend)
       ylim[1]=ylim[1]-.03*dy  #give a 3% buffer below, for the value labels
@@ -83,25 +85,20 @@
          par(mar=mar.after)
         
      
-  #5 Formatting
-    #5.1 cex (side of dots)
-      cex = 2
-      
-                   
-  #6 Black dots
-     if (!'cex' %in% args) plot(d,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='',cex=1.5,...)
-     if ('cex' %in% args)  plot(d,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='',...)
-    
-      
+  #8 Black dots
+      if (!'cex' %in% args) plot(d,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='',cex=1.5,...)
+      if ('cex' %in% args)  plot(d,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='',...)
+
+   
       #horizontal line
-        abline(h=0,lty=2,col='gray66')
+        abline(h=0,lty=3,col='gray66')
     
    
-  #7 Null region
+  #7 Plot the null and its CI
     if (sort.by=='')
     {
-    points(dnull$mean,type='l')
-    polygon(x=c(1:n,n:1),y=c(dnull$low , rev(dnull$high)),col=adjustcolor('blue',.1),border=NA)
+    points(dnull$mean,type='l',col=col.null1,lty=2)
+    polygon(x=c(1:n,n:1),y=c(dnull$low , rev(dnull$high)),col=col.null2,border=NA)
     }
   
   #8 Value labels
@@ -112,15 +109,18 @@
 
 
     #set positiom   
-      #y.text = ifelse(d < dnull$mean, d - value.labels.offset,d + value.labels.offset )
       offset=ifelse(d < dnull$mean, -value.labels.offset,value.labels.offset)
-      #y.text=d-value.labels.offset
       y.text=d + offset
       
-
    #print them
       text(1:n,y.text ,round2(d ,decimals),col='blue4',cex=.65)
 
+                  
+     
+  #7 CI
+      arrows(x0=1:n, x1=1:n, y0=ciL,y1=ciH,col=adjustcolor('gray60',.8),code=3,angle=90,length=.02)
+
+      
   #9 Y axis
       
       if (!"yaxt" %in% names(args))
@@ -144,17 +144,14 @@
             if (n>10)   axis(side=1, at=c(1,seq(5,n,5),n))
         } else {
     
-        text(1:n,par('usr')[3] , paste0(obs[,1],"  "),srt=80,xpd=TRUE,adj=1)
+        text(1:n,par('usr')[3] , paste0(obs[,stimulus],"  "),srt=80,xpd=TRUE,adj=1)
         }
 
     #14.2 Headers
         if (xlab2=="" & sort.by=='') xlab2='(sorted by effect size)'
         if (xlab2=="" & sort.by!='') xlab2=paste0('(sorted by ',sort.by,')')
-
         mtext(side=1,line=2.7 + xlabel.buffer , font=2,cex=1.2,xlab1)
         mtext(side=1,line=3.7 + xlabel.buffer   ,font=3,cex=1,xlab2)
-
-      
       }
       
         
@@ -163,23 +160,24 @@
         {
         leg1 = legend('top',
                       bty='n',
-                      pch=c(16,NA,NA), 
-                      lty=c(NA,1,1),
-                      lwd=c(NA,1,14),
-                      col=c('black','black',adjustcolor('blue',.2)),
-                      c(paste0('Observed effects: ',label.high," - ",label.low),
-                        "Expected when all stimuli have same effect", 
-                        "95% confidence band"),
+                      pch=c(16,NA,NA,NA), 
+                      lty=c(NA,1,2,1),
+                      lwd=c(NA,1,1,14),
+                      col=c('black', col.ci, col.null1 , col.null2),
+                      c(paste0('Observed effect: ',label1," - ",label2),
+                        "95 CI for observed effect ",
+                        "Expected under null that all stimuli same effect", 
+                        "95% confidence band under null"),
                         inset=.03)
-    
         } else {
             leg1 = legend('top',
                       bty='n',
-                      pch=c(16), 
-                      lty=c(NA),
-                      lwd=c(NA),
-                      col=c('black'),
-                      c(paste0('Observed effects: ',label.high," - ",label.low)),
+                      pch=c(16,NA), 
+                      lty=c(NA,1),
+                      lwd=c(NA,1),
+                      col=c('black',col.ci),
+                      c(paste0('Observed effect: ',label1," - ",label2),
+                        "95 CI for observed effect"),
                         inset=.03)
           
         }

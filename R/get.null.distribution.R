@@ -20,7 +20,7 @@
       {
         
       #Shuffle item within condition
-        df[,paste0(stimulus,"_shuffled")]  <- ave(df2$stimulus, df2$condition, FUN = function(x) sample(x))
+        df[,paste0(stimulus,"_shuffled")]  <- ave(df$stimulus, df$condition, FUN = function(x) sample(x))
       
       #Get means of residualized dv on shuffled stimuli
         tk   = get.means.condition(df=df,dv='r',stimulus=paste0(stimulus,"_shuffled"),condition='condition',sort.by='',flip.sign = flip.sign)

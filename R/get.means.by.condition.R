@@ -28,7 +28,7 @@
           for (stimk in stimulus.all)
           {
             #Row with tidy t-test (as data.frame row)
-               dfk=df[df$stimulus==stimk,]
+               dfk=df[df[,stimulus]==stimk,]
                tk=tidy.t(t.test(dfk[,dv]~dfk[,condition]))
                 #tidy.t puts the t-test results in a dataframe | See #utils.r #4
               
