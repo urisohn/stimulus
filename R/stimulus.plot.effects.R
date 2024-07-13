@@ -3,6 +3,7 @@
                                 overall.ci,
                                 overall.label, 
                                 overall.p,
+                                model,
                                 sort.by, 
                                 value.labels.offset=-1,
                                 flip.sign, 
@@ -10,7 +11,6 @@
                                 label.low,
                                 stimuli.numeric.labels,
                                 decimals, 
-                                models, 
                                 ylab1,ylab2,xlab1,xlab2,
                                 cex,
                                 simtot,...)
@@ -52,6 +52,21 @@
       ylim[2]=ylim[2]+.28*dy  #Give a 28% buffer on top (for the legend)
       ylim[1]=ylim[1]-.03*dy  #give a 3% buffer below, for the value labels
    
+    #5 get models if specified
+       if (length(model)>0)
+       {
+        model.results = get.model.results(df, dv, stimulus, condition, participant,model,flip.sign)
+
+        overall.estimate  = model.results$m.mean
+        overall.ci        = model.results$m.ci
+        overall.labels    = model.results$m.labels
+        overall.p         = model.results$m.p
+  
+       }
+      
+        
+      
+      
     #5 xlim 
       n1 = length(overall.estimate)
       xmax = ifelse(n1 > 0, length(d) + n1 +1.5, length(d))
@@ -91,8 +106,7 @@
     
   #6 Black dots
       plot(d,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=cex, xlim=xlim)#, ...)
-      
-   
+
       #horizontal line
         abline(h=0,lty=3,col='gray66')
     
@@ -153,8 +167,8 @@
     #14.2 Headers
         if (xlab2=="" & sort.by=='') xlab2='(sorted by effect size)'
         if (xlab2=="" & sort.by!='') xlab2=paste0('(sorted by ',sort.by,')')
-        mtext(side=1,line=2.7 + xlabel.buffer , font=2,cex=1.2,xlab1)
-        mtext(side=1,line=3.7 + xlabel.buffer   ,font=3,cex=1,xlab2)
+        mtext(side=1,line=2.7 + xlabel.buffer , font=2,cex=1.2,xlab1, at=n/2)
+        mtext(side=1,line=3.7 + xlabel.buffer   ,font=3,cex=1,xlab2, at=n/2)
       }
       
         
@@ -191,9 +205,12 @@
       {
         
         xs=(n+1):(n+n1)+1
+        
+      
+      
       #Markers
         points( x=xs,
-                y= -overall.estimate,
+                y= overall.estimate,
                 pch=16,
                 cex=cex*1.5,
                 col=col.overall)
@@ -209,7 +226,7 @@
                angle=90)
         
       #Labels
-         text(xs,par('usr')[3] , overall.label ,srt=80,xpd=TRUE,adj=1,col=col.overall)
+         text(xs,par('usr')[3] , paste0(overall.labels," ") ,srt=80,xpd=TRUE,adj=1,col=col.overall)
 
 
       #p-value
@@ -230,7 +247,11 @@
       
 
     par(mar=mar.before)
-    return(list(observed=obs, under.null=dnull))     
+    
+  #Results
+    results = list(observed=obs, under.null=dnull)
+    if (exists('model.results')) results$model.results= model.results
+    return(results)     
     
         
     }#End of function

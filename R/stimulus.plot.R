@@ -26,6 +26,7 @@
                     sort.by='',
                     plot.type='means',
                     flip.sign=FALSE,
+                    model=c(),
                     overall.estimate=c(),
                     overall.ci=c(),
                     overall.p=c(),
@@ -100,8 +101,9 @@
           #Width and height of file
               max.x.label = max(nchar(unique(data[,stimulus]))) #length of stimulus name
               ns = length(unique(data[,stimulus]))  #number of unique stimuli  
-              w  = 4+ns*.4                          #Width
-              h  = 5                                #height
+              nm = length(model)
+              w  = 5+(ns+nm*1.5)*.4                   #Width
+              h  = 5                              #height
               h  = h * (1 + max.x.label/40)
                
           #start the figure
@@ -133,6 +135,7 @@
           {
              res=stimulus.plot.effects(
                                     df=data, dv=dv, condition=condition, stimulus=stimulus, 
+                                    model=model,
                                     overall.estimate=overall.estimate,
                                     overall.ci=overall.ci,
                                     overall.p=overall.p,

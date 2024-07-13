@@ -2,7 +2,7 @@
   
 
   get.means.condition <- function(df, dv, stimulus, condition,sort.by,flip.sign) {
-        u2 = unique(df[,condition])
+      
      
     #1 Is it a matched design?
           t = table(df[,stimulus],df[,condition])
@@ -15,13 +15,12 @@
           stimulus.all=unique(df[,stimulus])
           
         #Condition
-          ucond=unique(df[,condition])
-          
+          ucond=sort(unique(df[,condition]))
           if (flip.sign==FALSE) df[,condition]=factor(df[,condition], levels=ucond)
           if (flip.sign==TRUE)  df[,condition]=factor(df[,condition], levels=rev(ucond))
           
-          
-          
+    
+         
     #2 Compute the mean of the dv for each combination of stimulus and condition
           
           k=1
@@ -44,7 +43,7 @@
           
               
       # Rename the means columns
-        names(t.all)[1:2] <- c(paste0(condition,"_",u2[1]), paste0(condition,"_",u2[2]))
+        names(t.all)[1:2] <- c(paste0(condition,"_",ucond[1]), paste0(condition,"_",ucond[2]))
         
         
       #Swap columns if the bigger effect comes first

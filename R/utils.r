@@ -82,3 +82,23 @@
 
 
   
+#6 Confidence interval from model
+     get.ci=function(m)
+      {
+      coe=summary(m)$coefficients 
+      b=coe[2,1]                   #point estimate
+      se=coe[2,2]                  #SE
+      tc = qt(.975,df=coe[2,3])    #look-up t-distribution for 95% CI for those d.f.
+      ci=c(b-tc*se , b+tc*se)
+      return(ci)
+     }
+     
+     
+#7 Add to list if object exists
+   add_named_if_exists <- function(obj_name, lst) {
+  if (exists(obj_name, envir = parent.frame())) {
+    obj_value <- get(obj_name, envir = parent.frame())
+    lst[[obj_name]] <- obj_value
+  }
+  return(lst)
+}
