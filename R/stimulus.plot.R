@@ -21,14 +21,20 @@
 #'@param save.as name of file to save figure as (optional, filename must have extension .svg or .png)
 #' @export
 #4 stimulus.plot (Wrapper function)
-  stimulus.plot = function(data, dv, condition, stimulus, 
+  stimulus.plot = function(
+                    data, dv, condition, stimulus, 
                     sort.by='',
                     plot.type='means',
                     flip.sign=FALSE,
+                    overall.estimate=c(),
+                    overall.ci=c(),
+                    overall.p=c(),
+                    overall.label=c(),
                     ylab1='',
                     ylab2='',
                     xlab1='Stimuli',
                     xlab2='',
+                    cex=1.5,
                     value.labels.offset = -1,
                     stimuli.numeric.labels=FALSE,
                     label.low='',
@@ -37,10 +43,9 @@
                     participant='',
                     legend.title='',
                     simtot=100,
-                    suppress.version.label=FALSE,
+                    watermark = TRUE,
                     save.as = '',
-                    col1='black',
-                    col2='black',
+                 
                     ...
                     )
         {
@@ -126,7 +131,12 @@
         #Effects
           if (plot.type=='effects')
           {
-             res=stimulus.plot.effects(df=data, dv=dv, condition=condition, stimulus=stimulus, 
+             res=stimulus.plot.effects(
+                                    df=data, dv=dv, condition=condition, stimulus=stimulus, 
+                                    overall.estimate=overall.estimate,
+                                    overall.ci=overall.ci,
+                                    overall.p=overall.p,
+                                    overall.label=overall.label,
                                     participant=participant,
                                     sort.by=sort.by,
                                     flip.sign=flip.sign,
@@ -136,6 +146,7 @@
                                     ylab2=ylab2,
                                     xlab1=xlab1,
                                     xlab2=xlab2,
+                                    cex=cex,
                                     value.labels.offset=value.labels.offset,
                                     stimuli.numeric.labels=stimuli.numeric.labels,
                                     simtot=simtot,
@@ -145,8 +156,8 @@
             }
           
 
-        #Pkg version label
-          if (suppress.version.label==FALSE)
+        #Pkg version watermark
+          if (watermark==TRUE)
           {
             stim_vrs=paste0("{Stimulus v",packageVersion('stimulus'),"}")
             mtext(side=1,line=-1,cex=.7, stim_vrs ,col='gray66',adj=0,outer=TRUE)

@@ -1,30 +1,33 @@
- stimulus.plot.effects=function(df,  dv, stimulus, condition, participant , sort.by, value.labels.offset=-1,
-                                 flip.sign, label.high, label.low,
-                                 stimuli.numeric.labels,decimals, 
-                                 ylab1,ylab2,xlab1,xlab2,simtot,...)
+ stimulus.plot.effects=function(df,  dv, stimulus, condition, participant ,
+                                overall.estimate,
+                                overall.ci,
+                                overall.label, 
+                                overall.p,
+                                sort.by, 
+                                value.labels.offset=-1,
+                                flip.sign, 
+                                label.high, 
+                                label.low,
+                                stimuli.numeric.labels,
+                                decimals, 
+                                models, 
+                                ylab1,ylab2,xlab1,xlab2,
+                                cex,
+                                simtot,...)
     {
     
     
     #1 Grab the arguments passed on to ...  
       args = list(...)
-    
-
       col.null1='dodgerblue'
       col.null2=adjustcolor(col.null1,.1)
       col.ci = 'gray50'
+      col.overall = 'red4'
       
-    #2 Compute means
+    #2 Compute means by stimulus
        obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,sort.by=sort.by,flip.sign=flip.sign)
 
-      #Sort
-        #if (sort.by=='') obs=obs[order(obs$effect),]
-        #if (sort.by!='') obs=obs[order(obs[,sort.by]),]
-       
-       
-       #unnecessary since it is sorted by get.means.condition() already
-       
-       
-      #Localize variables
+      #Localize stimulus variables
         d = obs$effect
         ciL = obs$ciL
         ciH = obs$ciH
@@ -32,7 +35,7 @@
         label2  =  sub(paste0("^",condition,"_"), "", names(obs[2]))
         label1  =  sub(paste0("^",condition,"_"), "", names(obs[1]))
        
-      #2.2 Get the null distribution  (only if sort.by is not set)
+    #3 Get the null distribution  (only if sort.by is not set)
           d0=rep(d,length(unique(df[,stimulus])))   #make it equal to d just to help with code below, e.g., ylim=range(...)
           dnull=data.frame(low=d0,high=d0,mean=d0)
         
@@ -42,53 +45,53 @@
                   dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot,flip.sign=flip.sign)
                   }
             
-    #3 ylim: range of y values in the plot
+    #4 ylim: range of y values in the plot
       
       ylim = range(c(ciL,ciH,dnull))
-      
-          
       dy = diff(ylim)
       ylim[2]=ylim[2]+.28*dy  #Give a 28% buffer on top (for the legend)
       ylim[1]=ylim[1]-.03*dy  #give a 3% buffer below, for the value labels
    
-    #4 Margins
-      #Get current margins
-        mar.before =  par("mar")
-        mar.after  =  mar.before
+    #5 xlim 
+      n1 = length(overall.estimate)
+      xmax = ifelse(n1 > 0, length(d) + n1 +1.5, length(d))
+      xlim = c(1,xmax)
               
-      #Only change them if they are not the default (so users can over-ride it by choosing their own)
-        mar.default = c(5.1, 4.1, 4.1, 2.1)
+      
+    #6 Margins
 
-        
-            
-      #Label calculations for bottom margin 
-        max.length = max(nchar(unique(df[,stimulus])))
-        xlabel.buffer = max(0,max.length-3)*.3
-        if (stimuli.numeric.labels==TRUE) xlabel.buffer=0
-        
-      #4.1 Bottom
-            max.x.label = max(nchar(unique(df[,stimulus])))
-            xlabel.buffer = max(0,max.x.label)*.3
+          #Get current margins
+            mar.before =  par("mar")
+            mar.after  =  mar.before
+                  
+              
+          #Label calculations for bottom margin 
+            max.length = max(nchar(unique(df[,stimulus])))
+            xlabel.buffer = max(0,max.length-3)*.3
             if (stimuli.numeric.labels==TRUE) xlabel.buffer=0
-            mar.after[1] = mar.before[1] + xlabel.buffer
-      
-     #4.2 Top
-        #Drop top margin if there is no main header
-          mar.after[3] = ifelse ("main" %in% names(args),3,1)
-      
-      #4.3 Left
-         width.y.label = nchar(max(d))
-         mar.after[2] = max(width.y.label/3, 5.1)
-         if (ylab2!='') mar.after[2]= mar.after[2] + 1
+            
+          #Bottom
+                max.x.label = max(nchar(unique(df[,stimulus])))
+                xlabel.buffer = max(0,max.x.label)*.3
+                if (stimuli.numeric.labels==TRUE) xlabel.buffer=0
+                mar.after[1] = mar.before[1] + xlabel.buffer
+          
+          #Top
+            #Drop top margin if there is no main header
+              mar.after[3] = ifelse ("main" %in% names(args),3,1)
+          
+          #Left
+               width.y.label = nchar(max(d))
+               mar.after[2] = max(width.y.label/3, 5.1)
+               if (ylab2!='') mar.after[2]= mar.after[2] + 1
+              
+          #Implement
+             par(mar=mar.after)
         
-      #4.4 Assign it
-         par(mar=mar.after)
-        
-     
-  #8 Black dots
-      if (!'cex' %in% args) plot(d,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='',cex=1.5,...)
-      if ('cex' %in% args)  plot(d,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='',...)
-
+    
+  #6 Black dots
+      plot(d,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=cex, xlim=xlim)#, ...)
+      
    
       #horizontal line
         abline(h=0,lty=3,col='gray66')
@@ -158,7 +161,7 @@
   #15 Legend
         if (sort.by=="")
         {
-        leg1 = legend('top',
+        leg1 = legend('topleft',
                       bty='n',
                       pch=c(16,NA,NA,NA), 
                       lty=c(NA,1,2,1),
@@ -166,11 +169,11 @@
                       col=c('black', col.ci, col.null1 , col.null2),
                       c(paste0('Observed effect: ',label1," - ",label2),
                         "95 CI for observed effect ",
-                        "Expected under null that all stimuli same effect", 
+                        "Expected under null of same effect size for all stimuli", 
                         "95% confidence band under null"),
                         inset=.03)
         } else {
-            leg1 = legend('top',
+            leg1 = legend('topleft',
                       bty='n',
                       pch=c(16,NA), 
                       lty=c(NA,1),
@@ -183,7 +186,49 @@
         }
           
           
-    
+  #16 Overall
+      if (n1 > 0)
+      {
+        
+        xs=(n+1):(n+n1)+1
+      #Markers
+        points( x=xs,
+                y= -overall.estimate,
+                pch=16,
+                cex=cex*1.5,
+                col=col.overall)
+          
+      #CI
+        arrows(x0=xs,
+               x1=xs,
+               y0=overall.ci[seq(1,n1*2,2)],
+               y1=overall.ci[seq(2,n1*2,2)],
+               col=col.overall,
+               code=3,
+               length=.03,
+               angle=90)
+        
+      #Labels
+         text(xs,par('usr')[3] , overall.label ,srt=80,xpd=TRUE,adj=1,col=col.overall)
+
+
+      #p-value
+         text(xs,max(overall.ci),pos=3,format.p(overall.p),col=col.overall,cex=.7,font=2)
+
+     #"Overall" 
+         y.overall=par('usr')[4]- 0.25* (par('usr')[4] - par('usr')[3])
+         text(mean(xs),y.overall,pos=3,"Overall",cex=1.2,font=2)
+
+     #Vertical separator
+           abline(v= n+1 ,lwd=2) 
+
+         
+      #Vertical line
+        # abline(v = n+1,col='black')
+          
+      }
+      
+
     par(mar=mar.before)
     return(list(observed=obs, under.null=dnull))     
     
