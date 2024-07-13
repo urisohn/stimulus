@@ -216,7 +216,7 @@
          text(xs,max(overall.ci),pos=3,format.p(overall.p),col=col.overall,cex=.7,font=2)
 
      #"Overall" 
-         y.overall=par('usr')[4]- 0.25* (par('usr')[4] - par('usr')[3])
+         y.overall=par('usr')[4]- 0.18* (par('usr')[4] - par('usr')[3])
          text(mean(xs),y.overall,pos=3,"Overall",cex=1.2,font=2)
 
      #Vertical separator
