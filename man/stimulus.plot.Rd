@@ -12,10 +12,16 @@ stimulus.plot(
   sort.by = "",
   plot.type = "means",
   flip.sign = FALSE,
+  model = c(),
+  overall.estimate = c(),
+  overall.ci = c(),
+  overall.p = c(),
+  overall.label = c(),
   ylab1 = "",
   ylab2 = "",
   xlab1 = "Stimuli",
   xlab2 = "",
+  cex = 1.5,
   value.labels.offset = -1,
   stimuli.numeric.labels = FALSE,
   label.low = "",
@@ -24,10 +30,8 @@ stimulus.plot(
   participant = "",
   legend.title = "",
   simtot = 100,
-  suppress.version.label = FALSE,
+  watermark = TRUE,
   save.as = "",
-  col1 = "black",
-  col2 = "black",
   ...
 )
 }

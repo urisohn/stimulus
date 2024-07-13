@@ -64,14 +64,14 @@
   
   
 #5 formatted p-value
-    format.p <- function(p) {
+    formatted.p <- function(p) {
       format_single_p <- function(single_p) {
         p.clean <- round(single_p, 3)           # Round it
         p.clean <- substr(p.clean, 2, 6)        # Drop the 0
-        p.clean <- paste0("= ", p.clean)
-        if (single_p < .0001) p.clean <- " < .0001"
-        if (single_p > .9999) p.clean <- " > .9999"
-        p.clean <- paste0("p ", p.clean)
+        p.clean <- paste0("=", p.clean)
+        if (single_p < .0001) p.clean <- "<.0001"
+        if (single_p > .9999) p.clean <- ">.9999"
+        p.clean <- paste0("p", p.clean)
         return(p.clean)
       }
   
