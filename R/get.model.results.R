@@ -50,7 +50,7 @@
        
         #Cluster by participant if needed
             if (participant!='') {
-              m1.cluster = lmtest::coeftest(m1,vcov=vcovCL,type='HC3',cluster=~participant)
+              m1.cluster = lmtest::coeftest(m1,vcov=sandwhich::vcovCL,type='HC3',cluster=~participant)
               se = m1.cluster[2,2]
               m1.ci = c(m1.mean - tc*se, m1.mean+tc*se)
               m1.p = m1.cluster[2,4]
@@ -73,8 +73,8 @@
 
         
           #Run random model
-            if (participant!='') m2 = lmer(dv~condition+(1|stimulus)+(1|participant),data=df2)
-            if (participant=='') m2 = lmer(dv~condition+(1|stimulus),data=df2)
+            if (participant!='') m2 = lmerTest::lmer(dv~condition+(1|stimulus)+(1|participant),data=df2)
+            if (participant=='') m2 = lmerTest::lmer(dv~condition+(1|stimulus),data=df2)
 
           #Get mean effect for condition and its  ci
             m2.mean = summary(m2)$coefficients[2,1]
