@@ -101,4 +101,15 @@
     lst[[obj_name]] <- obj_value
   }
   return(lst)
-}
+   }
+   
+   
+#8 Automatically name elements in list with name of the objects in the list
+    #https://stackoverflow.com/questions/16951080/can-lists-be-created-that-name-themselves-based-on-input-object-names
+    namedList <- function(...) {
+      L <- list(...)
+      snm <- sapply(substitute(list(...)),deparse)[-1]
+      if (is.null(nm <- names(L))) nm <- snm
+      if (any(nonames <- nm=="")) nm[nonames] <- snm[nonames]
+      setNames(L,nm)
+    }

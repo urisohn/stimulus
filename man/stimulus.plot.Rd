@@ -11,7 +11,7 @@ stimulus.plot(
   stimulus,
   sort.by = "",
   plot.type = "means",
-  flip.sign = FALSE,
+  flip.condition = FALSE,
   model = c(),
   overall.estimate = c(),
   overall.ci = c(),
@@ -49,7 +49,7 @@ May be be useful to deviate to explore moderators or sort stimuli alphabetically
 
 \item{plot.type}{can be either "means" or "effects", determines what's plotted in the y-axis of the figure}
 
-\item{flip.sign}{whether to sort effect size in reverse order (TRUE/FALSE, defaults to FALSE)}
+\item{flip.condition}{whether to sort effect size in reverse order (TRUE/FALSE, defaults to FALSE)}
 
 \item{ylab1, ylab2}{labels on the y-axis (character, optional)}
 

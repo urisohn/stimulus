@@ -6,7 +6,7 @@
                                 model,
                                 sort.by, 
                                 value.labels.offset=-1,
-                                flip.sign, 
+                                flip.condition, 
                                 label.high, 
                                 label.low,
                                 stimuli.numeric.labels,
@@ -25,7 +25,7 @@
       col.overall = 'red4'
       
     #2 Compute means by stimulus
-       obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,sort.by=sort.by,flip.sign=flip.sign)
+       obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,sort.by=sort.by,flip.condition=flip.condition)
 
       #Localize stimulus variables
         d = obs$effect
@@ -42,7 +42,7 @@
         #Resampling if sort.by is not specified
             if (sort.by=='') 
                   {
-                  dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot,flip.sign=flip.sign)
+                  dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot,flip.condition=flip.condition)
                   }
             
     #4 ylim: range of y values in the plot
@@ -55,7 +55,7 @@
     #5 get models if specified
        if (length(model)>0)
        {
-        model.results = get.model.results(df, dv, stimulus, condition, participant,model,flip.sign)
+        model.results = get.model.results(df, dv, stimulus, condition, participant,model,flip.condition)
 
         overall.estimate  = model.results$m.mean
         overall.ci        = model.results$m.ci

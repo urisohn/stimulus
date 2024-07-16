@@ -1,4 +1,4 @@
- get.null.distribution = function(df,  dv, stimulus, condition, participant,simtot=100,flip.sign)
+ get.null.distribution = function(df,  dv, stimulus, condition, participant,simtot=100,flip.condition)
   {
     
     #Model to residualize var controlling for stimuli, with or without participant id
@@ -16,14 +16,15 @@
       
     #Compute means on residuals
       means.all=matrix(nrow=simtot,ncol=length(unique(df[,stimulus])))
-      for (k in 1:simtot)
+    
+        for (k in 1:simtot)
       {
         
       #Shuffle item within condition
-        df[,paste0(stimulus,"_shuffled")]  <- ave(df$stimulus, df$condition, FUN = function(x) sample(x))
+        df[,paste0(stimulus,"_shuffled")]  <- ave(df[,stimulus], df[,condition], FUN = function(x) sample(x))
       
       #Get means of residualized dv on shuffled stimuli
-        tk   = get.means.condition(df=df,dv='r',stimulus=paste0(stimulus,"_shuffled"),condition='condition',sort.by='',flip.sign = flip.sign)
+        tk   = get.means.condition(df=df,dv='r',stimulus=paste0(stimulus,"_shuffled"),condition='condition',sort.by='',flip.condition = flip.condition)
             
       #Extract estimates
         means.all[k,] = sort(tk$effect)

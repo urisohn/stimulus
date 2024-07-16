@@ -1,4 +1,4 @@
- get.model.results=function(df, dv, stimulus, condition, participant,model,flip.sign)
+ get.model.results=function(df, dv, stimulus, condition, participant,model,flip.condition)
 {
 #-------------------------------------------------------
   
@@ -13,8 +13,8 @@
        if (participant !='') df2$participant  = df[,participant]
 
        ucond=sort(unique(df$condition))
-       if (flip.sign==TRUE) df2$condition=factor(df2$condition, levels=ucond)
-       if (flip.sign==FALSE)  df2$condition=factor(df2$condition, levels=rev(ucond))
+       if (flip.condition==TRUE) df2$condition=factor(df2$condition, levels=ucond)
+       if (flip.condition==FALSE)  df2$condition=factor(df2$condition, levels=rev(ucond))
           
        
 
@@ -97,8 +97,8 @@
      if (any(c('slopes','all') %in% model)) {
 
           #Run random model
-            if (participant!='') m3 = lmer(dv~condition+(1+condition|stimulus)+(1|participant),data=df2)
-            if (participant=='') m3 = lmer(dv~condition+(1+condition|stimulus),data=df2)
+            if (participant!='') m3 = lmerTest::lmer(dv~condition+(1+condition|stimulus)+(1|participant),data=df2)
+            if (participant=='') m3 = lmerTest::lmer(dv~condition+(1+condition|stimulus),data=df2)
 
           #Get mean effect for condition and its  ci
             m3.mean = summary(m3)$coefficients[2,1]

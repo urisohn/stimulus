@@ -9,7 +9,7 @@
 #'@param participant name of the variable containing participant IDs; if set it's entered as random participant effect
 #' (character, optional)
 #'@param plot.type can be either "means" or "effects", determines what's plotted in the y-axis of the figure
-#'@param flip.sign whether to sort effect size in reverse order (TRUE/FALSE, defaults to FALSE)
+#'@param flip.condition whether to sort effect size in reverse order (TRUE/FALSE, defaults to FALSE)
 #'@param ylab1,ylab2 labels on the y-axis (character, optional)
 #'@param xlab1,xlab2 labels on the x-axis (character, optional)
 #'@param decimals how many decimals to depict in the graph (integer)
@@ -25,7 +25,7 @@
                     data, dv, condition, stimulus, 
                     sort.by='',
                     plot.type='means',
-                    flip.sign=FALSE,
+                    flip.condition=FALSE,
                     model=c(),
                     overall.estimate=c(),
                     overall.ci=c(),
@@ -67,10 +67,12 @@
           if (!"data.frame" %in% class(data)) exit("stimulus.plot() says: the argument data must be a data.frame, but '",dataname,"' is not a dataframe.")
   
       #Check arguments are set and of the right type
-          validate.arguments(data, dv, condition, stimulus, sort.by, plot.type, flip.sign,
-                  ylab1, ylab2, xlab1, xlab2, value.labels.offset,
-                  stimuli.numeric.labels, label.low, label.high, decimals,participant, legend.title,simtot,
-                  dataname)
+          validate.arguments(data, dv, condition, stimulus, sort.by, plot.type, 
+                              flip.condition, ylab1, ylab2, xlab1, xlab2, value.labels.offset,
+                              stimuli.numeric.labels, label.low, label.high, decimals,
+                              participant, legend.title,simtot,
+                              dataname,model,    
+                              overall.estimate, overall.ci,overall.p,overall.label)
             
       #Variables names from the dataset
         dv        <- clean_string(deparse(substitute(dv)))
@@ -142,7 +144,7 @@
                                     overall.label=overall.label,
                                     participant=participant,
                                     sort.by=sort.by,
-                                    flip.sign=flip.sign,
+                                    flip.condition=flip.condition,
                                     label.high=label.high, 
                                     label.low=label.low,
                                     ylab1=ylab1,
