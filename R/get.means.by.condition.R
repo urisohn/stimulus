@@ -77,25 +77,26 @@
                 {
                   #Dataframe with unique values of sort.by for each stimulus
                     sort.by.df <- unique(df[,c(stimulus,sort.by)])
+
                 }
                 
               #If not unique it's numeric, so we compute the mean
                 if (item.unique==FALSE)
                   {
+                  message('#86')
                   #Compute mean by item
                     sort.by.df <- aggregate(df[, sort.by],list(df[, stimulus]), mean)
                     names(sort.by.df)=c(stimulus,sort.by) 
-                
+                } #End if sort.by is not unique to each stimulus
                   #Merge with sort.by
                     t.all = merge(t.all, sort.by.df,by=stimulus)
 
-                } #End if sort.by is not unique to each stimulus
+             
                   
                 
         #Sort it
             t.all <- t.all[order(t.all[,sort.by]), ]
-              
-               
+
         
         } #End if sort.by is not null
                   
