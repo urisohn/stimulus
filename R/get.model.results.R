@@ -50,7 +50,7 @@
        
         #Cluster by participant if needed
             if (participant!='') {
-              m1.cluster = lmtest::coeftest(m1,vcov=sandwhich::vcovCL,type='HC3',cluster=~participant)
+              m1.cluster = lmtest::coeftest(m1,vcov=sandwich::vcovCL,type='HC3',cluster=~participant)
               se = m1.cluster[2,2]
               m1.ci = c(m1.mean - tc*se, m1.mean+tc*se)
               m1.p = m1.cluster[2,4]
