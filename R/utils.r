@@ -62,11 +62,12 @@
     
   }
   
-  
+
 #5 formatted p-value
     formatted.p <- function(p) {
       format_single_p <- function(single_p) {
         p.clean <- round(single_p, 3)           # Round it
+        if (p.clean==0) return ("p<.0001")
         p.clean <- substr(p.clean, 2, 6)        # Drop the 0
         p.clean <- paste0("=", p.clean)
         if (single_p < .0001) p.clean <- "<.0001"
