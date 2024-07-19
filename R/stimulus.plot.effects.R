@@ -22,7 +22,7 @@
       col.null1='dodgerblue'
       col.null2=adjustcolor(col.null1,.1)
       col.ci = 'gray50'
-      col.overall = 'red4'
+      col.overall = 'purple'
       
     #2 Compute means by stimulus
        obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,sort.by=sort.by,flip.condition=flip.condition)
@@ -59,7 +59,7 @@
 
         overall.estimate  = model.results$m.mean
         overall.ci        = model.results$m.ci
-        overall.labels    = model.results$m.labels
+        if (length(overall.label)==0) overall.label= model.results$m.labels
         overall.p         = model.results$m.p
   
        }
@@ -105,7 +105,7 @@
         
     
   #6 Black dots
-      plot(d,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=cex, xlim=xlim)#, ...)
+      plot(d,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=cex, xlim=xlim, ...)
 
       #horizontal line
         abline(h=0,lty=3,col='gray66')
@@ -130,7 +130,8 @@
       y.text=d + offset
       
    #print them
-      text(1:n,y.text ,round2(d ,decimals),col='blue4',cex=.65)
+      #text(1:n,y.text ,round2(d ,decimals),col='blue4',cex=.65)
+      text(1:n,d ,round2(d ,decimals),col='blue4',cex=.65,pos=4)
 
                   
      
@@ -226,7 +227,8 @@
                angle=90)
         
       #Labels
-         text(xs,par('usr')[3] , paste0(overall.labels," ") ,srt=80,xpd=TRUE,adj=1,col=col.overall)
+         overall.label =  gsub("\\n", " \n", overall.label)
+         text(xs,par('usr')[3] , paste0(overall.label," ") ,srt=80,xpd=TRUE,adj=1,col=col.overall)
 
 
       #p-value
@@ -239,10 +241,9 @@
      #Vertical separator
            abline(v= n+1 ,lwd=2) 
 
-         
-      #Vertical line
-        # abline(v = n+1,col='black')
-          
+     #Value label
+           text(xs,overall.estimate[1],paste0(" ",round(overall.estimate,0)),cex=.65,col='purple',pos=4)
+
       }
       
 

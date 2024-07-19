@@ -35,7 +35,7 @@
       n3=length(overall.p)
       n4=length(overall.label)
 
-      if (length(unique(c(n1,n3,n4)))>1) exit("The 'overall' arguments (estimate, p, and label) must have the same legnth")
+      if (length(unique(c(n1,n3,n4)))>1 & n1>0) exit("The 'overall' arguments (estimate, p, and label) must have the same legnth")
       if (n2!=2*n1) exit("Make sure that there are twice the number of values in overall.ci as in overall.estimate")
       if (n1>0 & any(!is.numeric(overall.estimate),!is.numeric(overall.estimate),!is.numeric(overall.estimate))) exit ("The 'overall' arguments must be numeric")
       
