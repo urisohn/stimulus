@@ -71,7 +71,8 @@
      if (any(c('intercepts','all') %in% model)) 
      {
 
-        
+           message("Estimating model with random intercepts for 'stimulus'")
+
           #Run random model
             if (participant!='') m2 = lmerTest::lmer(dv~condition+(1|stimulus)+(1|participant),data=df2)
             if (participant=='') m2 = lmerTest::lmer(dv~condition+(1|stimulus),data=df2)
@@ -97,6 +98,7 @@
      if (any(c('slopes','all') %in% model)) {
 
           #Run random model
+            message("Estimating model with random slopes for 'stimulus'")
             if (participant!='') m3 = lmerTest::lmer(dv~condition+(1+condition|stimulus)+(1|participant),data=df2)
             if (participant=='') m3 = lmerTest::lmer(dv~condition+(1+condition|stimulus),data=df2)
 
@@ -126,8 +128,7 @@
       if (exists('m1.cluster')) results$regression.clustered_errors = m1.cluster
       if (exists('m2'))         results$random_intercepts = m2
       if (exists('m3'))         results$random_slopes = m3
-      
-
-      return(results)
+  
+       return(results)
 }
       
