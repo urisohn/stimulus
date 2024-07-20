@@ -2,8 +2,8 @@
 #Function 1 - validate arguments
 
   validate.arguments = function(data, dv, condition, stimulus, sort.by, plot.type, 
-                              flip.condition, ylab1, ylab2, xlab1, xlab2, value.labels.offset,
-                              stimuli.numeric.labels, label.low, label.high, decimals,
+                              flip.condition, ylab1, ylab2, xlab1, xlab2, 
+                               decimals,
                               participant, legend.title,simtot,
                               dataname,model,    
                               overall.estimate, overall.ci,overall.p,overall.label)
@@ -16,10 +16,6 @@
       check1(ylab2 , 'ylab2', 'character', 1)
       check1(xlab1 , 'xlab1', 'character', 1)
       check1(xlab2 , 'xlab2', 'character', 1)
-      check1(value.labels.offset , 'value.labels.offset', 'numeric', 1)
-      check1(stimuli.numeric.labels , 'stimuli.numeric.labels', 'logical', 1)
-      check1(label.low , 'label.low', 'character', 1)
-      check1(label.high , 'label.high', 'character', 1)
       if (decimals!='auto') check1(decimals , 'decimals', 'numeric', 1)
       check1(plot.type , 'plot.type', 'character', 1)
 

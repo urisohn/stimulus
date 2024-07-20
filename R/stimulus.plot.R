@@ -1,30 +1,41 @@
 #'Make stimulus plots as in "Stimulus Sampling Reimagined", Simonsohn, Montealegre, & Evangelidis (2024) 
 #' 
+#'@param plot.type can be either "means" or "effects", determines what's plotted in the y-axis of the figure
 #'@param data dataframe containing variables to be analyzed
 #'@param dv name of the dependent variable (e.g., dv='y'), quotes are not required
 #'@param condition name of the variable containing the condition indicator (e.g., condition='treatment'), quotes are not required
 #'@param stimulus name of the variable containing the stimulus ID (e.g., stimulus='stim_id'), quotes are not required
-#'@param sort.by name of the variable to sort stimuli by in the plots. Defaults to sorting by observed effect size.
-#'May be be useful to deviate to explore moderators or sort stimuli alphabetically.
-#'@param participant name of the variable containing participant IDs; if set it's entered as random participant effect
-#' (character, optional)
-#'@param plot.type can be either "means" or "effects", determines what's plotted in the y-axis of the figure
-#'@param flip.condition whether to sort effect size in reverse order (TRUE/FALSE, defaults to FALSE)
-#'@param ylab1,ylab2 labels on the y-axis (character, optional)
-#'@param xlab1,xlab2 labels on the x-axis (character, optional)
-#'@param decimals how many decimals to depict in the graph (integer)
-#'@param legend.title text above legend (character)
+#'@param participant name of the variable containing participant IDs; necessary for valid inference when 
+#'plot.type='effects' and each participant provided more than one observation
+#'@param save.as filepath for saving figure. Must be .svg or .png file (optional)
+#'@param sort.by name of variable to sort stimuli by. Defaults to sorting by observed effect size.
+#'@param flip.condition reverse order in which conditions are compared? 
+#'(e.g., treatment-control instead of control-treatment). Defaults to FALSE
+#'@param model method used to compute overall average: (1) 'regression', (2) mixed-model with stimulus intercepts, 
+#'and/or (3) mixed-model with random intercepts. If `participant` is provided, the regression clusters by participant
+#'and the mixed models include participant random intercepts. Possible values: 'regression', 'intercepts', 'slopes', 'all'
+#'@param overall.estimate scalar or vector of overall average effect if computed outside of `{stimulus}` (may not be set jointly with `model`)
+#'@param overall.ci vector of confidence interval bounds for `overall.estimate` (may not be set jointly with `model`)
+#'@param overall.p scalar or vector of p-vauue for overall average effect if computed outside of `{stimulus}` (may not be set jointly with `model`)
+#'@param overall.label label to show in x-axis for overall averages, can be used in conjuction with `model` to over-rule
+#'the default labels of 'regression','Random Intercepts', and 'Random Slopes'
+#'@param ylab1,ylab2 labels on the y-axis (optional)
+#'@param xlab1,xlab2 labels on the x-axis (optional)
+#'@param decimals force number of decimals to show for value labels (optional)
+#'@param dv.is.percentage if set to TRUE values are formatted as percentages
+#'@param legend.title text above legend (optional)
 #'@param simtot number of simulations to rely on for estimating expected heterogeneity of 
 #'observed effect size. Only needed if plot.type='effects' (defaults to 100)
-#'@param supress.version.label set to TRUE to prevent version of {stimulus} package used
-#'to generate figure from appearing in the bottom left of the figure
-#'@param save.as name of file to save figure as (optional, filename must have extension .svg or .png)
-#' @export
+#'@param watermark set to FALSE to not display {stimulus version} in bottom left of figure
+#'@param seed used when resampling for the 'effects' plot, defaults to seed=2024 
+#'@export
 #4 stimulus.plot (Wrapper function)
   stimulus.plot = function(
-                    data, dv, condition, stimulus, 
-                    sort.by='',
                     plot.type='means',
+                    data, dv, condition, stimulus, 
+                    participant='',
+                    save.as = '',
+                    sort.by='',
                     flip.condition=FALSE,
                     model=c(),
                     overall.estimate=c(),
@@ -35,26 +46,20 @@
                     ylab2='',
                     xlab1='Stimuli',
                     xlab2='',
-                    cex=1.5,
-                    value.labels.offset = -1,
-                    stimuli.numeric.labels=FALSE,
                     label.low='',
                     label.high='',
                     decimals='auto',
                     dv.is.percentage=FALSE,
-                    participant='',
                     legend.title='',
                     simtot=100,
                     watermark = TRUE,
-                    save.as = '',
                     seed=2024,
                  
                     ...
                     )
         {
-    
- 
- 
+  
+
     
      #Required values entered
         if (missing(data)) exit("stimulus.plot() says: you must specify a dataframe")
@@ -71,8 +76,8 @@
   
       #Check arguments are set and of the right type
           validate.arguments(data, dv, condition, stimulus, sort.by, plot.type, 
-                              flip.condition, ylab1, ylab2, xlab1, xlab2, value.labels.offset,
-                              stimuli.numeric.labels, label.low, label.high, decimals,
+                              flip.condition, ylab1, ylab2, xlab1, xlab2, 
+                               decimals,
                               participant, legend.title,simtot,
                               dataname,model,    
                               overall.estimate, overall.ci,overall.p,overall.label)
@@ -108,11 +113,9 @@
                                     ylab2=ylab2,
                                     xlab1=xlab1,
                                     xlab2=xlab2,
-                                    value.labels.offset=value.labels.offset,
-                                    stimuli.numeric.labels=stimuli.numeric.labels,
-                                    label.low=label.low, label.high=label.high,
                                     decimals=decimals,
-                                    legend.title=legend.title,col1,col2,...)
+                                    flip.condition=flip.condition,
+                                    legend.title=legend.title,...)
             
     
           }
@@ -130,16 +133,11 @@
                                     participant=participant,
                                     sort.by=sort.by,
                                     flip.condition=flip.condition,
-                                    label.high=label.high, 
-                                    label.low=label.low,
                                     ylab1=ylab1,
                                     ylab2=ylab2,
                                     xlab1=xlab1,
                                     xlab2=xlab2,
-                                    cex=cex,
                                     dv.is.percentage=dv.is.percentage,
-                                    value.labels.offset=value.labels.offset,
-                                    stimuli.numeric.labels=stimuli.numeric.labels,
                                     simtot=simtot,
                                     decimals=decimals,
                                     seed=seed,
@@ -188,7 +186,7 @@
             replayPlot(figure_displayed)
 
           #Feedback
-            message("Figure was saved as '", save.as,"'")
+            message("\n\nFigure was saved as '", save.as,"'\n")
           
           #Close the graph
             dev.off()

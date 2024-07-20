@@ -5,15 +5,10 @@
                                 overall.p,
                                 model,
                                 sort.by, 
-                                value.labels.offset=-1,
                                 flip.condition, 
-                                label.high, 
-                                label.low,
-                                stimuli.numeric.labels,
                                 decimals, 
                                 dv.is.percentage,
                                 ylab1,ylab2,xlab1,xlab2,
-                                cex,
                                 simtot,
                                 seed, 
                                 ...)
@@ -117,12 +112,10 @@
           #Label calculations for bottom margin 
             max.length = max(nchar(unique(df[,stimulus])))
             xlabel.buffer = max(0,max.length-3)*.3
-            if (stimuli.numeric.labels==TRUE) xlabel.buffer=0
-            
+
           #Bottom
                 max.x.label = max(nchar(unique(df[,stimulus])))
                 xlabel.buffer = max(0,max.x.label)*.3
-                if (stimuli.numeric.labels==TRUE) xlabel.buffer=0
                 mar.after[1] = mar.before[1] + xlabel.buffer
           
           #Top
@@ -139,8 +132,8 @@
         
     
   #6 Black dots
-     if (dv.is.percentage==FALSE)  plot(d,          pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=cex, xlim=xlim, ...)
-     if (dv.is.percentage==TRUE )  plot(d,yaxt='n', pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=cex, xlim=xlim, ...)
+     if (dv.is.percentage==FALSE)  plot(d,          pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=1.5, xlim=xlim, ...)
+     if (dv.is.percentage==TRUE )  plot(d,yaxt='n', pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=1.5, xlim=xlim, ...)
 
 
       #horizontal line
@@ -156,14 +149,8 @@
   
   #8 Value labels
 
-
-    #offset for y-position
-      if (value.labels.offset==-1) value.labels.offset = diff(ylim)*.03
-
-
-    #set positiom   
-      offset=ifelse(d < dnull$mean, -value.labels.offset,value.labels.offset)
-      y.text=d + offset
+    #set position   
+      y.text=d 
       
    #print them
     
@@ -194,16 +181,8 @@
       {
     
       #10.1 Stimuli labels
-        
-        if (stimuli.numeric.labels==TRUE) {
-          #All numbers if less than 10
-            if (n<=10)  axis(side=1, at=1:n)
-          #Every 5 otherwise
-            if (n>10)   axis(side=1, at=c(1,seq(5,n,5),n))
-        } else {
-    
         text(1:n,par('usr')[3] , paste0(obs[,stimulus],"  "),srt=80,xpd=TRUE,adj=1)
-        }
+        
 
     #14.2 Headers
         if (xlab2=="" & sort.by=='') xlab2='(sorted by effect size)'
@@ -253,18 +232,13 @@
         points( x=xs,
                 y= overall.estimate,
                 pch=16,
-                cex=cex*1.5,
+                cex=1.5*1.5,
                 col=col.overall)
           
       #CI
-        arrows(x0=xs,
-               x1=xs,
-               y0=overall.ci[seq(1,n1*2,2)],
-               y1=overall.ci[seq(2,n1*2,2)],
-               col=col.overall,
-               code=3,
-               length=.03,
-               angle=90)
+        arrows(x0=xs,x1=xs, 
+               y0=overall.ci[seq(1,n1*2,2)], y1=overall.ci[seq(2,n1*2,2)],
+               col=col.overall, code=3, length=.03, angle=90)
         
       #Labels
          overall.label =  gsub("\\n", " \n", overall.label)

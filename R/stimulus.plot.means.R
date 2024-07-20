@@ -1,15 +1,16 @@
  stimulus.plot.means = function(df, dv, condition, stimulus, 
                     participant, sort.by,
-                    ylab1, ylab2,  xlab1, xlab2, value.labels.offset, stimuli.numeric.labels,
-                    
-                    label.low, label.high, decimals, legend.title, col1,col2,...)
+                    flip.condition,
+                    ylab1, ylab2,  xlab1, xlab2, 
+                    decimals, legend.title, col1,col2,...)
     
       {
    
     #Grab the arguments passed on to ...  
      args = list(...)
    
-      
+      col1='black'
+      col2='black'
     #0 Is it a matched design?
           t = table(df[,stimulus],df[,condition])
           matched = FALSE
@@ -22,7 +23,7 @@
               #of stimuli appear in both conditions
               
     #1 Get the means by condition
-      means.obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,participant=participant,sort.by=sort.by)
+      means.obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,flip.condition=flip.condition, condition=condition,sort.by=sort.by)
       
     #2 local names
       if (matched==TRUE) {
@@ -58,7 +59,6 @@
         if (all(mar.before==mar.default))
         {
         #4.1 Bottom
-             if (stimuli.numeric.labels==TRUE) xlabel.buffer=0
              mar.after[1] = mar.before[1] + xlabel.buffer
         
         #4.2 Top
@@ -88,12 +88,10 @@
     }
    
   #7 White dots   
-      cex=1
-      if ('cex' %in% names(args)) cex=args$cex
-      points(y0,pch=21,col='black',bg='white',cex=cex)
+      points(y0,pch=21,col='black',bg='white')
  
   #8 Redo black dots to cover any red lines
-    if (matched==TRUE) points(y1,pch=16,cex=cex)
+    if (matched==TRUE) points(y1,pch=16)
     
   #9 Value labels
     
@@ -105,12 +103,10 @@
       col.h = ifelse(bh==y1,adjustcolor(col1,.5),adjustcolor(col2,.5))
       col.l = ifelse(bl==y0,adjustcolor(col2,.5),adjustcolor(col1,.5))
 
-    #offset for y-position
-      if (value.labels.offset==-1) value.labels.offset = diff(ylim)*.03
-   
+     
     #Labels themselves
-      text(1:n,bh + value.labels.offset,round2(bh,decimals),col=col.h,cex=.65)
-      text(1:n,bl - value.labels.offset,round2(bl,decimals),col=col.l,cex=.65)
+      text(1:n,bh,round2(bh,decimals),col=col.h,cex=.65,pos=3)
+      text(1:n,bl,round2(bl,decimals),col=col.l,cex=.65,pos=1)
    
   #10 Overall means
     m1 = mean(y1)
@@ -119,8 +115,8 @@
     points(n+3,m1,pch=16,cex=2) 
     points(n+3,m0,pch=21,cex=2,col='black',bg='white')
     axis(side=1,at=n+3,"MEAN",font=2)
-    text(n+3,m1+value.labels.offset*2 , round2(m1,decimals),cex=.8,col='gray50')
-    text(n+3,m0-value.labels.offset*2 , round2(m0,decimals),cex=.8,col='gray50')
+    text(n+3,m1 , round2(m1,decimals),cex=.8,col='gray50',pos=1)
+    text(n+3,m0 , round2(m0,decimals),cex=.8,col='gray50',pos=3)
 
   #11 Y axis
       if (!"yaxt" %in% names(args))
@@ -133,22 +129,10 @@
   #12 X-axis
     
     #12.1 Stimuli labels
-        
-        if (stimuli.numeric.labels==TRUE) {
-          #All numbers if less than 10
-            if (n<=10)  axis(side=1, at=1:n)
-          #Every 5 otherwise
-            if (n>10)   axis(side=1, at=c(1,seq(5,n,5),n))
-        } else {
-    
         if (matched==TRUE) text(1:n,par('usr')[3] , paste0(means.obs[,stimulus],"  "),srt=80,xpd=TRUE,adj=1)
         if (matched==FALSE) {
           text(1:n-.25,par('usr')[3] , paste0(means.obs[1:n ,stimulus],"  "),srt=80,xpd=TRUE,adj=1)
           text(1:n+.25,par('usr')[3] , paste0(means.obs[(n+1):(2*n) , stimulus],"  "),srt=80,xpd=TRUE,adj=1,font=2)
-          
-          
-        }
-          
           }
 
     #12.2 Headers

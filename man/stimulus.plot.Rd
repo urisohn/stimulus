@@ -27,6 +27,7 @@ stimulus.plot(
   label.low = "",
   label.high = "",
   decimals = 2,
+  dv.is.percentage = FALSE,
   participant = "",
   legend.title = "",
   simtot = 100,

@@ -17,7 +17,8 @@
     #Compute means on residuals
       means.all=matrix(nrow=simtot,ncol=length(unique(df[,stimulus])))
     
-        for (k in 1:simtot)
+      message("Will conduct ",simtot," resamples to estimate expected heterogeneity under null of homogeneity.")
+      for (k in 1:simtot)
       {
         
       #Shuffle item within condition
@@ -32,7 +33,7 @@
       #Counter
         if (k%%50==0) cat('...',k)
     }
-    
+        cat("\n")
       
   #Compute the full set of sorted effect sizes
    dM=colMeans(means.all) 
