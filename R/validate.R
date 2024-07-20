@@ -20,7 +20,7 @@
       check1(stimuli.numeric.labels , 'stimuli.numeric.labels', 'logical', 1)
       check1(label.low , 'label.low', 'character', 1)
       check1(label.high , 'label.high', 'character', 1)
-      check1(decimals , 'decimals', 'numeric', 1)
+      if (decimals!='auto') check1(decimals , 'decimals', 'numeric', 1)
       check1(plot.type , 'plot.type', 'character', 1)
 
     #Model  
