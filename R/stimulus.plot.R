@@ -40,18 +40,21 @@
                     stimuli.numeric.labels=FALSE,
                     label.low='',
                     label.high='',
-                    decimals=2,
+                    decimals='auto',
+                    dv.is.percentage=FALSE,
                     participant='',
                     legend.title='',
                     simtot=100,
                     watermark = TRUE,
                     save.as = '',
+                    seed=2024,
                  
                     ...
                     )
         {
     
-    
+ 
+ 
     
      #Required values entered
         if (missing(data)) exit("stimulus.plot() says: you must specify a dataframe")
@@ -93,25 +96,7 @@
           if (n2<n1) message('stimulus.plot() says:\nA total of ',n1-n2,' observations were dropped because of missing values.')
           
           
-       #Save?
-           if (save.as!='') {
-             filename=save.as
-              
-          #Get extension of file name
-              extension= tools::file_ext(filename)
-        
-          #Width and height of file
-              max.x.label = max(nchar(unique(data[,stimulus]))) #length of stimulus name
-              ns = length(unique(data[,stimulus]))  #number of unique stimuli  
-              nm = length(model)
-              w  = 5+(ns+nm*1.5)*.4                   #Width
-              h  = 5                              #height
-              h  = h * (1 + max.x.label/40)
-               
-          #start the figure
-            if (extension=='svg') svg(filename , w,h)
-            if (extension=='png') png(filename , w*1000,h*1000,res=1000)
-             }         
+      
           
         #Means
           if (plot.type=='means')
@@ -152,10 +137,13 @@
                                     xlab1=xlab1,
                                     xlab2=xlab2,
                                     cex=cex,
+                                    dv.is.percentage=dv.is.percentage,
                                     value.labels.offset=value.labels.offset,
                                     stimuli.numeric.labels=stimuli.numeric.labels,
                                     simtot=simtot,
-                                    decimals=decimals,...)
+                                    decimals=decimals,
+                                    seed=seed,
+                                    ...)
              
                  
             }
@@ -171,16 +159,42 @@
       #If saving to svg or png: 
           
         if (save.as!='') {
+      
+          #File
+              filename=save.as
+              
+          #Get extension of file name
+              extension= tools::file_ext(filename)
+        
+          #Width and height of file
+              max.x.label = max(nchar(unique(data[,stimulus]))) #length of stimulus name
+              ns = length(unique(data[,stimulus]))  #number of unique stimuli  
+              nm = length(model)
+              w  = 5+(ns+nm*1.5)*.4                   #Width
+              h  = 5                              #height
+              h  = h * (1 + max.x.label/40)
+               
+              
+          #Grab the figure that has been created
+            figure_displayed <- recordPlot()
+        
+         
+              
+          #start the figure
+            if (extension=='svg') svg(filename , w,h)
+            if (extension=='png') png(filename , w*1000,h*1000,res=1000)
+            
+         #Actually save it to svg
+            replayPlot(figure_displayed)
+
           #Feedback
             message("Figure was saved as '", save.as,"'")
           
           #Close the graph
             dev.off()
            
-          #Redraw on window
-            call <- match.call()    #Get all arguments in the call
-            call$save.as <- ""      #Replace save.as
-            eval(call)              #Call it
+       
+            
         }#End save as 
         
       invisible(res)
