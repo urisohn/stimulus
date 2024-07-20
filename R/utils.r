@@ -114,3 +114,53 @@
       if (any(nonames <- nm=="")) nm[nonames] <- snm[nonames]
       setNames(L,nm)
     }
+    
+#9 Format as percent
+format_percent <- function(x) {
+  decimal_places <- auto.decimals(x * 100)
+  formatted_number <- sapply(1:length(x), function(i) {
+    paste0(formatC(x[i] * 100, format = "f", digits = decimal_places[i]), "%")
+  })
+  return(formatted_number)
+}
+    
+    
+#10 Number of decimals
+    auto.decimals <- function(x) {
+  sapply(x, function(num) {
+    num=abs(num)
+    if (is.na(num)) {
+      return(NA)
+    } else if (num > 100) {
+      return(0)
+    } else if (num > 10) {
+      return(1)
+    } else if (num > 0.1) {
+      return(2)
+    } else if (num > 0.01) {
+      return(3)
+    } else {
+      return(4)
+    }
+  })
+}
+
+    
+#11 # Function to compute the MD5 hash of a dataframe
+  get.md5 <- function(df) {
+    df_serialized <- serialize(df, NULL)
+    md5_hash <- digest::digest(df_serialized, algo = "md5")
+    return(md5_hash)
+  }
+  
+#12 Does cache exist
+  does.cache.d.exist = function(md5k)
+  {
+  if (exists(".stimulus.cache", envir = .GlobalEnv)) {
+   key_exists <- md5k %in% names(.GlobalEnv$.stimulus.cache)
+    } else {
+      key_exists <- FALSE
+    }
+    return(key_exists)
+    
+  }
