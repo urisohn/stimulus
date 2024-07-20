@@ -11,11 +11,18 @@
                                 label.low,
                                 stimuli.numeric.labels,
                                 decimals, 
+                                dv.is.percentage,
                                 ylab1,ylab2,xlab1,xlab2,
                                 cex,
-                                simtot,...)
+                                simtot,
+                                seed, 
+                                ...)
     {
     
+
+         
+         
+  #------------------------------------
     
     #1 Grab the arguments passed on to ...  
       args = list(...)
@@ -42,9 +49,39 @@
         #Resampling if sort.by is not specified
             if (sort.by=='') 
                   {
-                  dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot,flip.condition=flip.condition)
-                  }
-            
+              
+                  #get new call's md5
+                     #Arguments
+                        mc <- match.call(expand.dots = TRUE)
+                        args <- as.list(mc)[-1]
+                        args <- lapply(args, eval, envir = parent.frame())
+                        md5.args = get.md5(args)
+                    
+                     #dataframe
+                      md5.df   = get.md5(df)  
+                      
+                    #Combine for single md5 
+                      md5s=paste0(md5.args ,  md5.df)
+
+                    
+                  #if dnull for that md5s has been saved, load it
+                    if (does.cache.d.exist(md5s)) 
+                    {
+                      dnull = .GlobalEnv$.stimulus.cache[[md5s]]
+                      
+                  #else run it                  
+                    } else  {
+                      set.seed(seed)
+                      dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot,flip.condition=flip.condition)
+                   
+                  #Save
+                      .GlobalEnv$.stimulus.cache[[md5s]]=dnull
+                    
+                }
+
+            } #End if sort.by!=''
+          
+          
     #4 ylim: range of y values in the plot
       
       ylim = range(c(ciL,ciH,dnull))
@@ -63,10 +100,7 @@
         overall.p         = model.results$m.p
   
        }
-      
-        
-      
-      
+
     #5 xlim 
       n1 = length(overall.estimate)
       xmax = ifelse(n1 > 0, length(d) + n1 +1.5, length(d))
@@ -105,7 +139,9 @@
         
     
   #6 Black dots
-      plot(d,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=cex, xlim=xlim, ...)
+     if (dv.is.percentage==FALSE)  plot(d,          pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=cex, xlim=xlim, ...)
+     if (dv.is.percentage==TRUE )  plot(d,yaxt='n', pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=cex, xlim=xlim, ...)
+
 
       #horizontal line
         abline(h=0,lty=3,col='gray66')
@@ -130,10 +166,14 @@
       y.text=d + offset
       
    #print them
-      #text(1:n,y.text ,round2(d ,decimals),col='blue4',cex=.65)
-      text(1:n,d ,round2(d ,decimals),col='blue4',cex=.65,pos=4)
+    
+      #How many decimals to show?
+        if (decimals=='auto') d.decimals=auto.decimals(d)
+        if (decimals!='auto') d.decimals=decimals
+      
+      if (dv.is.percentage==FALSE) text(1:n,d ,round2(d , d.decimals),col='blue4',cex=.65,pos=4)
+      if (dv.is.percentage==TRUE)  text(1:n,d ,format_percent(d), col='blue4',cex=.65,pos=4) #utils.R #9 <-- 'format_percent()'
 
-                  
      
   #7 CI
       arrows(x0=1:n, x1=1:n, y0=ciL,y1=ciH,col=adjustcolor('gray60',.8),code=3,angle=90,length=.02)
@@ -241,12 +281,10 @@
      #Vertical separator
            abline(v= n+1 ,lwd=2) 
 
-     #Value label
-           text(xs,overall.estimate[1],paste0(" ",round(overall.estimate,0)),cex=.65,col='purple',pos=4)
-
+     #Overall value label
+            if (dv.is.percentage==FALSE)  text(xs,overall.estimate , round(overall.estimate, auto.decimals(overall.estimate)),    cex=.65,col='purple',pos=4)
+            if (dv.is.percentage==TRUE)   text(xs,overall.estimate , format_percent(overall.estimate),                            cex=.65,col='purple',pos=4)      
       }
-      
-
     par(mar=mar.before)
     
   #Results
