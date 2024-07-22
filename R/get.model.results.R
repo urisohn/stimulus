@@ -33,21 +33,21 @@
 
   #3 Regression
      if (any(c('all', 'regression') %in% model)) {
-
+          message2("stimulus.plot() says:")
                
       #Fixed effects for participant only if they get different conditions
          #Set up teh regression
-            if (crossed==FALSE)  m1.text = "lm(dv~condition+factor(stimulus),data=df2)"
-            if (crossed==TRUE)   m1.text = "lm(dv~condition+factor(stimulus)+factor(participant),data=df2)"
+            if (crossed==FALSE)  m1.text = "m1=lm(dv~condition+factor(stimulus),data=df2)"
+            if (crossed==TRUE)   m1.text = "m1=lm(dv~condition+factor(stimulus)+factor(participant),data=df2)"
             
             
           #Show feedback on screen
             m1.text.formatted= eval.arguments (m1.text, dv, condition, stimulus, participant, dataname)
             message(" ")
-            message2("Estimating regression:\n  ",m1.text.formatted)
+            message2("  Estimating regression:\n    ",m1.text.formatted)
             
         #Evaluate the regression
-            m1=eval2(m1.text)
+            eval2(m1.text)
 
         #Get mean effect for condition and its  ci
             m1.mean = summary(m1)$coefficients[2,1]
@@ -65,7 +65,7 @@
              #Show feedback on screen
                 m1.cluster.text.formatted = eval.arguments(m1.cluster.text, dv, condition, stimulus, participant, dataname)
                 message(" ")
-                message2("Clustering the standard errors:\n  ",m1.cluster.text.formatted)
+                message2("  Clustering the standard errors:\n    ",m1.cluster.text.formatted)
            
               
                 m1.cluster = eval2(m1.cluster.text)
@@ -98,7 +98,7 @@
           #Show feedback on screen
             m2.text.formatted= eval.arguments (m2.text, dv, condition, stimulus, participant, dataname)
             message(" ")
-            message2("Estimating random intercepts model:\n  ",m2.text.formatted)
+            message2("  Estimating random intercepts model:\n    ",m2.text.formatted)
             m2=eval2(m2.text)
 
           #Get mean effect for condition and its  ci
@@ -126,7 +126,7 @@
             if (participant=='') m3.text = "lmerTest::lmer(dv~condition+(1+condition|stimulus),data=df2)"
             message(" ")
             m3.text.formatted= eval.arguments (m3.text, dv, condition, stimulus, participant, dataname)
-            message2("Estimating random slopes model:\n  ",m3.text.formatted)
+            message2("  Estimating random slopes model:\n    ",m3.text.formatted)
             m3=eval2(m3.text)
 
           #Get mean effect for condition and its  ci
