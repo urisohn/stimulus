@@ -5,7 +5,7 @@
                     decimals, legend.title, col1,col2,...)
     
       {
-   
+
     #Grab the arguments passed on to ...  
      args = list(...)
    
@@ -23,36 +23,55 @@
               #if it is matched, it appears in both
               #this classifies a design as matched if 100%
               #of stimuli appear in both conditions
-              
+             
+
     #1 Get the means by condition
       means.obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,flip.condition=flip.condition, condition=condition,sort.by=sort.by)
+
+   #2 local names
+      n=nrow(means.obs)/2
+
       
-    #2 local names
+      #Condition
+       ucond=sort(unique(df[,condition]))
+       cond1= paste0(condition,"_",ucond[1])
+       cond2= paste0(condition,"_",ucond[2])
+      
       if (matched==TRUE) {
-      y1 = means.obs[,2] #The first condition (in sort(unique(condition))), see means.obs
-      y0 = means.obs[,1] #the second
-      n=length(y0)
-      label.high =  sub("^condition_", "", names(means.obs[2]))
-      label.low  =  sub("^condition_", "", names(means.obs[1]))
-      
-      } else {
-        n=nrow(means.obs)/2
-        y0=means.obs[1:n,2]
-        y1=means.obs[(n+1):(2*n),2]
+        y1 = means.obs[,cond1] #Condition 1
+        y2 = means.obs[,cond2] #Condition 2
+        label1  =  sub("^condition_", "", cond1)
+        label2  =  sub("^condition_", "", cond2)
+        
+        } else {
+          y1=means.obs[1:n,2]
+          y2=means.obs[(n+1):(2*n),2]
       }
 
+      
+      #Which value is higher for each stimulus
+        bh=pmax(y1 , y2)
+        bl=pmin(y1 , y2)  
+      
+
+
+      #Overall means
+        m1 = mean(y1)
+        m2 = mean(y2)
+
+      
     #3 ylim: range of y values in the plot
-      ylim = range(c(y0,y1))
+      ylim = range(c(y1,y2))
       dy = diff(ylim)
       ylim[2]=ylim[2]+.25*dy  #Give a 25% buffer on top (for the legend)
       ylim[1]=ylim[1]-.03*dy  #give a 3% buffer below, for the value labels
-      
+
     #4 Margins
       #Get current margins
         mar.before =  par("mar")
         mar.after  =  mar.before
          
-         
+
       #Only change margin if not the default (so users can set own in)
         mar.default = c(5.1, 4.1, 4.1, 2.1)
             max.x.label = max(nchar(unique(df[,stimulus])))
@@ -77,33 +96,36 @@
            
         } 
            
-  #5 Black dots
+  #5 black dots
        n=length(y1)
        plot(y1,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),cex=1.5, ...)
  
+
+      
+       
+       
   #6 Segments
     if (matched==TRUE)
     {
-    lty=ifelse(y1>y0,2,1)
-    col=ifelse(y1 > y0,col2,col1)
-    segments(x0=1:n, x1=1:n,y0=y0, y1=y1,lty=lty,col=col)
+      
+    e=mean(means.obs$effect)    
+    lty=ifelse( (y1 - y2)*(m1-m2)>0 ,1,2)
+    col=ifelse( (y1 - y2)*(m1-m2)>0 ,col1, col2)
+    segments(x0=1:n, x1=1:n,y0=y1, y1=y2,lty=lty,col=col)
     }
    
   #7 White dots   
-      points(y0,pch=21,col='black',bg='white',cex=1.5)
+      points(y2,pch=21,col='black',bg='white',cex=1.5)
  
   #8 Redo black dots to cover any red lines
     if (matched==TRUE) points(y1,pch=16)
     
   #9 Value labels
     
-    #high/low values
-      bh=pmax(y0,y1)
-      bl=pmin(y0,y1)
-      
+ 
     #Color for text
       col.h = ifelse(bh==y1,adjustcolor(col1,.5),adjustcolor(col2,.5))
-      col.l = ifelse(bl==y0,adjustcolor(col2,.5),adjustcolor(col1,.5))
+      col.l = ifelse(bl==y2,adjustcolor(col2,.5),adjustcolor(col1,.5))
 
      
     #Labels themselves
@@ -111,14 +133,16 @@
       text(1:n,bl,round2(bl,decimals),col=col.l,cex=.65,pos=1)
    
   #10 Overall means
-    m1 = mean(y1)
-    m0 = mean(y0)
-    if (matched==TRUE) segments(x0=n+3, x1=n+3,y0=m0, y1=m1)
+      if (matched==TRUE) segments(x0=n+3, x1=n+3,y0=m1, y1=m2)
     points(n+3,m1,pch=16,cex=1.5*1.5) 
-    points(n+3,m0,pch=21,cex=1.5*1.5,col='black',bg='white')
+    points(n+3,m2,pch=21,cex=1.5*1.5,col='black',bg='white')
     axis(side=1,at=n+3,"MEAN",font=2)
-    text(n+3,m1 , round2(m1,decimals),cex=.8,col='gray50',pos=3)
-    text(n+3,m0 , round2(m0,decimals),cex=.8,col='gray50',pos=1)
+    
+    
+    d.pos=c(3,1)
+    if (m1<m2) d.pos=rev(d.pos)
+    text(n+3,m1 , round2(m1,decimals),cex=.8,col='gray50',pos=d.pos[1])
+    text(n+3,m2 , round2(m2,decimals),cex=.8,col='gray50',pos=d.pos[2])
 
   #11 Y axis
       if (!"yaxt" %in% names(args))
@@ -149,7 +173,9 @@
 
         
   #13 Legend
-        leg1 = legend('topleft',pch=c(16,1),c(label.high,label.low),inset=.03,bty='n',cex=1.2)
+        labels=c(label1,label2)
+        if (flip.condition) labels=rev(labels)
+        leg1 = legend('topleft',pch=c(16,1), labels ,inset=.03,bty='n',cex=1.2)
         
         #Legend title?
         if (legend.title!='')
