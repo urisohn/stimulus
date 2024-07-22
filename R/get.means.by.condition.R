@@ -44,16 +44,7 @@
               
       # Rename the means columns
         names(t.all)[1:2] <- c(paste0(condition,"_",ucond[1]), paste0(condition,"_",ucond[2]))
-        
-        
-      #Swap columns if the bigger effect comes first
-        # m1=mean(means.obs[,2])
-        # m2=mean(means.obs[,3])
-        # if (m1>m2) means.obs=means.obs[,c(1,3,2)]
-        # means.obs$effect = means.obs[,3] - means.obs[,2]
-        
-          #if commenting back in, change means.obs to t.all
-        
+           
       # Sort rows
           #Default: effect size
             if (sort.by=='') {
@@ -83,7 +74,6 @@
               #If not unique it's numeric, so we compute the mean
                 if (item.unique==FALSE)
                   {
-                  message('#86')
                   #Compute mean by item
                     sort.by.df <- aggregate(df[, sort.by],list(df[, stimulus]), mean)
                     names(sort.by.df)=c(stimulus,sort.by) 
