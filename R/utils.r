@@ -164,3 +164,27 @@ format_percent <- function(x) {
     return(key_exists)
     
   }
+  
+#13 eval2
+ eval2 <- function(s)  eval(parse(text=s),  parent.frame())  #Added "parent.frame() because otherwise eval2() will not call the right objects within another function: Fix was found here; https://www.rdocumentation.org/packages/base/versions/3.5.1/topics/eval
+
+
+#14 eval.arguments
+ eval.arguments = function(model_string, dv, condition, stimulus, participant,data)
+   {
+     model_string <- gsub("dv", dv, model_string)
+     model_string <- gsub("condition", condition, model_string)
+     model_string <- gsub("stimulus", stimulus, model_string)
+     model_string <- gsub("df2", data, model_string)
+     model_string <- gsub("participant", participant, model_string)
+    return(model_string)
+ }
+ 
+#15 message.green
+ message2=function(...)
+   {
+     msg <- paste0('...)
+     dark_green <- "\033[32m"
+     reset <- "\033[0m"
+     message(paste0(dark_green, paste0(msg), reset))
+   }

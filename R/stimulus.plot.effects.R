@@ -1,4 +1,5 @@
  stimulus.plot.effects=function(df,  dv, stimulus, condition, participant ,
+                                dataname,
                                 overall.estimate,
                                 overall.ci,
                                 overall.label, 
@@ -18,13 +19,17 @@
          
          
   #------------------------------------
+    #0 colors
+      col.null1   = 'dodgerblue'
+      col.null2   =  adjustcolor(col.null1,.1)
+      col.ci      = 'gray50'
+      col.overall = 'purple'
     
     #1 Grab the arguments passed on to ...  
       args = list(...)
-      col.null1='dodgerblue'
-      col.null2=adjustcolor(col.null1,.1)
-      col.ci = 'gray50'
-      col.overall = 'purple'
+      args_to_drop=c(decimals, dv.is.percentage,ylab1,ylab2,xlab1,xlab2)
+      args <- args[!(names(args) %in% args_to_drop)]
+
       
     #2 Compute means by stimulus
        obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,sort.by=sort.by,flip.condition=flip.condition)
@@ -87,7 +92,7 @@
     #5 get models if specified
        if (length(model)>0)
        {
-        model.results = get.model.results(df, dv, stimulus, condition, participant,model,flip.condition)
+        model.results = get.model.results(df, dataname, dv, stimulus, condition, participant,model,flip.condition)
 
         overall.estimate  = model.results$m.mean
         overall.ci        = model.results$m.ci

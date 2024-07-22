@@ -1,9 +1,11 @@
- get.model.results=function(df, dv, stimulus, condition, participant,model,flip.condition)
+ get.model.results=function(df, dataname, dv, stimulus, condition, participant,model,flip.condition)
 {
 #-------------------------------------------------------
   
     #Stimulus
           stimulus.all=unique(df[,stimulus])
+          
+  
           
   #1 Make variable structure compatible with lmer which cannot do df[,dv]
        df2=df
@@ -33,13 +35,21 @@
      if (any(c('all', 'regression') %in% model)) {
 
                
-         #Fixed effects for participant only if they get different conditions
-         #Run regression
-            if (crossed==FALSE)  m1 = lm(dv~condition+factor(stimulus),data=df2)
-            if (crossed==TRUE)   m1 = lm(dv~condition+factor(stimulus)+factor(participant),data=df2)
-          
+      #Fixed effects for participant only if they get different conditions
+         #Set up teh regression
+            if (crossed==FALSE)  m1.text = "lm(dv~condition+factor(stimulus),data=df2)"
+            if (crossed==TRUE)   m1.text = "lm(dv~condition+factor(stimulus)+factor(participant),data=df2)"
             
-          #Get mean effect for condition and its  ci
+            
+          #Show feedback on screen
+            m1.text.formatted= eval.arguments (m1.text, dv, condition, stimulus, participant, dataname)
+            message(" ")
+            message2("Estimating regression:\n  ",m1.text.formatted)
+            
+        #Evaluate the regression
+            m1=eval2(m1.text)
+
+        #Get mean effect for condition and its  ci
             m1.mean = summary(m1)$coefficients[2,1]
             se =summary(m1)$coefficients[2,2]
             deg.free = m1$df.residual
@@ -50,10 +60,18 @@
        
         #Cluster by participant if needed
             if (participant!='') {
-              m1.cluster = lmtest::coeftest(m1,vcov=sandwich::vcovCL,type='HC3',cluster=~participant)
-              se = m1.cluster[2,2]
-              m1.ci = c(m1.mean - tc*se, m1.mean+tc*se)
-              m1.p = m1.cluster[2,4]
+              m1.cluster.text = "lmtest::coeftest(m1,vcov=sandwich::vcovCL,type='HC3',cluster=~participant)"
+          
+             #Show feedback on screen
+                m1.cluster.text.formatted = eval.arguments(m1.cluster.text, dv, condition, stimulus, participant, dataname)
+                message(" ")
+                message2("Clustering the standard errors:\n  ",m1.cluster.text.formatted)
+           
+              
+                m1.cluster = eval2(m1.cluster.text)
+                se = m1.cluster[2,2]
+                m1.ci = c(m1.mean - tc*se, m1.mean+tc*se)
+                m1.p = m1.cluster[2,4]
               
             } #End if clustering
             
@@ -71,11 +89,17 @@
      if (any(c('intercepts','all') %in% model)) 
      {
 
-           message("Estimating model with random intercepts for 'stimulus'")
 
           #Run random model
-            if (participant!='') m2 = lmerTest::lmer(dv~condition+(1|stimulus)+(1|participant),data=df2)
-            if (participant=='') m2 = lmerTest::lmer(dv~condition+(1|stimulus),data=df2)
+           #Set up text
+            if (participant!='') m2.text = "lmerTest::lmer(dv~condition+(1|stimulus)+(1|participant),data=df2)"
+            if (participant=='') m2.text = "lmerTest::lmer(dv~condition+(1|stimulus),data=df2)"
+            
+          #Show feedback on screen
+            m2.text.formatted= eval.arguments (m2.text, dv, condition, stimulus, participant, dataname)
+            message(" ")
+            message2("Estimating random intercepts model:\n  ",m2.text.formatted)
+            m2=eval2(m2.text)
 
           #Get mean effect for condition and its  ci
             m2.mean = summary(m2)$coefficients[2,1]
@@ -98,9 +122,12 @@
      if (any(c('slopes','all') %in% model)) {
 
           #Run random model
-            message("Estimating model with random slopes for 'stimulus'")
-            if (participant!='') m3 = lmerTest::lmer(dv~condition+(1+condition|stimulus)+(1|participant),data=df2)
-            if (participant=='') m3 = lmerTest::lmer(dv~condition+(1+condition|stimulus),data=df2)
+            if (participant!='') m3.text ="lmerTest::lmer(dv~condition+(1+condition|stimulus)+(1|participant),data=df2)"
+            if (participant=='') m3.text = "lmerTest::lmer(dv~condition+(1+condition|stimulus),data=df2)"
+            message(" ")
+            m3.text.formatted= eval.arguments (m3.text, dv, condition, stimulus, participant, dataname)
+            message2("Estimating random slopes model:\n  ",m3.text.formatted)
+            m3=eval2(m3.text)
 
           #Get mean effect for condition and its  ci
             m3.mean = summary(m3)$coefficients[2,1]

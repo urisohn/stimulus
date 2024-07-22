@@ -131,6 +131,7 @@
           {
              res=stimulus.plot.effects(
                                     df=data, dv=dv, condition=condition, stimulus=stimulus, 
+                                    dataname=dataname,
                                     model=model,
                                     overall.estimate=overall.estimate,
                                     overall.ci=overall.ci,
