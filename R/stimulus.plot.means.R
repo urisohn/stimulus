@@ -10,7 +10,9 @@
      args = list(...)
    
       col1='black'
-      col2='black'
+      col2='red4'
+      
+      
     #0 Is it a matched design?
           t = table(df[,stimulus],df[,condition])
           matched = FALSE
@@ -27,11 +29,11 @@
       
     #2 local names
       if (matched==TRUE) {
-      y1 = means.obs[,3] #The high values condition
-      y0 = means.obs[,2] #the low values condition
+      y1 = means.obs[,2] #The first condition (in sort(unique(condition))), see means.obs
+      y0 = means.obs[,1] #the second
       n=length(y0)
-      label.high =  sub("^condition_", "", names(means.obs[3]))
-      label.low  =  sub("^condition_", "", names(means.obs[2]))
+      label.high =  sub("^condition_", "", names(means.obs[2]))
+      label.low  =  sub("^condition_", "", names(means.obs[1]))
       
       } else {
         n=nrow(means.obs)/2
@@ -77,18 +79,18 @@
            
   #5 Black dots
        n=length(y1)
-       plot(y1,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),...)
+       plot(y1,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),cex=1.5, ...)
  
   #6 Segments
     if (matched==TRUE)
     {
-    lty=ifelse(y1>y0,1,2)
-    col=ifelse(y1 > y0,col1,col2)
+    lty=ifelse(y1>y0,2,1)
+    col=ifelse(y1 > y0,col2,col1)
     segments(x0=1:n, x1=1:n,y0=y0, y1=y1,lty=lty,col=col)
     }
    
   #7 White dots   
-      points(y0,pch=21,col='black',bg='white')
+      points(y0,pch=21,col='black',bg='white',cex=1.5)
  
   #8 Redo black dots to cover any red lines
     if (matched==TRUE) points(y1,pch=16)
@@ -112,11 +114,11 @@
     m1 = mean(y1)
     m0 = mean(y0)
     if (matched==TRUE) segments(x0=n+3, x1=n+3,y0=m0, y1=m1)
-    points(n+3,m1,pch=16,cex=2) 
-    points(n+3,m0,pch=21,cex=2,col='black',bg='white')
+    points(n+3,m1,pch=16,cex=1.5*1.5) 
+    points(n+3,m0,pch=21,cex=1.5*1.5,col='black',bg='white')
     axis(side=1,at=n+3,"MEAN",font=2)
-    text(n+3,m1 , round2(m1,decimals),cex=.8,col='gray50',pos=1)
-    text(n+3,m0 , round2(m0,decimals),cex=.8,col='gray50',pos=3)
+    text(n+3,m1 , round2(m1,decimals),cex=.8,col='gray50',pos=3)
+    text(n+3,m0 , round2(m0,decimals),cex=.8,col='gray50',pos=1)
 
   #11 Y axis
       if (!"yaxt" %in% names(args))
@@ -147,7 +149,7 @@
 
         
   #13 Legend
-        leg1 = legend('top',pch=c(16,1),c(label.high,label.low),inset=.03,bty='n',cex=1.1)
+        leg1 = legend('topleft',pch=c(16,1),c(label.high,label.low),inset=.03,bty='n',cex=1.2)
         
         #Legend title?
         if (legend.title!='')
