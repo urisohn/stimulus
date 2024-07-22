@@ -129,8 +129,8 @@
 
      
     #Labels themselves
-      text(1:n,bh,round2(bh,decimals),col=col.h,cex=.65,pos=3)
-      text(1:n,bl,round2(bl,decimals),col=col.l,cex=.65,pos=1)
+      text(1:n,bh,round2(bh,auto.decimals(bh)),col=col.h,cex=.65,pos=3)
+      text(1:n,bl,round2(bl,auto.decimals(bl)),col=col.l,cex=.65,pos=1)
    
   #10 Overall means
       if (matched==TRUE) segments(x0=n+3, x1=n+3,y0=m1, y1=m2)
@@ -141,8 +141,8 @@
     
     d.pos=c(3,1)
     if (m1<m2) d.pos=rev(d.pos)
-    text(n+3,m1 , round2(m1,decimals),cex=.8,col='gray50',pos=d.pos[1])
-    text(n+3,m2 , round2(m2,decimals),cex=.8,col='gray50',pos=d.pos[2])
+    text(n+3,m1 , round2(m1,auto.decimals(m1)),cex=.8,col='gray50',pos=d.pos[1])
+    text(n+3,m2 , round2(m2,auto.decimals(m1)),cex=.8,col='gray50',pos=d.pos[2])
 
   #11 Y axis
       if (!"yaxt" %in% names(args))
