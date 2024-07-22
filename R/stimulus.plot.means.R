@@ -99,10 +99,6 @@
   #5 black dots
        n=length(y1)
        plot(y1,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),cex=1.5, ...)
- 
-
-      
-       
        
   #6 Segments
     if (matched==TRUE)
@@ -118,7 +114,7 @@
       points(y2,pch=21,col='black',bg='white',cex=1.5)
  
   #8 Redo black dots to cover any red lines
-    if (matched==TRUE) points(y1,pch=16)
+    if (matched==TRUE) points(y1,pch=16,cex=1.5)
     
   #9 Value labels
     
