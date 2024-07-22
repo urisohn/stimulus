@@ -5,12 +5,14 @@
 \title{Make stimulus plots as in "Stimulus Sampling Reimagined", Simonsohn, Montealegre, & Evangelidis (2024)}
 \usage{
 stimulus.plot(
+  plot.type = "means",
   data,
   dv,
   condition,
   stimulus,
+  participant = "",
+  save.as = "",
   sort.by = "",
-  plot.type = "means",
   flip.condition = FALSE,
   model = c(),
   overall.estimate = c(),
@@ -21,55 +23,73 @@ stimulus.plot(
   ylab2 = "",
   xlab1 = "Stimuli",
   xlab2 = "",
-  cex = 1.5,
-  value.labels.offset = -1,
-  stimuli.numeric.labels = FALSE,
   label.low = "",
   label.high = "",
-  decimals = 2,
+  decimals = "auto",
   dv.is.percentage = FALSE,
-  participant = "",
   legend.title = "",
   simtot = 100,
   watermark = TRUE,
-  save.as = "",
+  seed = 2024,
   ...
 )
 }
 \arguments{
+\item{plot.type}{can be either "means" or "effects", determines what's plotted in the y-axis of the figure}
+
 \item{data}{dataframe containing variables to be analyzed}
 
 \item{dv}{name of the dependent variable (e.g., dv='y'), quotes are not required}
 
-\item{condition}{name of the variable containing the condition indicator (e.g., condition='treatment'), quotes are not required}
+\item{condition}{name of the variable containing the condition indicator
+(e.g., condition='treatment'), quotes are not required. Figure legend will use values
+in 'condition' create new column with descriptive values if necessary
+(e.g., cond=c(1,0),-->condition=c('Treatment','Controol'))}
 
-\item{stimulus}{name of the variable containing the stimulus ID (e.g., stimulus='stim_id'), quotes are not required}
+\item{stimulus}{name of the variable containing the stimulus ID
+(e.g., stimulus='stim_id'), quotes are not required. The x-axis labels will use values
+in 'stimulus', create new column with descriptive values and use that in stimulus.plot() if desired
+(e.g., df$item.id =c(1,2,3,4,5,...) --> df$item.id2=c('Chair','Airplace','Fries','Dalmatian','Coat',...))}
 
-\item{sort.by}{name of the variable to sort stimuli by in the plots. Defaults to sorting by observed effect size.
-May be be useful to deviate to explore moderators or sort stimuli alphabetically.}
+\item{participant}{name of the variable containing participant IDs; necessary for valid inference when
+plot.type='effects' and each participant provided more than one observation}
 
-\item{plot.type}{can be either "means" or "effects", determines what's plotted in the y-axis of the figure}
+\item{save.as}{filepath for saving figure. Must be .svg or .png file (optional)}
 
-\item{flip.condition}{whether to sort effect size in reverse order (TRUE/FALSE, defaults to FALSE)}
+\item{sort.by}{name of variable to sort stimuli by. Defaults to sorting by observed effect size.}
 
-\item{ylab1, ylab2}{labels on the y-axis (character, optional)}
+\item{flip.condition}{reverse order in which conditions are compared?
+(e.g., treatment-control instead of control-treatment). Defaults to FALSE}
 
-\item{xlab1, xlab2}{labels on the x-axis (character, optional)}
+\item{model}{method used to compute overall average: (1) 'regression', (2) mixed-model with stimulus intercepts,
+and/or (3) mixed-model with random intercepts. If \code{participant} is provided, the regression clusters by participant
+and the mixed models include participant random intercepts. Possible values: 'regression', 'intercepts', 'slopes', 'all'}
 
-\item{decimals}{how many decimals to depict in the graph (integer)}
+\item{overall.estimate}{scalar or vector of overall average effect if computed outside of \code{{stimulus}} (may not be set jointly with \code{model})}
 
-\item{participant}{name of the variable containing participant IDs; if set it's entered as random participant effect
-(character, optional)}
+\item{overall.ci}{vector of confidence interval bounds for \code{overall.estimate} (may not be set jointly with \code{model})}
 
-\item{legend.title}{text above legend (character)}
+\item{overall.p}{scalar or vector of p-vauue for overall average effect if computed outside of \code{{stimulus}} (may not be set jointly with \code{model})}
+
+\item{overall.label}{label to show in x-axis for overall averages, can be used in conjuction with \code{model} to over-rule
+the default labels of 'regression','Random Intercepts', and 'Random Slopes'}
+
+\item{ylab1, ylab2}{labels on the y-axis (optional)}
+
+\item{xlab1, xlab2}{labels on the x-axis (optional)}
+
+\item{decimals}{force number of decimals to show for value labels (optional)}
+
+\item{dv.is.percentage}{if set to TRUE values are formatted as percentages}
+
+\item{legend.title}{text above legend (optional)}
 
 \item{simtot}{number of simulations to rely on for estimating expected heterogeneity of
 observed effect size. Only needed if plot.type='effects' (defaults to 100)}
 
-\item{save.as}{name of file to save figure as (optional, filename must have extension .svg or .png)}
+\item{watermark}{set to FALSE to not display {stimulus version} in bottom left of figure}
 
-\item{supress.version.label}{set to TRUE to prevent version of {stimulus} package used
-to generate figure from appearing in the bottom left of the figure}
+\item{seed}{used when resampling for the 'effects' plot, defaults to seed=2024}
 }
 \description{
 Make stimulus plots as in "Stimulus Sampling Reimagined", Simonsohn, Montealegre, & Evangelidis (2024)

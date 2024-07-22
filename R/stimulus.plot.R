@@ -3,8 +3,14 @@
 #'@param plot.type can be either "means" or "effects", determines what's plotted in the y-axis of the figure
 #'@param data dataframe containing variables to be analyzed
 #'@param dv name of the dependent variable (e.g., dv='y'), quotes are not required
-#'@param condition name of the variable containing the condition indicator (e.g., condition='treatment'), quotes are not required
-#'@param stimulus name of the variable containing the stimulus ID (e.g., stimulus='stim_id'), quotes are not required
+#'@param condition name of the variable containing the condition indicator 
+#'(e.g., condition='treatment'), quotes are not required. Figure legend will use values
+#'in 'condition' create new column with descriptive values if necessary
+#' (e.g., cond=c(1,0),-->condition=c('Treatment','Controol'))
+#'@param stimulus name of the variable containing the stimulus ID 
+#'(e.g., stimulus='stim_id'), quotes are not required. The x-axis labels will use values
+#'in 'stimulus', create new column with descriptive values and use that in stimulus.plot() if desired  
+#'(e.g., df$item.id =c(1,2,3,4,5,...) --> df$item.id2=c('Chair','Airplace','Fries','Dalmatian','Coat',...))
 #'@param participant name of the variable containing participant IDs; necessary for valid inference when 
 #'plot.type='effects' and each participant provided more than one observation
 #'@param save.as filepath for saving figure. Must be .svg or .png file (optional)
