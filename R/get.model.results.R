@@ -1,10 +1,17 @@
- get.model.results=function(df, dataname, dv, stimulus, condition, participant,model,flip.condition)
+  #1 Make variable structure compatible with lmer which cannot do df[,dv]
+  #2 Shared parameters
+  #3 Regression
+  #4 Stimulus intercepts
+  #5 Stimulus slopes
+  #6 Results
+
+
+
+ get.model.results=function(df, dataname, dv, stimulus, condition, participant,model,flip.conditions)
 {
 #-------------------------------------------------------
   
-    #Stimulus
-          stimulus.all=unique(df[,stimulus])
-          
+           
   
           
   #1 Make variable structure compatible with lmer which cannot do df[,dv]
@@ -14,11 +21,10 @@
        df2$condition  = df[,condition]
        if (participant !='') df2$participant  = df[,participant]
 
-       ucond=sort(unique(df$condition))
-       if (flip.condition==TRUE) df2$condition=factor(df2$condition, levels=ucond)
-       if (flip.condition==FALSE)  df2$condition=factor(df2$condition, levels=rev(ucond))
-          
-       
+       ucond=sort(unique(df2$condition))
+       if (flip.conditions==TRUE)    df2$condition=factor(df2$condition, levels=ucond)
+       if (flip.conditions==FALSE)  df2$condition=factor(df2$condition, levels=rev(ucond))
+      
 
 #-------------------------------------------------------
 
@@ -28,7 +34,11 @@
           {  
             t=table(df2$participant,df2$condition)
             crossed <- sum(t[,1]*t[,2]>0)>0
-          }
+      }
+       
+      #Stimulus
+          stimulus.all=unique(df[,stimulus])
+ 
 #-------------------------------------------------------
 
   #3 Regression
@@ -44,7 +54,7 @@
           #Show feedback on screen
             m1.text.formatted= eval.arguments (m1.text, dv, condition, stimulus, participant, dataname)
             message(" ")
-            message2("  Estimating regression:\n    ",m1.text.formatted)
+            message2("Estimating regression:\n    ",m1.text.formatted)
             
         #Evaluate the regression
             eval2(m1.text)
@@ -67,7 +77,7 @@
                 message(" ")
                 message2("  Clustering the standard errors:\n    ",m1.cluster.text.formatted)
            
-              
+             #Estimate SE
                 m1.cluster = eval2(m1.cluster.text)
                 se = m1.cluster[2,2]
                 m1.ci = c(m1.mean - tc*se, m1.mean+tc*se)
@@ -98,7 +108,7 @@
           #Show feedback on screen
             m2.text.formatted= eval.arguments (m2.text, dv, condition, stimulus, participant, dataname)
             message(" ")
-            message2("  Estimating random intercepts model:\n    ",m2.text.formatted)
+            message2("Estimating random intercepts model:\n    ",m2.text.formatted)
             m2=eval2(m2.text)
 
           #Get mean effect for condition and its  ci
@@ -126,7 +136,7 @@
             if (participant=='') m3.text = "lmerTest::lmer(dv~condition+(1+condition|stimulus),data=df2)"
             message(" ")
             m3.text.formatted= eval.arguments (m3.text, dv, condition, stimulus, participant, dataname)
-            message2("  Estimating random slopes model:\n    ",m3.text.formatted)
+            message2("Estimating random slopes model:\n    ",m3.text.formatted)
             m3=eval2(m3.text)
 
           #Get mean effect for condition and its  ci
@@ -139,7 +149,7 @@
             m.mean   <- if (exists("m.mean"))   c(m.mean, m3.mean) else m3.mean
             m.ci     <- if (exists("m.ci"))     c(m.ci  , m3.ci)   else m3.ci
             m.labels <- if (exists("m.labels")) c(m.labels,lab)    else lab
-            m.p       <- if (exists("m.p"))     c(m.p , m3.p)      else m3.p
+            m.p      <- if (exists("m.p"))     c(m.p , m3.p)      else m3.p
 
       } #End if slopes   
       

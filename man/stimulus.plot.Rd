@@ -13,7 +13,7 @@ stimulus.plot(
   participant = "",
   save.as = "",
   sort.by = "",
-  flip.condition = FALSE,
+  flip.conditions = FALSE,
   model = c(),
   overall.estimate = c(),
   overall.ci = c(),
@@ -58,7 +58,7 @@ plot.type='effects' and each participant provided more than one observation}
 
 \item{sort.by}{name of variable to sort stimuli by. Defaults to sorting by observed effect size.}
 
-\item{flip.condition}{reverse order in which conditions are compared?
+\item{flip.conditions}{reverse order in which conditions are compared?
 (e.g., treatment-control instead of control-treatment). Defaults to FALSE}
 
 \item{model}{method used to compute overall average: (1) 'regression', (2) mixed-model with stimulus intercepts,

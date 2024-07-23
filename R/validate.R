@@ -2,7 +2,7 @@
 #Function 1 - validate arguments
 
   validate.arguments = function(data, dv, condition, stimulus, sort.by, plot.type, 
-                              flip.condition, ylab1, ylab2, xlab1, xlab2, 
+                              flip.conditions, ylab1, ylab2, xlab1, xlab2, 
                                decimals,
                               participant, legend.title,simtot,
                               dataname,model,    
@@ -11,7 +11,7 @@
   
   #1 Check all arguments are of the appropriate length and type
       check1(plot.type , 'plot.type', 'character', 1)
-      check1(flip.condition , 'flip.condition', 'logical', 1)
+      check1(flip.conditions , 'flip.conditions', 'logical', 1)
       check1(ylab1 , 'ylab1', 'character', 1)
       check1(ylab2 , 'ylab2', 'character', 1)
       check1(xlab1 , 'xlab1', 'character', 1)

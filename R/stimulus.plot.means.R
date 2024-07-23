@@ -1,6 +1,6 @@
  stimulus.plot.means = function(df, dv, condition, stimulus, 
                     participant, sort.by,
-                    flip.condition,
+                    flip.conditions,
                     ylab1, ylab2,  xlab1, xlab2, 
                     decimals, legend.title, col1,col2,...)
     
@@ -26,7 +26,7 @@
              
 
     #1 Get the means by condition
-      means.obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,flip.condition=flip.condition, condition=condition,sort.by=sort.by)
+      means.obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,flip.conditions=flip.conditions, condition=condition,sort.by=sort.by)
 
    #2 local names
       n=nrow(means.obs)/2
@@ -170,7 +170,7 @@
         
   #13 Legend
         labels=c(label1,label2)
-        if (flip.condition) labels=rev(labels)
+        if (flip.conditions) labels=rev(labels)
         leg1 = legend('topleft',pch=c(16,1), labels ,inset=.03,bty='n',cex=1.2)
         
         #Legend title?

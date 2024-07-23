@@ -6,7 +6,7 @@
                                 overall.p,
                                 model,
                                 sort.by, 
-                                flip.condition, 
+                                flip.conditions, 
                                 decimals, 
                                 dv.is.percentage,
                                 ylab1,ylab2,xlab1,xlab2,
@@ -32,7 +32,7 @@
 
       
     #2 Compute means by stimulus
-       obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,sort.by=sort.by,flip.condition=flip.condition)
+       obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,sort.by=sort.by,flip.conditions=flip.conditions)
 
       #Localize stimulus variables
         d = obs$effect
@@ -72,7 +72,7 @@
                   #else run it                  
                     } else  {
                       set.seed(seed)
-                      dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot,flip.condition=flip.condition)
+                      dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot,flip.conditions=flip.conditions)
                    
                   #Save
                       .GlobalEnv$.stimulus.cache[[md5s]]=dnull
@@ -92,7 +92,7 @@
     #5 get models if specified
        if (length(model)>0)
        {
-        model.results = get.model.results(df, dataname, dv, stimulus, condition, participant,model,flip.condition)
+        model.results = get.model.results(df, dataname, dv, stimulus, condition, participant,model,flip.conditions)
 
         overall.estimate  = model.results$m.mean
         overall.ci        = model.results$m.ci

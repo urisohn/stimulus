@@ -15,7 +15,7 @@
 #'plot.type='effects' and each participant provided more than one observation
 #'@param save.as filepath for saving figure. Must be .svg or .png file (optional)
 #'@param sort.by name of variable to sort stimuli by. Defaults to sorting by observed effect size.
-#'@param flip.condition reverse order in which conditions are compared? 
+#'@param flip.conditions reverse order in which conditions are compared? 
 #'(e.g., treatment-control instead of control-treatment). Defaults to FALSE
 #'@param model method used to compute overall average: (1) 'regression', (2) mixed-model with stimulus intercepts, 
 #'and/or (3) mixed-model with random intercepts. If `participant` is provided, the regression clusters by participant
@@ -42,7 +42,7 @@
                     participant='',
                     save.as = '',
                     sort.by='',
-                    flip.condition=FALSE,
+                    flip.conditions=FALSE,
                     model=c(),
                     overall.estimate=c(),
                     overall.ci=c(),
@@ -82,7 +82,7 @@
   
       #Check arguments are set and of the right type
           validate.arguments(data, dv, condition, stimulus, sort.by, plot.type, 
-                              flip.condition, ylab1, ylab2, xlab1, xlab2, 
+                              flip.conditions, ylab1, ylab2, xlab1, xlab2, 
                                decimals,
                               participant, legend.title,simtot,
                               dataname,model,    
@@ -120,7 +120,7 @@
                                     xlab1=xlab1,
                                     xlab2=xlab2,
                                     decimals=decimals,
-                                    flip.condition=flip.condition,
+                                    flip.conditions=flip.conditions,
                                     legend.title=legend.title,...)
             
     
@@ -139,7 +139,7 @@
                                     overall.label=overall.label,
                                     participant=participant,
                                     sort.by=sort.by,
-                                    flip.condition=flip.condition,
+                                    flip.conditions=flip.conditions,
                                     ylab1=ylab1,
                                     ylab2=ylab2,
                                     xlab1=xlab1,
@@ -193,7 +193,7 @@
             replayPlot(figure_displayed)
 
           #Feedback
-            message("\n\nFigure was saved as '", save.as,"'\n")
+            message2("\nFigure was saved as '", save.as,"'\n")
           
           #Close the graph
             dev.off()

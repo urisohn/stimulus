@@ -1,7 +1,7 @@
 
   
 
-  get.means.condition <- function(df, dv, stimulus, condition,sort.by,flip.condition) {
+  get.means.condition <- function(df, dv, stimulus, condition,sort.by,flip.conditions) {
       
      
     #1 Is it a matched design?
@@ -16,8 +16,8 @@
           
         #Condition
           ucond=sort(unique(df[,condition]))
-          if (flip.condition==FALSE) df[,condition]=factor(df[,condition], levels=ucond)
-          if (flip.condition==TRUE)  df[,condition]=factor(df[,condition], levels=rev(ucond))
+          if (flip.conditions==FALSE) df[,condition]=factor(df[,condition], levels=ucond)
+          if (flip.conditions==TRUE)  df[,condition]=factor(df[,condition], levels=rev(ucond))
           
     
          

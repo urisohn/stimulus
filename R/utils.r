@@ -183,7 +183,7 @@ format_percent <- function(x) {
 #15 message.green
  message2=function(...)
    {
-     msg <- paste0('...)
+     msg <- paste0(...)
      dark_green <- "\033[32m"
      reset <- "\033[0m"
      message(paste0(dark_green, paste0(msg), reset))
