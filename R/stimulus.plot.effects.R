@@ -177,8 +177,14 @@
       {
       mtext(side=2,line=mar.after[2]-1.5,font=2,cex=1.2,ylab1)
       mtext(side=2,line=mar.after[2]-2.5,font=3,cex=1,ylab2)
+      
+      #Y labels for percentages
+        ys=pretty(c(ciL,ciH))
+        if (dv.is.percentage==TRUE) axis(side=2,at=ys,paste0(ys*100,"%"),las=1)
       }
 
+      
+      
       
     #10 x-axis
       #Skip if xaxt='n' is set

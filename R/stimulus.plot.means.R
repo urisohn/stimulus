@@ -98,7 +98,8 @@
            
   #5 black dots
        n=length(y1)
-       plot(y1,pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),cex=1.5, ...)
+       if (dv.is.percentage==FALSE) plot(y1,pch=16,ylim=ylim,         xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),cex=1.5, ...)
+       if (dv.is.percentage==TRUE)  plot(y1,pch=16,ylim=ylim, yaxt='n',xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),cex=1.5, ...)
        
   #6 Segments
     if (matched==TRUE)
@@ -120,13 +121,23 @@
     
  
     #Color for text
-      col.h = ifelse(bh==y1,adjustcolor(col1,.5),adjustcolor(col2,.5))
-      col.l = ifelse(bl==y2,adjustcolor(col2,.5),adjustcolor(col1,.5))
+      col.h = ifelse(bh==y1,adjustcolor(col1,.5),adjustcolor(col2,.91))
+      col.l = ifelse(bl==y2,adjustcolor(col2,.5),adjustcolor(col1,.91))
+      col.h=col.l='black'
 
      
     #Labels themselves
-      text(1:n,bh,round2(bh,auto.decimals(bh)),col=col.h,cex=.65,pos=3)
-      text(1:n,bl,round2(bl,auto.decimals(bl)),col=col.l,cex=.65,pos=1)
+      if (dv.is.percentage==FALSE)
+      {
+      text(1:n,bh,round2(bh,auto.decimals(bh)),col=col.h,cex=.75,pos=3)
+      text(1:n,bl,round2(bl,auto.decimals(bl)),col=col.l,cex=.75,pos=1)
+      }
+      
+      if (dv.is.percentage==TRUE)
+      {
+      text(1:n,bh,format_percent(bh),col=col.h,cex=.75,pos=3)
+      text(1:n,bl,format_percent(bl),col=col.l,cex=.75,pos=1)
+      }
    
   #10 Overall means
       if (matched==TRUE) segments(x0=n+3, x1=n+3,y0=m1, y1=m2)
@@ -137,8 +148,19 @@
     
     d.pos=c(3,1)
     if (m1<m2) d.pos=rev(d.pos)
-    text(n+3,m1 , round2(m1,auto.decimals(m1)),cex=.8,col='gray50',pos=d.pos[1])
-    text(n+3,m2 , round2(m2,auto.decimals(m1)),cex=.8,col='gray50',pos=d.pos[2])
+    if (dv.is.percentage==FALSE)
+      {
+      text(n+3,m1 , round2(m1,auto.decimals(m1)),cex=.8,col='black',pos=d.pos[1])
+      text(n+3,m2 , round2(m2,auto.decimals(m1)),cex=.8,col='black',pos=d.pos[2])
+      }
+    
+    
+      if (dv.is.percentage==TRUE)
+      {
+      text(n+3,m1 , format_percent(m1),cex=.8,col='black',pos=d.pos[1])
+      text(n+3,m2 , format_percent(m2),cex=.8,col='black',pos=d.pos[2])
+      }
+
 
   #11 Y axis
       if (!"yaxt" %in% names(args))
@@ -147,6 +169,12 @@
       mtext(side=2,line=mar.after[2]-2,font=3,cex=1,ylab2)
       }
 
+    
+      if (dv.is.percentage==TRUE)
+      {
+          ys=pretty(c(y1,y2))
+          if (dv.is.percentage==TRUE) axis(side=2,at=ys,paste0(ys*100,"%"),las=1)
+      }
     
   #12 X-axis
     
@@ -171,15 +199,12 @@
   #13 Legend
         labels=c(label1,label2)
         if (flip.conditions) labels=rev(labels)
-        leg1 = legend('topleft',pch=c(16,1), labels ,inset=.03,bty='n',cex=1.2)
+        #leg1 = legend('topleft',pch=c(16,1), labels ,inset=.05,bty='n',cex=1.3, y.intersp = 1.5)
         
         #Legend title?
-        if (legend.title!='')
-        {
-        title.y = par("usr")[4] - (par("usr")[4] - leg1$rect$top)*.75
-        title.x = leg1$rect$left
-        text(title.x,title.y,legend.title,adj=0,font=2)
-        }
+        if (legend.title=='') leg1 = legend('topleft',pch=c(16,1), labels ,inset=.05,bty='n',cex=1.3, y.intersp = 1.5)
+        if (legend.title!='') leg1 = legend('topleft',pch=c(16,1), labels ,inset=.05,bty='n',cex=1.3, title.cex = 1.3, y.intersp = 1.5,title=legend.title,title.font=2)
+        
     
   #14 Return margins to where they were
     par(mar=mar.before)
