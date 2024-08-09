@@ -4,7 +4,7 @@
                     ylab1, ylab2,  xlab1, xlab2, 
                     decimals, 
                     dv.is.percentage,
-                    legend.title, col1,col2,...)
+                    legend.title, col1,col2,ylim,...)
     
       {
 
@@ -63,11 +63,13 @@
 
       
     #3 ylim: range of y values in the plot
-      ylim = range(c(y1,y2))
-      dy = diff(ylim)
-      ylim[2]=ylim[2]+.4*dy  #Give a 25% buffer on top (for the legend)
-      ylim[1]=ylim[1]-.03*dy  #give a 3% buffer below, for the value labels
-
+      if (length(ylim)<2)
+      {
+        ylim = range(c(y1,y2))
+        dy = diff(ylim)
+        ylim[2]=ylim[2]+.4*dy  #Give a 25% buffer on top (for the legend)
+        ylim[1]=ylim[1]-.03*dy  #give a 3% buffer below, for the value labels
+      }
     #4 Margins
       #Get current margins
         mar.before =  par("mar")
@@ -91,7 +93,12 @@
         #4.3 Left
            width.y.label = nchar(max(pretty(y1)))
            mar.after[2] = max(width.y.label/3.5, 4)
-          if (ylab2!='') mar.after[2]= mar.after[2] + 1
+           if (ylab2!='') mar.after[2]= mar.after[2] + 1
+           if (dv.is.percentage==TRUE) {
+             
+             mar.after[2] = mar.after[2] + 1
+             
+           }
           
         #4.4 Assign it
            par(mar=mar.after)
@@ -100,7 +107,7 @@
            
   #5 black dots
        n=length(y1)
-       if (dv.is.percentage==FALSE) plot(y1,pch=16,ylim=ylim,         xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),cex=1.5, ...)
+       if (dv.is.percentage==FALSE) plot(y1,pch=16,ylim=ylim,          xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),cex=1.5, ...)
        if (dv.is.percentage==TRUE)  plot(y1,pch=16,ylim=ylim, yaxt='n',xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),cex=1.5, ...)
        
   #6 Segments
@@ -165,6 +172,9 @@
 
 
   #11 Y axis
+      if (ylab1=='') ylab1=dv
+        
+    
       if (!"yaxt" %in% names(args))
       {
       mtext(side=2,line=mar.after[2]-1.5,font=2,cex=1.2,ylab1)

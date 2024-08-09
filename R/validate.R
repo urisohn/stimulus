@@ -50,3 +50,31 @@
       if (!sort.by %in% c(n1,"")    ) exit("stimulus.plot() says the sort.by variable ('",sort.by,"') is not in the dataset '",dataname,"'.")
       if (!participant %in% c(n1,"")) exit("stimulus.plot() says the participant variable ('",participant,"') is not in the dataset '",dataname,"'.")
   }
+  
+  
+  
+#FUnction 3 - validate dots
+  validate.dots=function(...)
+  {
+    #Get the arguments  
+      dot_args <- list(...)
+      #dot_args <- paste0('"', dot_args, '"')
+
+      
+    # Get the list of valid arguments for plot
+      valid_plot_args <- names(formals(graphics::plot.default))
+  
+    # Check if all names in ... are valid plot arguments
+       invalid_args <- setdiff(names(dot_args), valid_plot_args)
+  
+  # If there are any invalid arguments, throw an error
+  if (length(invalid_args) > 0) {
+    
+    invalid_args <- paste0('"', invalid_args, '"')
+    
+    exit("All arguments in the `stimulus.plot()` call must either be defined for\n",
+        "that function (check out help page) or must be arguments for base R's plot(),\n",
+        "but you included the following arguments that are neither:\n", 
+        paste(invalid_args, collapse = ", "))
+  }
+  }

@@ -11,6 +11,7 @@
                                 dv.is.percentage,
                                 ylab1,ylab2,xlab1,xlab2,
                                 simtot,
+                                ylim,
                                 seed, 
                                 ...)
     {
@@ -92,11 +93,15 @@
           
     #4 ylim: range of y values in the plot
       
+      if (length(ylim)<2)
+      {
       ylim = range(c(ciL,ciH,dnull))
       dy = diff(ylim)
+      
       ylim[2]=ylim[2]+.28*dy  #Give a 28% buffer on top (for the legend)
       ylim[1]=ylim[1]-.03*dy  #give a 3% buffer below, for the value labels
-   
+      }
+          
     #5 get models if specified
        if (length(model)>0)
        {
@@ -111,7 +116,7 @@
 
     #5 xlim 
       n1 = length(overall.estimate)
-      xmax = ifelse(n1 > 0, length(d) + n1 +1.5, length(d))
+      xmax = ifelse(n1 > 0, length(d) + n1 +1, length(d)+.25)
       xlim = c(1,xmax)
               
       
@@ -180,7 +185,8 @@
 
       
   #9 Y axis
-      
+      if (ylab1=='') ylab1=paste0("Effect on '",dv,"'")
+
       if (!"yaxt" %in% names(args))
       {
       mtext(side=2,line=mar.after[2]-1.5,font=2,cex=1.2,ylab1)

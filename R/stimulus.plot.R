@@ -61,6 +61,7 @@
                     simtot=100,
                     watermark = TRUE,
                     seed=2024,
+                    ylim=c(),
                  
                     ...
                     )
@@ -89,6 +90,9 @@
                               dataname,model,    
                               overall.estimate, overall.ci,overall.p,overall.label)
             
+      #Validate dots
+          validate.dots(...) #see validate.R function 3
+          
       #Variables names from the dataset
         dv        <- clean_string(deparse(substitute(dv)))
         condition <- clean_string(deparse(substitute(condition)))
@@ -123,7 +127,9 @@
                                     decimals=decimals,
                                     dv.is.percentage=dv.is.percentage,
                                     flip.conditions=flip.conditions,
-                                    legend.title=legend.title,...)
+                                    legend.title=legend.title,
+                                    ylim=ylim,
+                                    ...)
             
     
           }
@@ -149,6 +155,7 @@
                                     dv.is.percentage=dv.is.percentage,
                                     simtot=simtot,
                                     decimals=decimals,
+                                    ylim=ylim,
                                     seed=seed,
                                     ...)
              

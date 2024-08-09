@@ -78,7 +78,24 @@
                 message2("  Clustering the standard errors:\n    ",m1.cluster.text.formatted)
            
              #Estimate SE
-                m1.cluster = eval2(m1.cluster.text)
+                m1.cluster = try(eval2(m1.cluster.text))
+                
+                  if (class(m1.cluster) %in% 'try-error')
+                    {
+                    #Change to hc1
+                      m1.cluster.text = "lmtest::coeftest(m1,vcov=sandwich::vcovCL,type='HC1',cluster=~participant)"
+
+                    #Show feedback on scren
+                      message2("Couldn't estimate HC3, will try HC1")
+                      m1.cluster.text.formatted = eval.arguments(m1.cluster.text, dv, condition, stimulus, participant, dataname)
+                      message(" ")
+                      message2("  Clustering the standard errors:\n    ",m1.cluster.text.formatted)
+                      
+                    #Estimate new one
+                      m1.cluster = eval2(m1.cluster.text)
+
+                    }
+                
                 se = m1.cluster[2,2]
                 m1.ci = c(m1.mean - tc*se, m1.mean+tc*se)
                 m1.p = m1.cluster[2,4]

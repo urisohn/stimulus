@@ -23,8 +23,6 @@ stimulus.plot(
   ylab2 = "",
   xlab1 = "Stimuli",
   xlab2 = "",
-  label.low = "",
-  label.high = "",
   decimals = "auto",
   dv.is.percentage = FALSE,
   legend.title = "",

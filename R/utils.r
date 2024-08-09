@@ -188,3 +188,8 @@ format_percent <- function(x) {
      reset <- "\033[0m"
      message(paste0(dark_green, paste0(msg), reset))
    }
+
+#16 If plot argument
+ 
+ 
+ 
