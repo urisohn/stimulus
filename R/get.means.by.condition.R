@@ -1,23 +1,23 @@
 
   
 
-  get.means.condition <- function(df, dv, stimulus, condition,sort.by,flip.conditions) {
+  get.means.condition <- function(data, dv, stimulus, condition,sort.by,flip.conditions) {
       
      
     #1 Is it a matched design?
-          t = table(df[,stimulus],df[,condition])
+          t = table(data[,stimulus],data[,condition])
           matched = FALSE
           if (mean(t[,1]*t[,2]>0) ==1 ) matched=TRUE
           if (matched==FALSE) exit("The stimuli are not matched across conditions, *effects* for individual stimuli may not be computed.")
           
     #2 Process stimulus and condition values
         #Stimulus
-          stimulus.all=unique(df[,stimulus])
+          stimulus.all=unique(data[,stimulus])
           
         #Condition
-          ucond=sort(unique(df[,condition]))
-          if (flip.conditions==FALSE) df[,condition]=factor(df[,condition], levels=ucond)
-          if (flip.conditions==TRUE)  df[,condition]=factor(df[,condition], levels=rev(ucond))
+          ucond=sort(unique(data[,condition]))
+          if (flip.conditions==FALSE) data[,condition]=factor(data[,condition], levels=ucond)
+          if (flip.conditions==TRUE)  data[,condition]=factor(data[,condition], levels=rev(ucond))
           
     
          
@@ -27,9 +27,9 @@
           for (stimk in stimulus.all)
           {
             #Row with tidy t-test (as data.frame row)
-               dfk=df[df[,stimulus]==stimk,]
-               tk=tidy.t(t.test(dfk[,dv]~dfk[,condition]))
-                #tidy.t puts the t-test results in a dataframe | See #utils.r #4
+               datak=data[data[,stimulus]==stimk,]
+               tk=tidy_t(t.test(datak[,dv]~datak[,condition]))
+                #tidy_t puts the t-test results in a dataframe | See #utils.r #4
               
             #Start or add
               if (k == 1) t.all = tk
@@ -56,18 +56,18 @@
             {
               
               #Is the sort.by value unique to each stimulus (e.g., alphabetical order)
-                t = table(df[,stimulus],df[,sort.by])
+                t = table(data[,stimulus],data[,sort.by])
                 
                 #If there are just as many cells with frequencies >0 as there are stimuli, then it is unique
                   item.unique = FALSE
-                  if (sum(t!=0) == length(unique(df[,stimulus]))) item.unique = TRUE
+                  if (sum(t!=0) == length(unique(data[,stimulus]))) item.unique = TRUE
         
         
               #If unique
                 if (item.unique==TRUE)
                 {
                   #Dataframe with unique values of sort.by for each stimulus
-                    sort.by.df <- unique(df[,c(stimulus,sort.by)])
+                    sort.by.data <- unique(data[,c(stimulus,sort.by)])
 
                 }
                 
@@ -75,11 +75,11 @@
                 if (item.unique==FALSE)
                   {
                   #Compute mean by item
-                    sort.by.df <- aggregate(df[, sort.by],list(df[, stimulus]), mean)
-                    names(sort.by.df)=c(stimulus,sort.by) 
+                    sort.by.data <- aggregate(data[, sort.by],list(data[, stimulus]), mean)
+                    names(sort.by.data)=c(stimulus,sort.by) 
                 } #End if sort.by is not unique to each stimulus
                   #Merge with sort.by
-                    t.all = merge(t.all, sort.by.df,by=stimulus)
+                    t.all = merge(t.all, sort.by.data,by=stimulus)
 
              
                   

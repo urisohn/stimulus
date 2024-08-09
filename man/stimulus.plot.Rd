@@ -2,7 +2,7 @@
 % Please edit documentation in R/stimulus.plot.R
 \name{stimulus.plot}
 \alias{stimulus.plot}
-\title{Make stimulus plots as in "Stimulus Sampling Reimagined", Simonsohn, Montealegre, & Evangelidis (2024)}
+\title{Make stimulus plots as in the article "Stimulus Sampling Reimagined" by Simonsohn, Montealegre, & Evangelidis (2024)}
 \usage{
 stimulus.plot(
   plot.type = "means",
@@ -42,14 +42,17 @@ stimulus.plot(
 \item{dv}{name of the dependent variable (e.g., dv='y'), quotes are not required}
 
 \item{condition}{name of the variable containing the condition indicator
-(e.g., condition='treatment'), quotes are not required. Figure legend will use values
-in 'condition' create new column with descriptive values if necessary
-(e.g., cond=c(1,0),-->condition=c('Treatment','Controol'))}
+(e.g., condition='cond'), quotes are not required. Figure legend will use values
+in this variable to identify the two conditions. If you want to customize the legend
+(e.g., so that it is not "0" vs "1"), create new variable, say df$cond2
+with descriptive values for condition (e.g., df$cond2=ifelse(df$cond==1,'control','treatment'))
+and then use condition='cond2' in the stimulus.plot call.}
 
 \item{stimulus}{name of the variable containing the stimulus ID
-(e.g., stimulus='stim_id'), quotes are not required. The x-axis labels will use values
-in 'stimulus', create new column with descriptive values and use that in stimulus.plot() if desired
-(e.g., df$item.id =c(1,2,3,4,5,...) --> df$item.id2=c('Chair','Airplace','Fries','Dalmatian','Coat',...))}
+(e.g., stimulus='stim_id'), quotes are not required. The x-axis will have these values as tick-lables.
+If you want to customize them, e.g., so that they have descriptive labels instead of numeric ID1, ID2...,
+create a new variable with those descriptions and use that variable as the stimulus variable in the call
+(e.g., df$item.id =c(1,2,3,4,5,...) --> df$item.id2=c('Chair','Airplane','Fries','Dalmatian','Coat',...))}
 
 \item{participant}{name of the variable containing participant IDs; necessary for valid inference when
 plot.type='effects' and each participant provided more than one observation}
@@ -58,8 +61,8 @@ plot.type='effects' and each participant provided more than one observation}
 
 \item{sort.by}{name of variable to sort stimuli by. Defaults to sorting by observed effect size.}
 
-\item{flip.conditions}{reverse order in which conditions are compared?
-(e.g., treatment-control instead of control-treatment). Defaults to FALSE}
+\item{flip.conditions}{by default the condition labels are sorted alphabetically and the 2nd subtracted from the first.
+set flip.conditions=TRUE so that the first is subtracted from the second instead}
 
 \item{model}{method used to compute overall average: (1) 'regression', (2) mixed-model with stimulus intercepts,
 and/or (3) mixed-model with random intercepts. If \code{participant} is provided, the regression clusters by participant
@@ -69,7 +72,7 @@ and the mixed models include participant random intercepts. Possible values: 're
 
 \item{overall.ci}{vector of confidence interval bounds for \code{overall.estimate} (may not be set jointly with \code{model})}
 
-\item{overall.p}{scalar or vector of p-vauue for overall average effect if computed outside of \code{{stimulus}} (may not be set jointly with \code{model})}
+\item{overall.p}{scalar or vector of p-value for overall average effect if computed outside of \code{{stimulus}} (may not be set jointly with \code{model})}
 
 \item{overall.label}{label to show in x-axis for overall averages, can be used in conjuction with \code{model} to over-rule
 the default labels of 'regression','Random Intercepts', and 'Random Slopes'}
@@ -80,9 +83,9 @@ the default labels of 'regression','Random Intercepts', and 'Random Slopes'}
 
 \item{decimals}{force number of decimals to show for value labels (optional)}
 
-\item{dv.is.percentage}{if set to TRUE values are formatted as percentages}
+\item{dv.is.percentage}{if set to TRUE values of the dependent variable are formatted as percentages}
 
-\item{legend.title}{text above legend (optional)}
+\item{legend.title}{text with title above legend (optional)}
 
 \item{simtot}{number of simulations to rely on for estimating expected heterogeneity of
 observed effect size. Only needed if plot.type='effects' (defaults to 100)}
@@ -92,5 +95,5 @@ observed effect size. Only needed if plot.type='effects' (defaults to 100)}
 \item{seed}{used when resampling for the 'effects' plot, defaults to seed=2024}
 }
 \description{
-Make stimulus plots as in "Stimulus Sampling Reimagined", Simonsohn, Montealegre, & Evangelidis (2024)
+Make stimulus plots as in the article "Stimulus Sampling Reimagined" by Simonsohn, Montealegre, & Evangelidis (2024)
 }

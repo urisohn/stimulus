@@ -1,4 +1,4 @@
- stimulus.plot.effects=function(df,  dv, stimulus, condition, participant ,
+ stimulus.plot.effects=function(data,  dv, stimulus, condition, participant ,
                                 dataname,
                                 overall.estimate,
                                 overall.ci,
@@ -32,7 +32,7 @@
 
       
     #2 Compute means by stimulus
-       obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,condition=condition,sort.by=sort.by,flip.conditions=flip.conditions)
+       obs = get.means.condition(data=data,dv=dv,stimulus=stimulus,condition=condition,sort.by=sort.by,flip.conditions=flip.conditions)
 
       #Localize stimulus variables
         d = obs$effect
@@ -42,8 +42,16 @@
         label2  =  sub(paste0("^",condition,"_"), "", names(obs[2]))
         label1  =  sub(paste0("^",condition,"_"), "", names(obs[1]))
        
+        if (flip.conditions)
+        {
+          l1=label1
+          l2=label2
+          label1=l2
+          label2=l1
+          }
+        
     #3 Get the null distribution  (only if sort.by is not set)
-          d0=rep(d,length(unique(df[,stimulus])))   #make it equal to d just to help with code below, e.g., ylim=range(...)
+          d0=rep(d,length(unique(data[,stimulus])))   #make it equal to d just to help with code below, e.g., ylim=range(...)
           dnull=data.frame(low=d0,high=d0,mean=d0)
         
         #Resampling if sort.by is not specified
@@ -58,10 +66,10 @@
                         md5.args = get.md5(args)
                     
                      #dataframe
-                      md5.df   = get.md5(df)  
+                      md5.data   = get.md5(data)  
                       
                     #Combine for single md5 
-                      md5s=paste0(md5.args ,  md5.df)
+                      md5s=paste0(md5.args ,  md5.data)
 
                     
                   #if dnull for that md5s has been saved, load it
@@ -72,7 +80,7 @@
                   #else run it                  
                     } else  {
                       set.seed(seed)
-                      dnull =  get.null.distribution (df=df, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot,flip.conditions=flip.conditions)
+                      dnull =  get.null.distribution (data=data, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot,flip.conditions=flip.conditions)
                    
                   #Save
                       .GlobalEnv$.stimulus.cache[[md5s]]=dnull
@@ -92,7 +100,7 @@
     #5 get models if specified
        if (length(model)>0)
        {
-        model.results = get.model.results(df, dataname, dv, stimulus, condition, participant,model,flip.conditions)
+        model.results = get.model.results(data, dataname, dv, stimulus, condition, participant,model,flip.conditions)
 
         overall.estimate  = model.results$m.mean
         overall.ci        = model.results$m.ci
@@ -115,11 +123,11 @@
                   
               
           #Label calculations for bottom margin 
-            max.length = max(nchar(unique(df[,stimulus])))
+            max.length = max(nchar(unique(data[,stimulus])))
             xlabel.buffer = max(0,max.length-3)*.3
 
           #Bottom
-                max.x.label = max(nchar(unique(df[,stimulus])))
+                max.x.label = max(nchar(unique(data[,stimulus])))
                 xlabel.buffer = max(0,max.x.label)*.3
                 mar.after[1] = mar.before[1] + xlabel.buffer
           
@@ -211,6 +219,7 @@
                       pch=c(16,NA,NA,NA), 
                       lty=c(NA,1,2,1),
                       lwd=c(NA,1,1,14),
+                      y.intersp = 1.5,
                       col=c('black', col.ci, col.null1 , col.null2),
                       c(paste0('Observed effect: ',label1," - ",label2),
                         "95 CI for observed effect ",
@@ -222,6 +231,7 @@
                       bty='n',
                       pch=c(16,NA), 
                       lty=c(NA,1),
+                      y.intersp = 1.5,
                       lwd=c(NA,1),
                       col=c('black',col.ci),
                       c(paste0('Observed effect: ',label1," - ",label2),
@@ -280,3 +290,4 @@
         
     }#End of function
   
+ 

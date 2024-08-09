@@ -1,8 +1,10 @@
- stimulus.plot.means = function(df, dv, condition, stimulus, 
+ stimulus.plot.means = function(data, dv, condition, stimulus, 
                     participant, sort.by,
                     flip.conditions,
                     ylab1, ylab2,  xlab1, xlab2, 
-                    decimals, legend.title, col1,col2,...)
+                    decimals, 
+                    dv.is.percentage,
+                    legend.title, col1,col2,...)
     
       {
 
@@ -14,7 +16,7 @@
       
       
     #0 Is it a matched design?
-          t = table(df[,stimulus],df[,condition])
+          t = table(data[,stimulus],data[,condition])
           matched = FALSE
           if (mean(t[,1]*t[,2]>0) ==1 ) matched=TRUE
           
@@ -26,22 +28,22 @@
              
 
     #1 Get the means by condition
-      means.obs = get.means.condition(df=df,dv=dv,stimulus=stimulus,flip.conditions=flip.conditions, condition=condition,sort.by=sort.by)
-
+          means.obs = get.means.condition(data=data,dv=dv,stimulus=stimulus,flip.conditions=flip.conditions, condition=condition,sort.by=sort.by)
+  
    #2 local names
       n=nrow(means.obs)/2
 
       
       #Condition
-       ucond=sort(unique(df[,condition]))
+       ucond=sort(unique(data[,condition]))
        cond1= paste0(condition,"_",ucond[1])
        cond2= paste0(condition,"_",ucond[2])
       
       if (matched==TRUE) {
         y1 = means.obs[,cond1] #Condition 1
         y2 = means.obs[,cond2] #Condition 2
-        label1  =  sub("^condition_", "", cond1)
-        label2  =  sub("^condition_", "", cond2)
+        label1  =  sub(paste0(condition,"_"), "", cond1)
+        label2  =  sub(paste0(condition,"_"), "", cond2)
         
         } else {
           y1=means.obs[1:n,2]
@@ -63,7 +65,7 @@
     #3 ylim: range of y values in the plot
       ylim = range(c(y1,y2))
       dy = diff(ylim)
-      ylim[2]=ylim[2]+.25*dy  #Give a 25% buffer on top (for the legend)
+      ylim[2]=ylim[2]+.4*dy  #Give a 25% buffer on top (for the legend)
       ylim[1]=ylim[1]-.03*dy  #give a 3% buffer below, for the value labels
 
     #4 Margins
@@ -74,8 +76,8 @@
 
       #Only change margin if not the default (so users can set own in)
         mar.default = c(5.1, 4.1, 4.1, 2.1)
-            max.x.label = max(nchar(unique(df[,stimulus])))
-            xlabel.buffer = max(0,max.x.label)*.3
+        max.x.label = max(nchar(unique(data[,stimulus])))
+        xlabel.buffer = max(0,max.x.label)*.3
          
         if (all(mar.before==mar.default))
         {
@@ -87,8 +89,8 @@
             mar.after[3] = ifelse ("main" %in% names(args),3,1)
         
         #4.3 Left
-          width.y.label = nchar(max(y1))
-           mar.after[2] = max(width.y.label/3, 5.1)
+           width.y.label = nchar(max(pretty(y1)))
+           mar.after[2] = max(width.y.label/3.5, 4)
           if (ylab2!='') mar.after[2]= mar.after[2] + 1
           
         #4.4 Assign it
@@ -165,8 +167,8 @@
   #11 Y axis
       if (!"yaxt" %in% names(args))
       {
-      mtext(side=2,line=mar.after[2]-1,font=2,cex=1.2,ylab1)
-      mtext(side=2,line=mar.after[2]-2,font=3,cex=1,ylab2)
+      mtext(side=2,line=mar.after[2]-1.5,font=2,cex=1.2,ylab1)
+      mtext(side=2,line=mar.after[2]-2.5,font=3,cex=1,ylab2)
       }
 
     
@@ -202,8 +204,8 @@
         #leg1 = legend('topleft',pch=c(16,1), labels ,inset=.05,bty='n',cex=1.3, y.intersp = 1.5)
         
         #Legend title?
-        if (legend.title=='') leg1 = legend('topleft',pch=c(16,1), labels ,inset=.05,bty='n',cex=1.3, y.intersp = 1.5)
-        if (legend.title!='') leg1 = legend('topleft',pch=c(16,1), labels ,inset=.05,bty='n',cex=1.3, title.cex = 1.3, y.intersp = 1.5,title=legend.title,title.font=2)
+        if (legend.title=='') leg1 = legend('topleft',pch=c(16,1), labels ,inset=.02,bty='n',cex=1.3, y.intersp = 1.5)
+        if (legend.title!='') leg1 = legend('topleft',pch=c(16,1), labels ,inset=.02,bty='n',cex=1.3, title.cex = 1.3,  x.intersp = 0.5, y.intersp = 1.35,title=legend.title,title.font=2, text.width = strwidth("W"))
         
     
   #14 Return margins to where they were

@@ -1,35 +1,38 @@
-#'Make stimulus plots as in "Stimulus Sampling Reimagined", Simonsohn, Montealegre, & Evangelidis (2024) 
+#'Make stimulus plots as in the article "Stimulus Sampling Reimagined" by Simonsohn, Montealegre, & Evangelidis (2024) 
 #' 
 #'@param plot.type can be either "means" or "effects", determines what's plotted in the y-axis of the figure
 #'@param data dataframe containing variables to be analyzed
 #'@param dv name of the dependent variable (e.g., dv='y'), quotes are not required
 #'@param condition name of the variable containing the condition indicator 
-#'(e.g., condition='treatment'), quotes are not required. Figure legend will use values
-#'in 'condition' create new column with descriptive values if necessary
-#' (e.g., cond=c(1,0),-->condition=c('Treatment','Controol'))
+#'(e.g., condition='cond'), quotes are not required. Figure legend will use values
+#'in this variable to identify the two conditions. If you want to customize the legend 
+#'(e.g., so that it is not "0" vs "1"), create new variable, say df$cond2 
+#'with descriptive values for condition (e.g., df$cond2=ifelse(df$cond==1,'control','treatment'))
+#'and then use condition='cond2' in the stimulus.plot call.
 #'@param stimulus name of the variable containing the stimulus ID 
-#'(e.g., stimulus='stim_id'), quotes are not required. The x-axis labels will use values
-#'in 'stimulus', create new column with descriptive values and use that in stimulus.plot() if desired  
-#'(e.g., df$item.id =c(1,2,3,4,5,...) --> df$item.id2=c('Chair','Airplace','Fries','Dalmatian','Coat',...))
+#'(e.g., stimulus='stim_id'), quotes are not required. The x-axis will have these values as tick-lables.
+#'If you want to customize them, e.g., so that they have descriptive labels instead of numeric ID1, ID2...,
+#'create a new variable with those descriptions and use that variable as the stimulus variable in the call
+#'(e.g., df$item.id =c(1,2,3,4,5,...) --> df$item.id2=c('Chair','Airplane','Fries','Dalmatian','Coat',...))
 #'@param participant name of the variable containing participant IDs; necessary for valid inference when 
 #'plot.type='effects' and each participant provided more than one observation
 #'@param save.as filepath for saving figure. Must be .svg or .png file (optional)
 #'@param sort.by name of variable to sort stimuli by. Defaults to sorting by observed effect size.
-#'@param flip.conditions reverse order in which conditions are compared? 
-#'(e.g., treatment-control instead of control-treatment). Defaults to FALSE
+#'@param flip.conditions by default the condition labels are sorted alphabetically and the 2nd subtracted from the first. 
+#'set flip.conditions=TRUE so that the first is subtracted from the second instead
 #'@param model method used to compute overall average: (1) 'regression', (2) mixed-model with stimulus intercepts, 
 #'and/or (3) mixed-model with random intercepts. If `participant` is provided, the regression clusters by participant
 #'and the mixed models include participant random intercepts. Possible values: 'regression', 'intercepts', 'slopes', 'all'
 #'@param overall.estimate scalar or vector of overall average effect if computed outside of `{stimulus}` (may not be set jointly with `model`)
 #'@param overall.ci vector of confidence interval bounds for `overall.estimate` (may not be set jointly with `model`)
-#'@param overall.p scalar or vector of p-vauue for overall average effect if computed outside of `{stimulus}` (may not be set jointly with `model`)
+#'@param overall.p scalar or vector of p-value for overall average effect if computed outside of `{stimulus}` (may not be set jointly with `model`)
 #'@param overall.label label to show in x-axis for overall averages, can be used in conjuction with `model` to over-rule
 #'the default labels of 'regression','Random Intercepts', and 'Random Slopes'
 #'@param ylab1,ylab2 labels on the y-axis (optional)
 #'@param xlab1,xlab2 labels on the x-axis (optional)
 #'@param decimals force number of decimals to show for value labels (optional)
-#'@param dv.is.percentage if set to TRUE values are formatted as percentages
-#'@param legend.title text above legend (optional)
+#'@param dv.is.percentage if set to TRUE values of the dependent variable are formatted as percentages
+#'@param legend.title text with title above legend (optional)
 #'@param simtot number of simulations to rely on for estimating expected heterogeneity of 
 #'observed effect size. Only needed if plot.type='effects' (defaults to 100)
 #'@param watermark set to FALSE to not display {stimulus version} in bottom left of figure
@@ -52,8 +55,6 @@
                     ylab2='',
                     xlab1='Stimuli',
                     xlab2='',
-                    label.low='',
-                    label.high='',
                     decimals='auto',
                     dv.is.percentage=FALSE,
                     legend.title='',
@@ -112,7 +113,7 @@
         #Means
           if (plot.type=='means')
           {
-            res=stimulus.plot.means(df=data, dv=dv, condition=condition, stimulus=stimulus, 
+            res=stimulus.plot.means(data=data, dv=dv, condition=condition, stimulus=stimulus, 
                                     participant=participant,
                                     sort.by=sort.by,
                                     ylab1=ylab1,
@@ -120,6 +121,7 @@
                                     xlab1=xlab1,
                                     xlab2=xlab2,
                                     decimals=decimals,
+                                    dv.is.percentage=dv.is.percentage,
                                     flip.conditions=flip.conditions,
                                     legend.title=legend.title,...)
             
@@ -130,7 +132,7 @@
           if (plot.type=='effects')
           {
              res=stimulus.plot.effects(
-                                    df=data, dv=dv, condition=condition, stimulus=stimulus, 
+                                    data=data, dv=dv, condition=condition, stimulus=stimulus, 
                                     dataname=dataname,
                                     model=model,
                                     overall.estimate=overall.estimate,

@@ -46,7 +46,7 @@
    
 #4 tidy.t
    
-  tidy.t = function(t)
+  tidy_t = function(t)
   {
   row=data.frame(
                  m1     = t$estimate[1],
