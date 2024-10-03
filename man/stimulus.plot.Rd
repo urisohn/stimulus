@@ -12,6 +12,8 @@ stimulus.plot(
   stimulus,
   participant = "",
   save.as = "",
+  svg.width = "",
+  svg.height = "",
   sort.by = "",
   flip.conditions = FALSE,
   model = c(),
@@ -29,6 +31,7 @@ stimulus.plot(
   simtot = 100,
   watermark = TRUE,
   seed = 2024,
+  ylim = c(),
   ...
 )
 }
