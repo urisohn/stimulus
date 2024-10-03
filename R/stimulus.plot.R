@@ -44,6 +44,8 @@
                     data, dv, condition, stimulus, 
                     participant='',
                     save.as = '',
+                    svg.width='',
+                    svg.height='',
                     sort.by='',
                     flip.conditions=FALSE,
                     model=c(),
@@ -187,7 +189,10 @@
               w  = 5+(ns+nm*1.5)*.4                   #Width
               h  = 5                              #height
               h  = h * (1 + max.x.label/40)
-               
+              
+          #If svg weight or height specified
+            if (svg.width!='')  w=svg.width
+            if (svg.height!='') h=svg.height
               
           #Grab the figure that has been created
             figure_displayed <- recordPlot()
@@ -202,8 +207,12 @@
             replayPlot(figure_displayed)
 
           #Feedback
-            message2("\nFigure was saved as '", save.as,"'\n")
-          
+            message2("\nFigure was saved as '", save.as,"'")
+            if (svg.width=="" & svg.height=="") {
+                message2(paste0(
+                        "NOTE: We used default width=",w,", and height=",h,", customize with svg.width & svg.height arguments."))
+              }
+            
           #Close the graph
             dev.off()
            

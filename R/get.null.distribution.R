@@ -1,9 +1,10 @@
- get.null.distribution = function(data,  dv, stimulus, condition, participant,simtot=100,flip.conditions)
+ get.null.distribution = function(data,  dv, stimulus, condition, participant,simtot=100,flip.conditions,obs)
   {
     
     #Residualize stimulus effects
-      m0=lm(data[,dv]~factor(data[,stimulus]))
+      m0 = lm(data[,dv]~factor(data[,stimulus]))
       data$r=residuals(m0)
+      
       
     #Compute means on residuals
       means.all=matrix(nrow=simtot,ncol=length(unique(data[,stimulus])))
@@ -22,7 +23,7 @@
         means.all[k,] = sort(tk$effect)
         
       #Counter
-        if (k%%50==0) message2('...',k)
+        if (k%%50==0) cat('...',k)
     }
         cat("\n")
       
@@ -30,8 +31,32 @@
    dM=colMeans(means.all) 
    dL=apply(means.all,2,quantile,.025) 
    dH=apply(means.all,2,quantile,.975) 
+  
+  #Full resamples saved
+   under.null.resamples=data.frame(means.all)
+   names(under.null.resamples)   =paste0('stimulus_',1:ncol(under.null.resamples))
+   rownames(under.null.resamples)=paste0('resample_',1:nrow(under.null.resamples))
    
-  return(data.frame(low=dL, mean=dM, high=dH))
+  #Compute heterogeneity p-value
+    d.obs  = obs$effect
+    e2.obs = sum((dM-d.obs)^2)
+    
+    #Resampled
+      e2.rows <- (sweep(under.null.resamples, 2, dM, FUN = "-"))^2
+      e2.resamples <- rowSums(e2.rows)
+    
+    #p-value
+      p.hetero = mean(e2.resamples >= e2.obs)
+      print(e2.resamples)
+      message(e2.obs)
+      p.hetero = max(p.hetero, .5/simtot)   #bound p-value by 1/N simulations so that if 0 out of N are that extreme p<1/N
+   
+  #Output
+    list(under.null.summary   = data.frame(low=dL, mean=dM, high=dH),
+         e2.obs=e2.obs, e2.resamples=e2.resamples,
+         p.hetero=p.hetero,
+         
+         under.null.resamples = under.null.resamples )
 
   }
     
