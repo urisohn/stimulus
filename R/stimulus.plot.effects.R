@@ -77,6 +77,7 @@
                     if (does.cache.d.exist(md5s)) 
                     {
                       list_resamples = .GlobalEnv$.stimulus.cache[[md5s]]
+                      message2("Simulations results found in cache, to clear cache run: 'clear_stimulus_cache()'")
                       
                   #else run it                  
                     } else  {
@@ -98,7 +99,7 @@
           dnull =  list_resamples$under.null.summary
 
         #Extract p-hetero
-          p.hetero=list_resamples$p.hetero
+          p.hetero_text = list_resamples$p.hetero_text
           
           
     #4 ylim: range of y values in the plot
@@ -232,9 +233,7 @@
         {
         
         #Band & p-value
-          ci.band.text=paste0("95% confidence band under null\nHeterogeneity test: ",
-                       formatted.p(p.hetero)," (",simtot, " resamples).") 
-          
+           
           
         leg1 = legend('topleft',
                       bty='n',
@@ -247,7 +246,7 @@
                         "95 CI for observed effect (not accounting for multiple comparisons)",
                         "Expected under null of same effect size for all stimuli", 
                         "95% confidence band under null",
-                        paste0("Heterogeneity test: ",formatted.p(p.hetero)," (",simtot, " resamples)")),
+                        paste0("Heterogeneity test: ",p.hetero_text," (based on ",simtot, " resamples)")),
                         inset=.03)
         } else {
             leg1 = legend('topleft',
@@ -310,7 +309,7 @@
     
     
   #Results
-    results = list(observed=obs, p.hetero=p.hetero, under.null=dnull,resamples = list_resamples$under.null.resamples)
+    results = list(observed=obs, p.hetero=p.hetero_text, under.null=dnull,resamples = list_resamples$under.null.resamples)
     if (exists('model.results')) results$model.results= model.results
     return(results)     
     

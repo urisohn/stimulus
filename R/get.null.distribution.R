@@ -47,15 +47,15 @@
     
     #p-value
       p.hetero = mean(e2.resamples >= e2.obs)
-      print(e2.resamples)
-      message(e2.obs)
-      p.hetero = max(p.hetero, .5/simtot)   #bound p-value by 1/N simulations so that if 0 out of N are that extreme p<1/N
-   
+      p.hetero_text = formatted.p(p.hetero)
+      if (p.hetero==0) p.hetero_text = paste0('p<',1/simtot)
+      
+
   #Output
     list(under.null.summary   = data.frame(low=dL, mean=dM, high=dH),
          e2.obs=e2.obs, e2.resamples=e2.resamples,
          p.hetero=p.hetero,
-         
+         p.hetero_text=p.hetero_text,
          under.null.resamples = under.null.resamples )
 
   }
