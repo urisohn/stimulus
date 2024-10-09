@@ -214,8 +214,8 @@
         #leg1 = legend('topleft',pch=c(16,1), labels ,inset=.05,bty='n',cex=1.3, y.intersp = 1.5)
         
         #Legend title?
-        if (legend.title=='') leg1 = legend('topleft',pch=c(16,1), labels ,inset=.02,bty='n',cex=1.3, y.intersp = 1.5)
-        if (legend.title!='') leg1 = legend('topleft',pch=c(16,1), labels ,inset=.02,bty='n',cex=1.3, title.cex = 1.3,  x.intersp = 0.5, y.intersp = 1.35,title=legend.title,title.font=2, text.width = strwidth("W"))
+        if (legend.title=='') leg1 = legend('topleft',pch=c(16,1), labels ,inset=.02,bty='n',cex=1.3, y.intersp = 1)
+        if (legend.title!='') leg1 = legend('topleft',pch=c(16,1), labels ,inset=.02,bty='n',cex=1.3, title.cex = 1.3,  x.intersp = 0.5, y.intersp = 1,title=legend.title,title.font=2, text.width = strwidth("W"))
         
     
   #14 Return margins to where they were

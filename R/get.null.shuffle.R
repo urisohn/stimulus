@@ -1,4 +1,6 @@
- get.null.distribution = function(data,  dv, stimulus, condition, participant,simtot=100,flip.conditions,obs)
+
+
+ get.null.shuffle = function(data,  dv, stimulus, condition, participant,simtot=100,flip.conditions,obs)
   {
     
     #Residualize stimulus effects
@@ -7,9 +9,9 @@
       
       
     #Compute means on residuals
-      means.all=matrix(nrow=simtot,ncol=length(unique(data[,stimulus])))
-    
       message2("Will conduct ",simtot," resamples to estimate expected heterogeneity under null of homogeneity.")
+      
+      means.all=matrix(nrow=simtot,ncol=length(unique(data[,stimulus])))
       for (k in 1:simtot)
       {
         
@@ -48,7 +50,17 @@
     #p-value
       p.hetero = mean(e2.resamples >= e2.obs)
       p.hetero_text = formatted.p(p.hetero)
-      if (p.hetero==0) p.hetero_text = paste0('p<',1/simtot)
+     if (p.hetero == 0) {
+        rounded_value <- 1 / simtot
+        
+        # Check if rounded_value is less than 0.0001
+        if (rounded_value < 0.0001) {
+          p.hetero_text <- 'p<.0001'
+        } else {
+          p.hetero_text <- paste0('p<', format(rounded_value, digits = 1, scientific = FALSE))
+        }
+      }
+
       
 
   #Output

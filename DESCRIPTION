@@ -1,6 +1,6 @@
 Package: stimulus
 Title: Make Stimulus Plots
-Version: 0.1.0.241003
+Version: 0.1.0.241009
 Authors@R: c(
     person(given = "Uri",
            family = "Simonsohn",

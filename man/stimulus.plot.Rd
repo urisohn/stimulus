@@ -26,6 +26,7 @@ stimulus.plot(
   xlab1 = "Stimuli",
   xlab2 = "",
   decimals = "auto",
+  null.method = "shuffle",
   dv.is.percentage = FALSE,
   legend.title = "",
   simtot = 100,

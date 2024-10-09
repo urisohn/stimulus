@@ -7,6 +7,7 @@
                                 model,
                                 sort.by, 
                                 flip.conditions, 
+                                null.method='shuffle',
                                 decimals, 
                                 dv.is.percentage,
                                 ylab1,ylab2,xlab1,xlab2,
@@ -81,9 +82,17 @@
                       
                   #else run it                  
                     } else  {
-                      set.seed(seed)
-                      list_resamples = get.null.distribution (data=data, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot,flip.conditions=flip.conditions,obs=obs)
-                      
+                      if (null.method=='shuffle')
+                        {
+                        set.seed(seed)
+                        list_resamples = get.null.shuffle (data=data, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot,flip.conditions=flip.conditions,obs=obs)
+                        }
+                        
+                      if (null.method=='demean')
+                        {
+                        set.seed(seed)
+                        list_resamples = get.null.demean (data=data, dv=dv, stimulus=stimulus, condition=condition, participant=participant,simtot=simtot,flip.conditions=flip.conditions,obs=obs)
+                        }
                    
                   #Save
                       .GlobalEnv$.stimulus.cache[[md5s]]=list_resamples
@@ -109,7 +118,7 @@
       ylim = range(c(ciL,ciH,dnull))
       dy = diff(ylim)
       
-      ylim[2]=ylim[2]+.28*dy  #Give a 28% buffer on top (for the legend)
+      ylim[2]=ylim[2]+.35*dy  #Give a 28% buffer on top (for the legend)
       ylim[1]=ylim[1]-.03*dy  #give a 3% buffer below, for the value labels
       }
           
@@ -234,26 +243,30 @@
         
         #Band & p-value
            
-          
+        #if (null.method=='shuffle') method_text =  'w/equal distr.'
+        #if (null.method=='demean')  method_text  = 'w/equal means'
+        if (null.method=='shuffle') null_text =  'same distribution for all stimuli'
+        if (null.method=='demean')  null_text  = 'same means for all stimuli'
+        
         leg1 = legend('topleft',
                       bty='n',
                       pch=c(16,NA,NA,NA,NA), 
                       lty=c(NA,1,2,1,NA),
                       lwd=c(NA,1,1,14,NA),
-                      y.intersp = 1.5,
+                      y.intersp = 1,
                       col=c('black', col.ci, col.null1 , col.null2,NA),
-                      c(paste0('Observed effect: ',label1," - ",label2),
-                        "95 CI for observed effect (not accounting for multiple comparisons)",
-                        "Expected under null of same effect size for all stimuli", 
+                      c(paste0("Observed effect: '",label1,"' - '",label2,"'"),
+                        "95 CI for observed effect (t-test for this stimulus)",
+                        paste0("Expected under null of ",null_text),
                         "95% confidence band under null",
-                        paste0("Heterogeneity test: ",p.hetero_text," (based on ",simtot, " resamples)")),
+                        paste0("Heterogeneity test: ",p.hetero_text," (N=",simtot, " resamples)")),
                         inset=.03)
         } else {
             leg1 = legend('topleft',
                       bty='n',
                       pch=c(16,NA), 
                       lty=c(NA,1),
-                      y.intersp = 1.5,
+                      y.intersp = 1,
                       lwd=c(NA,1),
                       col=c('black',col.ci),
                       c(paste0('Observed effect: ',label1," - ",label2),
@@ -302,6 +315,13 @@
             if (dv.is.percentage==FALSE)  text(xs,overall.estimate , round(overall.estimate, auto.decimals(overall.estimate)),    cex=.65,col='purple',pos=4)
             if (dv.is.percentage==TRUE)   text(xs,overall.estimate , format_percent(overall.estimate),                            cex=.65,col='purple',pos=4)      
       }
+      
+      
+      
+  #Redo dots
+    points(d, pch=16,cex=1.5)
+      
+      
     par(mar=mar.before)
     
     
