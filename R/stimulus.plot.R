@@ -73,10 +73,10 @@
 
     
      #Required values entered
-        if (missing(data)) exit("stimulus.plot() says: you must specify a dataframe")
-        if (missing(dv)) exit("stimulus.plot() says: you must specify the dependent variable ('dv')")
+        if (missing(data))      exit("stimulus.plot() says: you must specify a dataframe")
+        if (missing(dv))        exit("stimulus.plot() says: you must specify the dependent variable ('dv')")
         if (missing(condition)) exit("stimulus.plot() says: you must specify the condition variable ('condition')")
-        if (missing(stimulus)) exit("stimulus.plot() says: you must specify the stimulus variable ('stimulus')")     
+        if (missing(stimulus))  exit("stimulus.plot() says: you must specify the stimulus variable ('stimulus')")     
     
       #Grab the name
           dataname  <- clean_string(deparse(substitute(data)))
@@ -115,7 +115,33 @@
           if (n2<n1) message('stimulus.plot() says:\nA total of ',n1-n2,' observations were dropped because of missing values.')
           
           
+    #If saving to svg or png: 
+        if (save.as!='') {
       
+          #File
+              filename=save.as
+              
+          #Get extension of file name
+              extension= tools::file_ext(filename)
+        
+          #Width and height of file
+              max.x.label = max(nchar(unique(data[,stimulus]))) #length of stimulus name
+              ns = length(unique(data[,stimulus]))  #number of unique stimuli  
+              nm = length(model)
+              w  = 5+(ns+nm*1.5)*.4                   #Width
+              h  = 5                              #height
+              h  = h * (1 + max.x.label/40)
+              
+          #If svg weight or height specified
+            if (svg.width!='')  w=svg.width
+            if (svg.height!='') h=svg.height
+              
+          #start the figure
+            if (extension=='svg') svg(filename , w,h)
+            if (extension=='png') png(filename , w*1000,h*1000,res=1000)
+          
+          }
+          
           
         #Means
           if (plot.type=='means')
@@ -174,41 +200,12 @@
             mtext(side=1,line=-1,cex=.7, stim_vrs ,col='gray66',adj=0,outer=TRUE)
           }
      
-      #If saving to svg or png: 
-          
-        if (save.as!='') {
-      
-          #File
-              filename=save.as
-              
-          #Get extension of file name
-              extension= tools::file_ext(filename)
-        
-          #Width and height of file
-              max.x.label = max(nchar(unique(data[,stimulus]))) #length of stimulus name
-              ns = length(unique(data[,stimulus]))  #number of unique stimuli  
-              nm = length(model)
-              w  = 5+(ns+nm*1.5)*.4                   #Width
-              h  = 5                              #height
-              h  = h * (1 + max.x.label/40)
-              
-          #If svg weight or height specified
-            if (svg.width!='')  w=svg.width
-            if (svg.height!='') h=svg.height
-              
-          #Grab the figure that has been created
-            figure_displayed <- recordPlot()
-        
-         
-              
-          #start the figure
-            if (extension=='svg') svg(filename , w,h)
-            if (extension=='png') png(filename , w*1000,h*1000,res=1000)
+    
             
-         #Actually save it to svg
-            replayPlot(figure_displayed)
-
+         
           #Feedback
+          if (save.as!='')
+            {
             message2("\nFigure was saved as '", save.as,"'")
             if (svg.width=="" & svg.height=="") {
                 message2(paste0(
@@ -218,9 +215,9 @@
           #Close the graph
             dev.off()
            
-       
+          }
             
-        }#End save as 
+        
         
       invisible(res)
 
