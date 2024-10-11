@@ -62,7 +62,7 @@
               
                   #get new call's md5
                      #Arguments
-                        mc <- match.call(expand.dots = TRUE)
+                        mc <- match.call(expand.dots = FALSE)
                         args <- as.list(mc)[-1]
                         args <- lapply(args, eval, envir = parent.frame())
                         md5.args = get.md5(args)

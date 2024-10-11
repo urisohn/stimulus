@@ -29,7 +29,7 @@ stimulus.plot(
   null.method = "shuffle",
   dv.is.percentage = FALSE,
   legend.title = "",
-  simtot = 100,
+  simtot = 1000,
   watermark = TRUE,
   seed = 2024,
   ylim = c(),

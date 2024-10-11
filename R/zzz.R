@@ -16,7 +16,7 @@
       #While developing:
          packageStartupMessage ("#######################################################\n",
                               "DEVELOPMENT VERSION - DO NOT USE IN PUBLISHABLE PAPERS\n",
-                              "This Version 2024 10 09 - 12.18PM\n",
+                              "This Version 2024 10 11 - 03.34PM\n",
                               "***  Subject to breaking changes & likely errors  ***")
       
       } #End on attach
