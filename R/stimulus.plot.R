@@ -203,7 +203,7 @@
     
             
          
-          #Feedback
+       #Saved file feedback
           if (save.as!='')
             {
             message2("\nFigure was saved as '", save.as,"'")
@@ -218,6 +218,16 @@
           }
             
         
+      #If save as, rerun without save.as
+       if (save.as!='')
+         {
+         call.original <- match.call()
+         call.original$save.as=''
+         eval(current_call)
+        }
+         
+
+          
         
       invisible(res)
 
