@@ -61,7 +61,7 @@
                     null.method='shuffle',
                     dv.is.percentage=FALSE,
                     legend.title='',
-                    simtot=100,
+                    simtot=1000,
                     watermark = TRUE,
                     seed=2024,
                     ylim=c(),
@@ -223,7 +223,7 @@
          {
          call.original <- match.call()
          call.original$save.as=''
-         eval(current_call)
+         eval(call.original)
         }
          
 

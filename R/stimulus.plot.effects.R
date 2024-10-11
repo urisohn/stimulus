@@ -78,7 +78,10 @@
                     if (does.cache.d.exist(md5s)) 
                     {
                       list_resamples = .GlobalEnv$.stimulus.cache[[md5s]]
-                      message2("Simulations results found in cache, to clear cache run: 'clear_stimulus_cache()'")
+                      message2("*Recycled results*:\n",
+                               "You had run this same analysis before with all the same variables and options.\n",
+                               "We are re-using stored results from the previous call.\n",
+                               "To force new calculations clear your cache running: 'clear_stimulus_cache()'")
                       
                   #else run it                  
                     } else  {
@@ -243,8 +246,6 @@
         
         #Band & p-value
            
-        #if (null.method=='shuffle') method_text =  'w/equal distr.'
-        #if (null.method=='demean')  method_text  = 'w/equal means'
         if (null.method=='shuffle') null_text =  'same distribution for all stimuli'
         if (null.method=='demean')  null_text  = 'same means for all stimuli'
         
