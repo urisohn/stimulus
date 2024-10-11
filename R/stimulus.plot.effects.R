@@ -253,9 +253,6 @@
                       pch=c(16,NA,NA,NA,NA), 
                       lty=c(NA,1,2,1,NA),
                       lwd=c(NA,1,1,14,NA),
-                      y.intersp = 1 * text_height / text_height,  # Proportional spacing
-
-                      cex=1,
                       col=c('black', col.ci, col.null1 , col.null2,NA),
                       c(paste0("Observed effect: '",label1,"' - '",label2,"'"),
                         "95 CI for observed effect (t-test for this stimulus)",
@@ -268,8 +265,6 @@
                       bty='n',
                       pch=c(16,NA), 
                       lty=c(NA,1),
-                      y.intersp = 1,
-                      cex=1,
                       lwd=c(NA,1),
                       col=c('black',col.ci),
                       c(paste0('Observed effect: ',label1," - ",label2),
