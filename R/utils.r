@@ -189,7 +189,14 @@ format_percent <- function(x) {
      message(paste0(dark_green, paste0(msg), reset))
    }
 
-#16 If plot argument
- 
- 
- 
+#16 compute mean and CI
+  get.semean_ci <- function(x, conf = 0.95) {
+    n <- length(x)
+    mean_x <- mean(x)
+    stderr <- sd(x) / sqrt(n)
+    alpha <- 1 - conf
+    error_margin <- qt(1 - alpha / 2, df = n - 1) * stderr
+    lower_bound <- mean_x - error_margin
+    upper_bound <- mean_x + error_margin
+  return(data.frame(mean = mean_x, lower = lower_bound, upper = upper_bound))
+}
