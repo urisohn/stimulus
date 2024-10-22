@@ -1,15 +1,27 @@
 
 #Function 1 - validate arguments
 
-  validate.arguments = function(data, dv, condition, stimulus, sort.by, plot.type, 
-                              flip.conditions, ylab1, ylab2, xlab1, xlab2, 
-                               decimals,
-                              participant, legend.title,simtot,
-                              dataname,model,    
-                              overall.estimate, overall.ci,overall.p,overall.label)
+  validate.arguments = function(data,
+                                dv, 
+                                condition, 
+                                stimulus, 
+                                sort.by, 
+                                plot.type, 
+                                flip.conditions, 
+                                ylab1, ylab2, xlab1, xlab2, 
+                                decimals,
+                                participant, 
+                                legend.title,
+                                simtot,
+                                dataname,model,    
+                                overall.estimate, overall.ci,overall.p,overall.label,
+                                watermark,
+                                null.method,
+                                dv.is.percentage)
   {
   
-  #1 Check all arguments are of the appropriate length and type
+  #1 Check all arguments are of the appropriate length and type; see file check1.R
+      check1(sort.by , 'sort.by', 'character', 1)
       check1(plot.type , 'plot.type', 'character', 1)
       check1(flip.conditions , 'flip.conditions', 'logical', 1)
       check1(ylab1 , 'ylab1', 'character', 1)
@@ -17,8 +29,16 @@
       check1(xlab1 , 'xlab1', 'character', 1)
       check1(xlab2 , 'xlab2', 'character', 1)
       if (decimals!='auto') check1(decimals , 'decimals', 'numeric', 1)
-      check1(plot.type , 'plot.type', 'character', 1)
+      check1(legend.title , 'legend.title', 'character', 1)
+      check1(simtot,'simtot','integer',1)
+      #overall vars done below
+      check1(watermark,'watermark','logical',1)
+      check1(null.method,'null.method','character',1)
+      check1(dv.is.percentage,'dv.is.percentage','logical',1)
+      check1(legend.title,'legend.title','character',1)
 
+      
+      
     #Model  
       if (any(!model %in% c('all','regression','intercepts','slopes'))) {
         exit("If the the argument 'model' is set, it must include only a subset of the following four values:\n ",
@@ -34,9 +54,12 @@
       if (length(unique(c(n1,n3,n4)))>1 & n1>0) exit("The 'overall' arguments (estimate, p, and label) must have the same legnth")
       if (n2!=2*n1) exit("Make sure that there are twice the number of values in overall.ci as in overall.estimate")
       if (n1>0 & any(!is.numeric(overall.estimate),!is.numeric(overall.estimate),!is.numeric(overall.estimate))) exit ("The 'overall' arguments must be numeric")
-      
 
-      }
+    #null.method
+      if (!null.method %in% c('shuffle','demean')) exit("The argument 'null.method' must equal either 'shuffle' or 'demean'") 
+            
+
+}
 
 
 #Function 2 - Validate data
