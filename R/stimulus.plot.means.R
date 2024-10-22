@@ -77,7 +77,11 @@
          
 
       #Only change margin if not the default (so users can set own in)
-        mar.default = c(5.1, 4.1, 4.1, 2.1)
+        custom_mar <- getOption("graphics.par")$mar   #see if user has set different margins by default
+        if (is.null(custom_mar))  mar.default = c(5.1, 4.1, 4.1, 2.1)
+        if (!is.null(custom_mar)) mar.default = custom_mar
+        
+        
         max.x.label = max(nchar(unique(data[,stimulus])))
         xlabel.buffer = max(0,max.x.label)*.3
          
