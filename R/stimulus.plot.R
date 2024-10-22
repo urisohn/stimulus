@@ -71,7 +71,8 @@
         {
   
 
-    
+#----[preparation]------------------------------------------------------------------------
+  
      #Required values entered
         if (missing(data))      exit("stimulus.plot() says: you must specify a dataframe")
         if (missing(dv))        exit("stimulus.plot() says: you must specify the dependent variable ('dv')")
@@ -91,7 +92,11 @@
                                decimals,
                               participant, legend.title,simtot,
                               dataname,model,    
-                              overall.estimate, overall.ci,overall.p,overall.label)
+                              overall.estimate, overall.ci,overall.p,overall.label,watermark,
+                              null.method,
+                              dv.is.percentage,
+                              legend.title
+                             )
             
       #Validate dots
           validate.dots(...) #see validate.R function 3
@@ -103,16 +108,20 @@
         sort.by   <- clean_string(deparse(substitute(sort.by)))
         
       
-     #Check data.farme has all the necessary variables
+     #Check data.frame has all the necessary variables
         validate.data(data, dv, condition, stimulus, sort.by,participant,dataname)
                      
         
-        #Drop missing values
+     #Drop missing values
           n1=nrow(data)
           data = data[!is.na(data[,stimulus]) & !is.na(data[,dv]) & !is.na(data[,condition]),]
           if (participant!='') data = data[!is.na(data[,participant]),]
           n2=nrow(data)
           if (n2<n1) message('stimulus.plot() says:\nA total of ',n1-n2,' observations were dropped because of missing values.')
+          
+          
+  #----[/preparation]------------------------------------------------------------------------
+          
           
           
     #If saving to svg or png: 
@@ -140,7 +149,7 @@
             if (extension=='svg') svg(filename , w,h)
             if (extension=='png') png(filename , w*1000,h*1000,res=1000)
           
-          }
+         } #End if save.as()
           
           
         #Means
