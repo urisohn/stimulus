@@ -3,36 +3,43 @@
 #'@param data dataframe containing variables to be analyzed
 #'@param dv name of the dependent variable (e.g., dv='y'), quotes are not required
 #'@param condition name of the variable containing the condition indicator 
-#'(e.g., condition='cond'), quotes are not required. Figure legend will use values
+#'(e.g., condition='cond'), quotes are not required. The x-axis label will use values
 #'in this variable to identify the two conditions. If you want to customize the legend 
 #'(e.g., so that it is not "0" vs "1"), create new variable, say df$cond2 
 #'with descriptive values for condition (e.g., df$cond2=ifelse(df$cond==1,'control','treatment'))
 #'and then use condition='cond2' in the stimulus.plot call.
 #'@param stimulus name of the variable containing the stimulus ID 
-#'(e.g., stimulus='stim_id'), quotes are not required. The x-axis will have these values as tick-lables.
-#'If you want to customize them, e.g., so that they have descriptive labels instead of numeric ID1, ID2...,
-#'create a new variable with those descriptions and use that variable as the stimulus variable in the call
-#'(e.g., df$item.id =c(1,2,3,4,5,...) --> df$item.id2=c('Chair','Airplane','Fries','Dalmatian','Coat',...))
+#'(e.g., stimulus='stim_id'), quotes are not required. The 'markers' in the beeswarm
+#'will be the text for this labels, if you want the markers to be different 
+#'(e.g., abbreviations) or single word summaries, create a new variable with those 
+#'values and use that in the stimulus.beeswarm() call
+#'@param dv.is.percentage if set to TRUE values of the dependent variable 
+#'are formatted as percentages
+#'@param simtot integer value for number of bootstraps used to build a confidence band
+#'for the range of means under homogeneity
+#'@param confidence integer value for confidence level for confidence band. Defaults to 95.
 #'@param save.as filepath for saving figure. Must be .svg or .png file (optional)
 #'@param flip.conditions by default the condition labels are sorted alphabetically.  
 #'Set flip.conditions=TRUE to reverse the order
 #'@param main figure name, same as base-R plot main argument
 #'@param ylab1,ylab2 labels on the y-axis (optional)
-#'@param xlab1 labels on the x-axis, centered, by default it is 'Condition' (optional)
-#'@param xlab2 vectro of size 2 with labels for the two conditions (optional)
 #'@param dv.is.percentage if set to TRUE values of the dependent variable are formatted as percentages
-#'@param dot.spacing horizontal distance between labels with stimuli names
+#'@param dot.spacing scalar for horizontal distance between labels with stimuli names
+#'@param col1,col2 strings with colors for first and second condition in the plot 
+#'(lighter versions of colors are automatically generated)
 #'@param watermark set to FALSE to not display {stimulus version} in bottom left of figure
 #'
 #'@export
   stimulus.beeswarm=function(data,  dv, stimulus, condition, 
                               flip.conditions=FALSE, 
                               dv.is.percentage=FALSE,
+                              simtot=500,
+                              confidence=95,
+                              ylim=c(),
                               ylab1='',
                               ylab2='',
                               xlab1='',
                               xlab2=NULL,
-                              ylim=c(),
                               dot.spacing='auto',
                               col1='blue4',
                               col2='red4',
@@ -47,21 +54,23 @@
     
 #outline
   #1  Compute means by stimulus and put in data.frame
-  #2  Set figure parameters
-  #3  Make the beeswarm with markers with {beeswarm}
-  #4  Start svg if requested
-  #4  Margins
-  #5  Beeswarm with stimulus labels 
-  #6  Y axis
-  #7  Header
-  #8  Pkg version watermark
-  #9  Saved file feedback
-  #10 Return 
+  #2  Bootstrap CI of stimuli
+  #3  Set figure parameters
+  #4  Make the beeswarm with markers with {beeswarm}
+  #5  Start svg if requested
+  #6  Margins
+  #7  Beeswarm with stimulus labels 
+  #8  Y axis
+  #9  Header
+  #10 Bootstrapped confidence band for the set of values
+  #11 Pkg version watermark
+  #12 Saved file feedback
+  #13 Invisible return 
         
   
   #------------------------------------------------------------------
 
-    
+        args = list(...)
     
   #1 Compute means by stimulus and put in data.frame
       #Get the condition names
@@ -84,22 +93,47 @@
         ms=rbind(ms1,ms2)
       
 
-  #2 Set figure parameters
+   #2 Bootstrap CI of stimuli (load from cach eif it exists)
+      #Search cache using md5 of the arguments
+          dataname  <- clean_string(deparse(substitute(data)))
+          md5k = get.md5(list(dataname,dv,stimulus,condition,simtot))
+
+      #if resample exist,  load it
+        if (does.cache.d.exist(md5k))   #see utils.R
+          {
+          maxmin_boot = .GlobalEnv$.stimulus.cache[[md5k]]
+          message2("*Recycled results*:\n",
+                  "You had run this same analysis before with all the same variables and options.\n",
+                  "(data='",dataname,"' | dv='",dv,"' | stimulus='",stimulus,"' | condition='",condition,"' | simtot='",simtot,"')\n",
+                  "To save time, we are re-using saved results. To force new calculations\n",
+                  "change one of those parameters or clear your cache running: 'clear_stimulus_cache()'")
+                    
+       #Else run it                  
+            } else  {
+                  maxmin_boot =  get.maxmin.confidence(data,  dv, stimulus, condition, simtot,confidence,ms1,m2)
+                   
+                  
+            #Save
+               .GlobalEnv$.stimulus.cache[[md5k]]=maxmin_boot
+        } #End else
+        
+  #3 Set figure parameters
       if (dot.spacing=='auto')
       {
         stimulus.length = mean(nchar(ms$stimulus))
-        dot.spacing = stimulus.length/3 + 1.5
+        dot.spacing = stimulus.length/3 + 2
       }
       
       col1a=adjustcolor(col1,.75)
       col2a=adjustcolor(col2,.75)
       
           
-  #3 Make the beeswarm with markers with {beeswarm}
-      b = beeswarm::beeswarm(ms$mean~ms$condition, pch=16,col=c(col1, col2),cex=1.5,xlab='',
-                 las=1,ylab='',spacing = dot.spacing , do.plot=F,method='compactswarm')
-      print(b)
-  #4 Start svg if requested
+  #4 Make the beeswarm with markers with {beeswarm}
+      b = beeswarm::beeswarm(ms$mean~ms$condition, spacing = dot.spacing , 
+                             do.plot=F,method='swarm')
+
+  
+  #5 Start svg if requested
      if (save.as!='') {
         
           #File
@@ -109,8 +143,8 @@
               extension= tools::file_ext(filename)
         
           #Width and height of file
-              w  = 8
-              h  = 6
+              w  = 9
+              h  = 7
           
               
           #If svg weight or height specified
@@ -125,7 +159,7 @@
           
       
        
-  #5 Margins
+  #6 Margins
       #Get current margins
         mar.before =  par("mar")  #margins right now
         mar.after  =  mar.before  #will set back to this on exit
@@ -158,7 +192,14 @@
            on.exit(par(mar=mar.before))    #return to default on exit
         } 
         
-  #6 Beeswarm with stimulus labels 
+  #7 Beeswarm with stimulus labels 
+      if (length(ylim)<2) {
+          ylim = range(ms$mean)
+          dy = diff(ylim)
+          ylim[2]=ylim[2]+.2*dy  #Give a  buffer on top (for the legend)
+          #ylim[1]=ylim[1]-.03*dy  #give 
+          }
+        
       plot(b$x,b$y,pch=NA,
            xlim=c(min(.75,b$x), max(2.25,b$x)),
            xlab='',
@@ -166,12 +207,8 @@
            las=1,
            yaxt=ifelse(dv.is.percentage,'n','s'),  #no y-ticks if percentage
            xaxt='n',
+           ylim=ylim,
            ...)
-      
-        
-        x=c(1,2,3)
-        y=c(3,3,3)
-        
         
       #Split the data
         b1=b[b$x<=1.5,]
@@ -180,7 +217,6 @@
       #The markers of words with stimulus labels
         text(b1$x,b1$y,ms[ms$mean==b1$y.orig,'stimulus'] ,cex=.65,col=col1a)
         text(b2$x,b2$y,ms[ms$mean==b2$y.orig,'stimulus'] ,cex=.65,col=col2a)
-      
       
       
     #X-axis
@@ -193,13 +229,20 @@
       
       
     #means 
+        #xs
+          xt1=min(b1$x , 0.85)
+          xt2=max(b1$x , 1.15)
+          xt3=min(b2$x , 1.85)
+          xt4=max(b2$x , 2.15)
+      
+      
         #Compute
           mean1 = mean(data[data[,condition]==uc[1],dv],na.rm=TRUE)
           mean2 = mean(data[data[,condition]==uc[2],dv],na.rm=TRUE)
           
         #Lines
-          segments(x0=.85,x1=1.15, y0=mean1, y1=mean1,col=col1,lwd=3)
-          segments(x0=1.85,x1=2.15,y0=mean2, y1=mean2,col=col2,lwd=3)
+          segments(x0=xt1 , x1=xt2, y0=mean1, y1=mean1,col=col1,lwd=3)
+          segments(x0=xt3 , x1=xt4 ,y0=mean2, y1=mean2,col=col2,lwd=3)
         
        #value labels
           if (dv.is.percentage==FALSE)
@@ -211,12 +254,22 @@
             rm2=format_percent(mean2)
           }
           
-          
-            text(1.25,mean1,paste0("M=",rm1),col=col1,cex=1)
-            text(1.85,mean2,paste0("M=",rm2),col=col2,cex=1,pos=2)
+            text(xt2,mean1,paste0("M=",rm1),col=col1,cex=1,pos=4)
+            text(xt3,mean2,paste0("M=",rm2),col=col2,cex=1,pos=2)
           
     
- #7 Y axis
+#8 Bootstrapped confidence band for the set of values
+            b1L=maxmin_boot$b1L
+            b1H=maxmin_boot$b1H
+            b2L=maxmin_boot$b2L
+            b2H=maxmin_boot$b2H
+            
+            polygon(x=c(xt1 , xt1 , xt2 , xt2),y=c(b1L, b1H, b1H, b1L),col=adjustcolor(col1,.1),border = NA)
+            polygon(x=c(xt3 , xt3 , xt4 , xt4),y=c(b2L, b2H, b2H, b2L),col=adjustcolor(col2,.1),border = NA)
+            
+            
+            
+ #9 Y axis
       if (ylab1=='') ylab1=dv
         
     
@@ -234,17 +287,40 @@
       }
     
             
-  #8 Header
+  #10 Header
       if (main!='') mtext(side=3,line=1,font=2,cex=1.65,main)
       
-  #9 Pkg version watermark
+  #11 Pkg version watermark
           if (watermark==TRUE)
           {
             stim_vrs=paste0("{Stimulus v",packageVersion('stimulus'),"}")
             mtext(side=1,line=-1,cex=.7, stim_vrs ,col='gray66',adj=0,outer=TRUE)
           }
 
-  #10 Saved file feedback
+  #12 Legend
+      #Use as example label for highest stimulus in Condition 1
+        kmax=which.max(ms1$mean)
+        stimulus.max = ms1$stimulus[kmax]
+            
+      #Legend
+        
+        
+      legend('top',
+             pch=c("Æ",NA,NA),
+             bty='n',
+             lty=c(NA,1,1),
+             lwd=c(NA,3,20),
+             legend=c(paste0('Stimulus label, e.g., "',stimulus.max,'"'), 
+                      'Mean across stimuli', 
+                      paste0(confidence,"% confidence band for Max-to-Min stimulus range\n",
+                             "Based on ",simtot," resamples under null of equal distributions"
+                             )
+                      ),
+             cex=.8,
+             col=c(col1a,col1,adjustcolor(col1,.1))
+       )
+            
+  #12 Saved file feedback
       if (save.as!='')
         {
         message2("\nFigure was saved as '", save.as,"'")
@@ -259,10 +335,11 @@
           }
                       
         
-  #11 Return
-            
+  #13 Return
      invisible(b[,1:2])
   }
         
   
+  
+
   
