@@ -3,7 +3,7 @@
 #Does resampling under null of all stimuli having the same distribution, 
 #see  stimulus.beeswarm.R 
 
-    get.maxmin.confidence = function(data,  dv, stimulus, condition, simtot=500,confidence=95,ms1,m2)
+    get.maxmin.confidence = function(data,  dv, stimulus, condition, simtot=500,confidence=95,ms1,ms2,dc1,dc2)
     {
         
         #how many stimuli

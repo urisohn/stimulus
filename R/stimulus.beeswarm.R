@@ -110,7 +110,7 @@
                     
        #Else run it                  
             } else  {
-                  maxmin_boot =  get.maxmin.confidence(data,  dv, stimulus, condition, simtot,confidence,ms1,m2)
+                  maxmin_boot =  get.maxmin.confidence(data,  dv, stimulus, condition, simtot,confidence,ms1,ms2,dc1,dc2)
                    
                   
             #Save
@@ -196,7 +196,7 @@
       if (length(ylim)<2) {
           ylim = range(ms$mean)
           dy = diff(ylim)
-          ylim[2]=ylim[2]+.2*dy  #Give a  buffer on top (for the legend)
+          ylim[2]=ylim[2]+.25*dy  #Give a  buffer on top (for the legend)
           #ylim[1]=ylim[1]-.03*dy  #give 
           }
         
@@ -306,17 +306,17 @@
         
         
       legend('top',
-             pch=c("Æ",NA,NA),
+             pch=c("Æ",NA,NA,NA),
              bty='n',
-             lty=c(NA,1,1),
-             lwd=c(NA,3,20),
-             legend=c(paste0('Stimulus label, e.g., "',stimulus.max,'"'), 
+             lty=c(NA,1,1,NA),
+             lwd=c(NA,3,20,NA),
+             legend=c(
+                      paste0('Stimulus label, e.g., "',stimulus.max,'"'), 
                       'Mean across stimuli', 
-                      paste0(confidence,"% confidence band for Max-to-Min stimulus range\n",
-                             "Based on ",simtot," resamples under null of equal distributions"
-                             )
+                      paste0(confidence,"% confidence band for Max-to-Min stimulus range"),
+                      paste0("Based on ",simtot," resamples under null of equal distributions")
                       ),
-             cex=.8,
+             cex=1,
              col=c(col1a,col1,adjustcolor(col1,.1))
        )
             
