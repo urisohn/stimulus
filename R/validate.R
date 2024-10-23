@@ -58,8 +58,17 @@
     #null.method
       if (!null.method %in% c('shuffle','demean')) exit("The argument 'null.method' must equal either 'shuffle' or 'demean'") 
             
-
-}
+    #compared design
+      t = table(data[,stimulus],data[,condition])
+      matched =mean(t[,1]*t[,2]>0) ==1
+      if (matched==FALSE) message(format_msg(paste0(
+                          "The stimulus variable ('", stimulus,"') does not have the same values ",
+                          "across conditions. If you have a compared-stimulus design, with different ",
+                          "and unmatched stimuli across condition, use stimulus.beeswarm(). If you do ",
+                          "have a treated- or matched-stimulus design, then check that you have a matching ",
+                          "stimulus identifier for the pairs of stimuli across conditions."),header='Cannot do Stimulus Plot'))
+      exit()
+      }
 
 
 #Function 2 - Validate data

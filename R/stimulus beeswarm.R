@@ -1,4 +1,30 @@
-
+#'Make beeswarm plots for stimuli in compared-stimulus design (see "Stimulus Sampling Reimagined" by Simonsohn, Montealegre, & Evangelidis (2024))
+#' 
+#'@param data dataframe containing variables to be analyzed
+#'@param dv name of the dependent variable (e.g., dv='y'), quotes are not required
+#'@param condition name of the variable containing the condition indicator 
+#'(e.g., condition='cond'), quotes are not required. Figure legend will use values
+#'in this variable to identify the two conditions. If you want to customize the legend 
+#'(e.g., so that it is not "0" vs "1"), create new variable, say df$cond2 
+#'with descriptive values for condition (e.g., df$cond2=ifelse(df$cond==1,'control','treatment'))
+#'and then use condition='cond2' in the stimulus.plot call.
+#'@param stimulus name of the variable containing the stimulus ID 
+#'(e.g., stimulus='stim_id'), quotes are not required. The x-axis will have these values as tick-lables.
+#'If you want to customize them, e.g., so that they have descriptive labels instead of numeric ID1, ID2...,
+#'create a new variable with those descriptions and use that variable as the stimulus variable in the call
+#'(e.g., df$item.id =c(1,2,3,4,5,...) --> df$item.id2=c('Chair','Airplane','Fries','Dalmatian','Coat',...))
+#'@param save.as filepath for saving figure. Must be .svg or .png file (optional)
+#'@param flip.conditions by default the condition labels are sorted alphabetically.  
+#'Set flip.conditions=TRUE to reverse the order
+#'@param main figure name, same as base-R plot main argument
+#'@param ylab1,ylab2 labels on the y-axis (optional)
+#'@param xlab1 labels on the x-axis, centered, by default it is 'Condition' (optional)
+#'@param xlab2 vectro of size 2 with labels for the two conditions (optional)
+#'@param dv.is.percentage if set to TRUE values of the dependent variable are formatted as percentages
+#'@param dot.spacing horizontal distance between labels with stimuli names
+#'@param watermark set to FALSE to not display {stimulus version} in bottom left of figure
+#'
+#'@export
   stimulus.beeswarm=function(data,  dv, stimulus, condition, 
                               flip.conditions=FALSE, 
                               dv.is.percentage=FALSE,
@@ -7,7 +33,7 @@
                               xlab1='',
                               xlab2=NULL,
                               ylim=c(),
-                              spacing=1,
+                              dot.spacing='auto',
                               col1='blue4',
                               col2='red4',
                               main='',
@@ -56,11 +82,10 @@
      #Name the columns
         names(ms1)=names(ms2)=c("stimulus",'mean','condition')
         ms=rbind(ms1,ms2)
-        
-        #ms$stimulus=paste0(ms$stimulus," - sjkd")
       
+
   #2 Set figure parameters
-      if (missing(spacing))
+      if (dot.spacing=='auto')
       {
         stimulus.length = mean(nchar(ms$stimulus))
         dot.spacing = stimulus.length/3 + 1.5
@@ -71,9 +96,9 @@
       
           
   #3 Make the beeswarm with markers with {beeswarm}
-      b=beeswarm(ms$mean~ms$condition, pch=16,col=c(col1, col2),cex=1.5,xlab='',
-                 las=1,ylab='',spacing = dot.spacing , do.plot=F)
-      
+      b = beeswarm::beeswarm(ms$mean~ms$condition, pch=16,col=c(col1, col2),cex=1.5,xlab='',
+                 las=1,ylab='',spacing = dot.spacing , do.plot=F,method='compactswarm')
+      print(b)
   #4 Start svg if requested
      if (save.as!='') {
         
@@ -84,7 +109,7 @@
               extension= tools::file_ext(filename)
         
           #Width and height of file
-              w  = 10
+              w  = 8
               h  = 6
           
               
@@ -153,8 +178,8 @@
         b2=b[b$x>1.5,]
         
       #The markers of words with stimulus labels
-        text(b1$x,b1$y,ms[ms$mean==b1$y,'stimulus'] ,cex=.75,col=col1a)
-        text(b2$x,b2$y,ms[ms$mean==b2$y,'stimulus'] ,cex=.75,col=col2a)
+        text(b1$x,b1$y,ms[ms$mean==b1$y.orig,'stimulus'] ,cex=.65,col=col1a)
+        text(b2$x,b2$y,ms[ms$mean==b2$y.orig,'stimulus'] ,cex=.65,col=col2a)
       
       
       
@@ -187,8 +212,8 @@
           }
           
           
-            text(1.25,mean1,paste0("M=",rm1),col=col1,cex=1.25)
-            text(1.85,mean2,paste0("M=",rm2),col=col2,cex=1.25,pos=2)
+            text(1.25,mean1,paste0("M=",rm1),col=col1,cex=1)
+            text(1.85,mean2,paste0("M=",rm2),col=col2,cex=1,pos=2)
           
     
  #7 Y axis
@@ -197,8 +222,8 @@
     
       if (!"yaxt" %in% names(args))
       {
-      mtext(side=2,line=mar.after[2]-2,font=2,cex=1.65,ylab1)
-      mtext(side=2,line=mar.after[2]-3,font=3,cex=1.25,ylab2,col='gray30')
+      mtext(side=2,line=mar.after[2]-1.8,font=2,cex=1.65,ylab1)
+      mtext(side=2,line=mar.after[2]-2.8,font=3,cex=1.25,ylab2,col='gray30')
       }
 
     

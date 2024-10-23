@@ -4,13 +4,8 @@
   get.means.condition <- function(data, dv, stimulus, condition,sort.by,flip.conditions) {
       
      
-    #1 Is it a matched design?
-          t = table(data[,stimulus],data[,condition])
-          matched = FALSE
-          if (mean(t[,1]*t[,2]>0) ==1 ) matched=TRUE
-          if (matched==FALSE) exit("The stimuli are not matched across conditions, *effects* for individual stimuli may not be computed.")
-          
-    #2 Process stimulus and condition values
+
+    #  Process stimulus and condition values
         #Stimulus
           stimulus.all=unique(data[,stimulus])
           

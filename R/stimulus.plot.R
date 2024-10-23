@@ -87,16 +87,23 @@
           if (!"data.frame" %in% class(data)) exit("stimulus.plot() says: the argument data must be a data.frame, but '",dataname,"' is not a dataframe.")
   
       #Check arguments are set and of the right type
-          validate.arguments(data, dv, condition, stimulus, sort.by, plot.type, 
-                              flip.conditions, ylab1, ylab2, xlab1, xlab2, 
-                               decimals,
-                              participant, legend.title,simtot,
-                              dataname,model,    
-                              overall.estimate, overall.ci,overall.p,overall.label,watermark,
-                              null.method,
-                              dv.is.percentage,
-                              legend.title
-                             )
+            validate.arguments(data,
+                                dv, 
+                                condition, 
+                                stimulus, 
+                                sort.by, 
+                                plot.type, 
+                                flip.conditions, 
+                                ylab1, ylab2, xlab1, xlab2, 
+                                decimals,
+                                participant, 
+                                legend.title,
+                                simtot,
+                                dataname,model,    
+                                overall.estimate, overall.ci,overall.p,overall.label,
+                                watermark,
+                                null.method,
+                                dv.is.percentage)
             
       #Validate dots
           validate.dots(...) #see validate.R function 3

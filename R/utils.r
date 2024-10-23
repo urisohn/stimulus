@@ -189,14 +189,69 @@ format_percent <- function(x) {
      message(paste0(dark_green, paste0(msg), reset))
    }
 
-#16 compute mean and CI
-  get.semean_ci <- function(x, conf = 0.95) {
-    n <- length(x)
-    mean_x <- mean(x)
-    stderr <- sd(x) / sqrt(n)
-    alpha <- 1 - conf
-    error_margin <- qt(1 - alpha / 2, df = n - 1) * stderr
-    lower_bound <- mean_x - error_margin
-    upper_bound <- mean_x + error_margin
-  return(data.frame(mean = mean_x, lower = lower_bound, upper = upper_bound))
-}
+     
+#17 round_smart: dynamic number of digits
+  round_smart <- function(x) {
+    abs_x <- abs(x)  # Use the absolute value
+  
+    if (abs_x >= 0.01) {
+      # Always show 2 decimals
+      return(formatC(x, format = "f", digits = 2))
+    } else if (abs_x >= 0.00001) {
+      # Show the first non-zero decimal
+      non_zero_digits <- sub("0\\.", "", sub(".*?([1-9]+.*)", "\\1", formatC(abs_x, format = "f", digits = 5)))
+      return(formatC(x, format = "f", digits = nchar(non_zero_digits)))
+    } else {
+      # For numbers smaller than 0.00001
+      return("<0.00001")
+    }
+  }
+  
+  
+#18 Format msg
+format_msg <- function(msg,width=70, header='IMPORTANT.', pre="| ")
+    {
+    #Line counter
+    j<-0
+    #Lines with formatted message starts empty
+      msg.lines=c()
+    #Turn message into vector of words
+      msg.left <- strsplit(msg,' ')[[1]]
+
+    #Loop over lines
+      while (length(msg.left)>0)
+      {
+     j=j+1
+     msg.lines[j]=''
+
+    #loop over words
+      while (nchar(msg.lines[j]) + nchar(msg.left[1]) <width)
+      {
+      new.word <- msg.left[1]
+      msg.left <- msg.left[-1]
+      if (regexpr('\n', new.word)>0) break   #skip line if \n is found
+      msg.lines[j] <- paste0(msg.lines[j],new.word," ")   #add the next word
+      
+      if (length(msg.left)==0) break
+    }
+      msg.lines[j]<- paste0(pre,"    ", msg.lines[j] ) 
+      if (length(msg.left)==0) break
+    }
+      
+  #formatted 
+    #Add |  
+      msg.lines <- gsub("\n", "\n|", msg.lines)
+      
+      
+    #Join al
+      msg.formatted <- paste0(msg.lines,collapse="\n")
+      
+    #Add header
+      msg.formatted <- paste0(pre,header,"\n",msg.formatted)
+      
+    #Add ------------- on top
+      sep.line <- c(paste0(rep('-',width+5)) , "\n" )
+      msg.formatted<-c(sep.line, msg.formatted)
+    
+    return(msg.formatted)
+    }
