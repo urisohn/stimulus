@@ -34,10 +34,10 @@
             qH = 1-qL
             
         #Compute quantiles 
-            b1L = quantile(ms1.boot[,1],.025)
-            b1H = quantile(ms1.boot[,n1],.975)
-            b2L = quantile(ms2.boot[,1],.025)
-            b2H = quantile(ms2.boot[,n2],.975)
+            b1L = quantile(ms1.boot[,1],qL)
+            b1H = quantile(ms1.boot[,n1],qH)
+            b2L = quantile(ms2.boot[,1],qL)
+            b2H = quantile(ms2.boot[,n2],qH)
           
         #Output
             output=namedList(b1L,b1H,b2L,b2H)
