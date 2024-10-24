@@ -70,8 +70,16 @@
   
   #------------------------------------------------------------------
 
-        args = list(...)
-    
+     validate.beeswarm(data,  dv, stimulus, condition, 
+                        flip.conditions, 
+                        dv.is.percentage,
+                        simtot,
+                        confidence, ylimm, ylab1, ylab2,
+                        xlab1, xlab2, dot.spacing, 
+                        col1, col2, main,
+                        watermark, save.as, svg.width, svg.height)
+
+            args = list(...)
   #1 Compute means by stimulus and put in data.frame
       #Get the condition names
         uc=sort(as.character(unique(data[,condition])),decreasing=flip.conditions)

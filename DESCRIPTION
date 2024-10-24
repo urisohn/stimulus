@@ -1,17 +1,17 @@
 Package: stimulus
 Title: Make Stimulus Plots
-Version: 0.1.0.241023
+Version: 0.1.0.241024
 Authors@R: c(
-    person(given = "Uri",
-           family = "Simonsohn",
+    person(given = "xxx",
+           family = "xxx",
            role = c("aut", "cre"),
-           email = "urisohn@gmail.com",
-           comment = c(ORCID = "0000-0002-8601-7211")),
-    person(given = "Andres",
-           family = "Montealegre",
+           email = "xxx@gmail.com",
+           comment = c(ORCID = "0000-0002-xxxx-xxxx")),
+    person(given = "xxx",
+           family = "xxx",
            role = c("ctb", "aut"),
-           email = "am2849@cornell.edu",
-           comment = c(ORCID = "0000-0001-6168-589X"))
+           email = "xxx@xxxx.edu",
+           comment = c(ORCID = "0000-0001-xxxx-xxxx"))
     )
 Description: Build stimulus plots comparing results for individual stimuli in an experiment.
 License: GPL-3
