@@ -46,10 +46,10 @@
        
         if (flip.conditions)
         {
-          l1=label1
-          l2=label2
-          label1=l2
-          label2=l1
+          l1 = label1
+          l2 = label2
+          label1 = l2
+          label2 = l1
           }
         
     #3 Get the null distribution  (only if sort.by is not set)
@@ -78,10 +78,19 @@
                     if (does.cache.d.exist(md5s)) 
                     {
                       list_resamples = .GlobalEnv$.stimulus.cache[[md5s]]
-                      message2("*Recycled results*:\n",
+                      
+                      #If it was not called by itself when re-runnig for showing on the screen
+                      
+                        if (sys.parent() < 4) {
+                              #NOTE: we don't want to show this message when the user sets save.as='fig1.svg'
+                              #and we run the function a second time, so here we check whether the call is nested 
+                              #which occurs if is already stack 4, meaning the call has already gone through 4 opeartions
+                            
+                                message2("*Recycled results*:\n",
                                "You had run this same analysis before with all the same variables and options.\n",
                                "We are re-using stored results from the previous call.\n",
                                "To force new calculations clear your cache running: 'clear_stimulus_cache()'")
+                                }
                       
                   #else run it                  
                     } else  {

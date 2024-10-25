@@ -70,16 +70,23 @@
   
   #------------------------------------------------------------------
 
+            args_passed <- as.list(match.call())[-1]  # Remove the function name
+            args = list(...)
+    
+      
      validate.beeswarm(data,  dv, stimulus, condition, 
                         flip.conditions, 
                         dv.is.percentage,
                         simtot,
-                        confidence, ylimm, ylab1, ylab2,
+                        confidence, ylim, ylab1, ylab2,
                         xlab1, xlab2, dot.spacing, 
                         col1, col2, main,
-                        watermark, save.as, svg.width, svg.height)
+                        watermark, save.as, svg.width, svg.height,
+                        args_passed)
 
-            args = list(...)
+      
+      
+                    
   #1 Compute means by stimulus and put in data.frame
       #Get the condition names
         uc=sort(as.character(unique(data[,condition])),decreasing=flip.conditions)
@@ -110,21 +117,33 @@
         if (does.cache.d.exist(md5k))   #see utils.R
           {
           maxmin_boot = .GlobalEnv$.stimulus.cache[[md5k]]
-          message2("*Recycled results*:\n",
-                  "You had run this same analysis before with all the same variables and options.\n",
-                  "(data='",dataname,"' | dv='",dv,"' | stimulus='",stimulus,"' | condition='",condition,"' | simtot='",simtot,"')\n",
-                  "To save time, we are re-using saved results. To force new calculations\n",
-                  "change one of those parameters or clear your cache running: 'clear_stimulus_cache()'")
-                    
+          
+          
+          #Show message if it is the first time within the cal
+          
+          if (sys.parent() ==0) {
+                              #NOTE: we don't want to show this message when the user sets save.as='fig1.svg'
+                              #and we run the function a second time, so here we check whether the call is nested 
+                              #which occurs if is already stack 2, meaning the call has already gone through 4 opeartions
+                            
+              message2("*Recycled results*:\n",
+                      "You had run this same analysis before with all the same variables and options.\n",
+                      "(data='",dataname,"' | dv='",dv,"' | stimulus='",stimulus,"' | condition='",condition,"' | simtot='",simtot,"')\n",
+                      "To save time, we are re-using saved results. To force new calculations\n",
+                      "change one of those parameters or clear your cache running: 'clear_stimulus_cache()'")
+                }
        #Else run it                  
             } else  {
                   maxmin_boot =  get.maxmin.confidence(data,  dv, stimulus, condition, simtot,confidence,ms1,ms2,dc1,dc2)
                    
                   
             #Save
-               .GlobalEnv$.stimulus.cache[[md5k]]=maxmin_boot
+               .GlobalEnv$.stimulus.cache[[md5k]] = maxmin_boot
+               .GlobalEnv$.stimulus.beeswarm.last_run = Sys.time()
+               
         } #End else
-        
+
+
   #3 Set figure parameters
       if (dot.spacing=='auto')
       {
@@ -341,7 +360,17 @@
             dev.off()
            
           }
-                      
+        
+          
+    #If save as, rerun without save.as
+       if (save.as!='')
+         {
+         call.original <- match.call()
+         call.original$save.as=''
+         eval(call.original)
+        }
+         
+                    
         
   #13 Return
      invisible(b[,1:2])

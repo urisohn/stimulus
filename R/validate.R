@@ -1,118 +1,7 @@
 
-#Function 1 - validate arguments
-
-  validate.arguments = function(data,
-                                dv, 
-                                condition, 
-                                stimulus, 
-                                sort.by, 
-                                plot.type, 
-                                flip.conditions, 
-                                ylab1, ylab2, xlab1, xlab2, 
-                                decimals,
-                                participant, 
-                                legend.title,
-                                simtot,
-                                dataname,model,    
-                                overall.estimate, overall.ci,overall.p,overall.label,
-                                watermark,
-                                null.method,
-                                dv.is.percentage,
-                                save.as)
-  {
-  
-  #1 Check all arguments are of the appropriate length and type; see file check1.R
-      check1(sort.by , 'sort.by', 'character', 1)
-      check1(plot.type , 'plot.type', 'character', 1)
-      check1(flip.conditions , 'flip.conditions', 'logical', 1)
-      check1(ylab1 , 'ylab1', 'character', 1)
-      check1(ylab2 , 'ylab2', 'character', 1)
-      check1(xlab1 , 'xlab1', 'character', 1)
-      check1(xlab2 , 'xlab2', 'character', 1)
-      if (decimals!='auto') check1(decimals , 'decimals', 'numeric', 1)
-      check1(legend.title , 'legend.title', 'character', 1)
-      check1(simtot,'simtot','integer',1)
-      #overall vars done below
-      check1(watermark,'watermark','logical',1)
-      check1(null.method,'null.method','character',1)
-      check1(dv.is.percentage,'dv.is.percentage','logical',1)
-      check1(legend.title,'legend.title','character',1)
-      check1(save.as,'save.as','character',1)
-      check.save.as(save.as) #function 5 here
-         
-   
-      
-    #Model  
-      if (any(!model %in% c('all','regression','intercepts','slopes'))) {
-        exit("If the the argument 'model' is set, it must include only a subset of the following four values:\n ",
-             "'all','regression','intercepts','slopes' ")
-      }
-      
-    #overall
-      n1=length(overall.estimate)
-      n2=length(overall.ci)
-      n3=length(overall.p)
-      n4=length(overall.label)
-
-      if (length(unique(c(n1,n3,n4)))>1 & n1>0) exit("The 'overall' arguments (estimate, p, and label) must have the same legnth")
-      if (n2!=2*n1) exit("Make sure that there are twice the number of values in overall.ci as in overall.estimate")
-      if (n1>0 & any(!is.numeric(overall.estimate),!is.numeric(overall.estimate),!is.numeric(overall.estimate))) exit ("The 'overall' arguments must be numeric")
-
-    #null.method
-      if (!null.method %in% c('shuffle','demean')) exit("The argument 'null.method' must equal either 'shuffle' or 'demean'") 
-            
-    #compared design
-      t = table(data[,stimulus],data[,condition])
-      matched =mean(t[,1]*t[,2]>0) ==1
-      if (matched==FALSE) message(format_msg(paste0(
-                          "The stimulus variable ('", stimulus,"') does not have the same values ",
-                          "across conditions. If you have a compared-stimulus design, with different ",
-                          "and unmatched stimuli across condition, use stimulus.beeswarm(). If you do ",
-                          "have a treated- or matched-stimulus design, then check that you have a matching ",
-                          "stimulus identifier for the pairs of stimuli across conditions."),header='Cannot do Stimulus Plot'))
-      exit()
-      }
-
-
-#Function 2 - Validate data
-
-  validate.data = function(data, dv, condition, stimulus, sort.by,participant,dataname)
-  {
-      n1=names(data)
-      if (!dv %in% n1)        exit("stimulus.plot() says the dv ('",dv,    "') is not in the dataset '",dataname,"'.")
-      if (!condition %in% n1) exit("stimulus.plot() says the condition variable ('",condition,"') is not in the dataset '",dataname,"'.")
-      if (!stimulus %in% n1)  exit("stimulus.plot() says the stimulus variable ('",stimulus,"') is not in the dataset '",dataname,"'.")
-      if (!sort.by %in% c(n1,"")    ) exit("stimulus.plot() says the sort.by variable ('",sort.by,"') is not in the dataset '",dataname,"'.")
-      if (!participant %in% c(n1,"")) exit("stimulus.plot() says the participant variable ('",participant,"') is not in the dataset '",dataname,"'.")
-  }
-  
-  
   
 #FUnction 3 - validate dots
-  validate.dots=function(...)
-  {
-    #Get the arguments  
-      dot_args <- list(...)
-      #dot_args <- paste0('"', dot_args, '"')
 
-      
-    # Get the list of valid arguments for plot
-      valid_plot_args <- names(formals(graphics::plot.default))
-  
-    # Check if all names in ... are valid plot arguments
-       invalid_args <- setdiff(names(dot_args), valid_plot_args)
-  
-  # If there are any invalid arguments, throw an error
-  if (length(invalid_args) > 0) {
-    
-    invalid_args <- paste0('"', invalid_args, '"')
-    
-    exit("All arguments in the `stimulus.plot()` call must either be defined for\n",
-        "that function (check out help page) or must be arguments for base R's plot(),\n",
-        "but you included the following arguments that are neither:\n", 
-        paste(invalid_args, collapse = ", "))
-  }
-  }
   
   
 #Function 4 - Validate beeswarm
@@ -133,25 +22,26 @@
                         watermark,
                         save.as,
                         svg.width,
-                        svg.height)
+                        svg.height,
+                        args_passed)
     {
       
     
-      
-    check1(flip.conditions , 'svg.heigth', 'logical', 1)
-    check1(dv , 'dv', 'character', 1)
-    check1(stimulus , 'stimulus', 'character', 1)
-    check1(condition , 'condition', 'character', 1)
-    check1(simtot , 'simtot', 'integer', 1)
-    check1(ylab1 , 'ylab1', 'character', 1)
-    check1(ylab2 , 'ylab2', 'character', 1)
-    check1(xlab1 , 'xlab1', 'character', 1)
-    check1(xlab2 , 'xlab2', 'character', 1)
-    check1(watermark,'watermark','logical',1)
+    
+    check1(flip.conditions , 'svg.heigth', 'logical', 1,args_passed)
+    check1(dv , 'dv', 'character', 1,args_passed)
+    check1(stimulus , 'stimulus', 'character', 1,args_passed)
+    check1(condition , 'condition', 'character', 1,args_passed)
+    check1(simtot , 'simtot', 'integer', 1,args_passed)
+    check1(ylab1 , 'ylab1', 'character', 1,args_passed)
+    check1(ylab2 , 'ylab2', 'character', 1,args_passed)
+    check1(xlab1 , 'xlab1', 'character', 1,args_passed)
+    check1(xlab2 , 'xlab2', 'character', 1,args_passed)
+    check1(watermark,'watermark','logical',1,args_passed)
 
-    check1(confidence ,'confidence', 'numeric', 1)
-    if (svg.height!='') check1(svg.width , 'svg.heigth', 'numeric', 1)
-    if (svg.width!='') check1(svg.width , 'svg.heigth', 'numeric', 1)
+    check1(confidence ,'confidence', 'numeric', 1,args_passed)
+    if (svg.height!='') check1(svg.width , 'svg.heigth', 'numeric', 1,args_passed)
+    if (svg.width!='') check1(svg.width , 'svg.heigth', 'numeric', 1,args_passed)
       
     check.save.as(save.as)       #function 5 
     check.confidence(confidence) #function 6

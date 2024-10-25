@@ -65,48 +65,41 @@
                     watermark = TRUE,
                     seed=2024,
                     ylim=c(),
-                 
                     ...
                     )
         {
   
 
-#----[preparation]------------------------------------------------------------------------
+#----[VALIDATION]------------------------------------------------------------------------
   
-     #Required values entered
-        if (missing(data))      exit("stimulus.plot() says: you must specify a dataframe")
-        if (missing(dv))        exit("stimulus.plot() says: you must specify the dependent variable ('dv')")
-        if (missing(condition)) exit("stimulus.plot() says: you must specify the condition variable ('condition')")
-        if (missing(stimulus))  exit("stimulus.plot() says: you must specify the stimulus variable ('stimulus')")     
+        args_passed <- as.list(match.call())[-1]  # Remove the function name
+
+        
+      #Validate arguments type and length
+        validate.stimulus.plot(plot.type,data,dv, condition, stimulus, 
+                              save.as, svg.width,
+                              svg.height, sort.by, flip.conditions,
+                              model, overall.estimate, overall.ci,
+                              overall.p, overall.label,
+                              ylab1, ylab2, xlab1, xlab2,
+                              decimals, null.method,
+                              dv.is.percentage, legend.title,
+                              simtot, watermark, seed, ylim, 
+                              args_passed)
     
-      #Grab the name
+    
+        f='stimulus::stimulus.plot'
+    
+      #Grab the dataname
           dataname  <- clean_string(deparse(substitute(data)))
       
       #Ensure data is a data.frame
           if ("data.frame" %in% class(data)) data=data.frame(data)
           if (!"data.frame" %in% class(data)) exit("stimulus.plot() says: the argument data must be a data.frame, but '",dataname,"' is not a dataframe.")
   
-      #Check arguments are set and of the right type
-            validate.arguments(data,
-                                dv, 
-                                condition, 
-                                stimulus, 
-                                sort.by, 
-                                plot.type, 
-                                flip.conditions, 
-                                ylab1, ylab2, xlab1, xlab2, 
-                                decimals,
-                                participant, 
-                                legend.title,
-                                simtot,
-                                dataname,model,    
-                                overall.estimate, overall.ci,overall.p,overall.label,
-                                watermark,
-                                null.method,
-                                dv.is.percentage)
-            
+           
       #Validate dots
-          validate.dots(...) #see validate.R function 3
+          validate.dots(f,...) #see validate.R function 3
           
       #Variables names from the dataset
         dv        <- clean_string(deparse(substitute(dv)))
@@ -116,9 +109,11 @@
         
       
      #Check data.frame has all the necessary variables
-        validate.data(data, dv, condition, stimulus, sort.by,participant,dataname)
+        validate.data(f, data, dv, condition, stimulus, sort.by,participant,dataname)  #validate.data.R
                      
-        
+          
+  #----[/preparation]------------------------------------------------------------------------
+            
      #Drop missing values
           n1=nrow(data)
           data = data[!is.na(data[,stimulus]) & !is.na(data[,dv]) & !is.na(data[,condition]),]
@@ -126,9 +121,7 @@
           n2=nrow(data)
           if (n2<n1) message('stimulus.plot() says:\nA total of ',n1-n2,' observations were dropped because of missing values.')
           
-          
-  #----[/preparation]------------------------------------------------------------------------
-          
+      
           
           
     #If saving to svg or png: 
