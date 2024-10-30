@@ -33,7 +33,7 @@ library(stimulus)
       
           #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='0cf9384c6366d7ab0cadf952cb65f376'
+              md5.exp='79aca095e633b02bbb34dcb1d89f59a7'
         #Compare 
                expect_equal(md5.obs, md5.exp)
       })
@@ -52,7 +52,7 @@ library(stimulus)
               
          #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='ef53a6fdf6d93b106e856a46d6002b2e'
+              md5.exp='79aca095e633b02bbb34dcb1d89f59a7'
         #Compare 
                expect_equal(md5.obs, md5.exp)
       })
@@ -72,7 +72,7 @@ library(stimulus)
               
          #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='8419d3fb642a4d8065c8d901120bc560'
+              md5.exp='dad575e2a30dc26ad21ded77d2c6a9d1'
         #Compare 
                expect_equal(md5.obs, md5.exp)
       
@@ -96,7 +96,7 @@ library(stimulus)
               
          #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='bba5c882a78186be8a09ff06cb1ecf57'
+              md5.exp='96bb6235deb7e805940c352e8236cecc'
         #Compare 
                expect_equal(md5.obs, md5.exp)
       
@@ -123,7 +123,7 @@ library(stimulus)
               
     #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='9dd0afee7c4b2be7a26980984a75b833'
+              md5.exp='fa14daf1d496f5e6b545592bfc6b1fd4'
         #Compare 
                expect_equal(md5.obs, md5.exp)
                
@@ -165,7 +165,7 @@ library(stimulus)
               
        #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='14a1c4d9bf4768999dbb96d026801106'
+              md5.exp='a36e3f5a80cf3b74e8ffbca480c4f7b6'
         #Compare 
                expect_equal(md5.obs, md5.exp)
    })     

@@ -31,7 +31,7 @@ library(stimulus)
                             participant='id', save.as=fig.path)    
           #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='4da236e88c90a7e7bf31b885ec6abf7b'
+              md5.exp='d6e0fd115126092db828f33c05d46963'
         #Compare 
                expect_equal(md5.obs, md5.exp)
       })
@@ -46,7 +46,7 @@ library(stimulus)
               
          #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='dbf442bba1953608e95169643ad266e6'
+              md5.exp='e0bced3b74bff3c06247d882e9f48b99'
         #Compare 
                expect_equal(md5.obs, md5.exp)
       })
@@ -64,7 +64,7 @@ library(stimulus)
               
          #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='8a68503428148fdf1f9dcf30c94871d5'
+              md5.exp='48321ded99cbaa2d9b647dd60de6eedb'
         #Compare 
                expect_equal(md5.obs, md5.exp)
       
@@ -86,7 +86,7 @@ library(stimulus)
               
          #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='c52850218e0c0131c01ab752b87801bd'
+              md5.exp='75d121b330e10e88661b60b8f4528de0'
         #Compare 
                expect_equal(md5.obs, md5.exp)
       
@@ -110,7 +110,7 @@ library(stimulus)
               
     #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='c63035fba3d3bef07ca9e9c44faea699'
+              md5.exp='e21baac30dc09fcb37f349f651e06e08'
         #Compare 
                expect_equal(md5.obs, md5.exp)
                
