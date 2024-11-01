@@ -74,6 +74,14 @@
   
         args_passed <- as.list(match.call())[-1]  # Remove the function name
 
+           
+      #Ensure data is a data.frame
+          if ("data.frame" %in% class(data)) data=data.frame(data)
+          if (!"data.frame" %in% class(data)) exit("stimulus.plot() says: the argument data must be a data.frame, but '",dataname,"' is not a dataframe.")
+          
+      #Force to be data.frame type
+          data=data.frame(data)
+
         
       #Validate arguments type and length
         validate.stimulus.plot(plot.type,data,dv, condition, stimulus, 
@@ -92,11 +100,6 @@
     
       #Grab the dataname
           dataname  <- clean_string(deparse(substitute(data)))
-      
-      #Ensure data is a data.frame
-          if ("data.frame" %in% class(data)) data=data.frame(data)
-          if (!"data.frame" %in% class(data)) exit("stimulus.plot() says: the argument data must be a data.frame, but '",dataname,"' is not a dataframe.")
-  
            
       #Validate dots
           validate.dots(f,...) #see validate.R function 3
@@ -151,6 +154,7 @@
           
          } #End if save.as()
           
+      
           
         #Means
           if (plot.type=='means')
