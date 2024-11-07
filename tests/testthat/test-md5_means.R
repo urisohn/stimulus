@@ -16,11 +16,17 @@ library(stimulus)
 #0.3 Nicely formatted condition
     df1$cond=ifelse(df1$intent==1,'Intentional',"Unintentional")
     
-#0.4 Figure path
+#0.4 Additional vars and dfs
+    df1$percent=df1$rev/10
+    df1$stimulus2=paste0(df1$stimulus,sample(1:6,size=nrow(df1),replace=TRUE))
+    df2=subset(df1,stimulus %in% unique(df1$stimulus[1:6]))
+
+#0.5 Figure path
     fig.path = tempfile(fileext='.svg')
     
-    #fig.path='c:/temp/f1.svg'
-    
+
+#0.6 clear cache
+    clear_stimulus_cache()
 #--------------------------------------
     
 #1) BASIC
@@ -31,7 +37,7 @@ library(stimulus)
                             participant='id', save.as=fig.path)    
           #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='d6e0fd115126092db828f33c05d46963'
+              md5.exp='e9b5e455dab8a44e2e35d97d422afe96'
         #Compare 
                expect_equal(md5.obs, md5.exp)
       })
@@ -46,7 +52,7 @@ library(stimulus)
               
          #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='e0bced3b74bff3c06247d882e9f48b99'
+              md5.exp='e54bb132325b90648c6f1144d3fc67fd'
         #Compare 
                expect_equal(md5.obs, md5.exp)
       })
@@ -64,7 +70,7 @@ library(stimulus)
               
          #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='48321ded99cbaa2d9b647dd60de6eedb'
+              md5.exp='0060d86d47e122875c2da69386d1ec68'
         #Compare 
                expect_equal(md5.obs, md5.exp)
       
@@ -86,7 +92,7 @@ library(stimulus)
               
          #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='75d121b330e10e88661b60b8f4528de0'
+              md5.exp='15516b99c3211d67ba83ba24faa79c65'
         #Compare 
                expect_equal(md5.obs, md5.exp)
       
@@ -110,7 +116,7 @@ library(stimulus)
               
     #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='e21baac30dc09fcb37f349f651e06e08'
+              md5.exp='b20880e31f6b599ad590768a49718a1f'
         #Compare 
                expect_equal(md5.obs, md5.exp)
                
@@ -130,7 +136,7 @@ library(stimulus)
                 legend.title = 'Secret act was:')
        #Get md5s
               md5.obs=as.character(tools::md5sum(fig.path))
-              md5.exp='250f6cd3fa433004e1550658743b574d'
+              md5.exp='e9f0c10c5012021bbf3e8f76d5d7d5cf'
         #Compare 
                expect_equal(md5.obs, md5.exp)
    })     
