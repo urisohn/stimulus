@@ -45,7 +45,8 @@ validate.stimulus.plot=function(plot.type, data,dv, condition, stimulus, save.as
 
   #5 No stimulus plot for compared design
       t = table(data[,stimulus],data[,condition])
-      matched =mean(t[,1]*t[,2]>0) ==1
+      matched = mean(t[,1]*t[,2]>0) > .5  #check that at least half the stimulus ids in both conditions
+      
       if (matched==FALSE) {
               exit(format_msg(paste0(
               f,"() says: The stimulus variable ('", stimulus,"') does not have the same values ",

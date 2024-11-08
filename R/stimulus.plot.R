@@ -122,8 +122,23 @@
           data = data[!is.na(data[,stimulus]) & !is.na(data[,dv]) & !is.na(data[,condition]),]
           if (participant!='') data = data[!is.na(data[,participant]),]
           n2=nrow(data)
-          if (n2<n1) message('stimulus.plot() says:\nA total of ',n1-n2,' observations were dropped because of missing values.')
+          if (n2<n1) message2('stimulus.plot() says: ',n1-n2,' observations were dropped because of missing values.')
           
+    #Drop unmatched observations
+           t = table(data[,stimulus],data[,condition])
+           drop.stim = t[t[,1]==0 | t[,2]==0,]
+           
+           if (nrow(drop.stim)>0)
+           {
+           drop.stim.rows = data[,stimulus] %in% rownames(drop.stim)
+           mean(drop.stim.rows)
+           data=data[!drop.stim.rows,]
+           n3=nrow(data)
+           message2('stimulus.plot() says: ',n3-n2,' observations were dropped because their value of "',stimulus,'" appears in only one condition')
+           
+           }
+           
+     
       
           
           
