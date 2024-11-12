@@ -81,7 +81,12 @@
           
       #Force to be data.frame type
           data=data.frame(data)
-
+          
+          
+       #Grab the dataname
+          dataname  <- clean_string(deparse(substitute(data)))
+          
+          
         
       #Validate arguments type and length
         validate.stimulus.plot(plot.type,data,dv, condition, stimulus, 
@@ -96,12 +101,9 @@
                               args_passed)
     
     
-        f='stimulus::stimulus.plot'
-    
-      #Grab the dataname
-          dataname  <- clean_string(deparse(substitute(data)))
-           
-      #Validate dots
+        
+       #Validate dots
+          f='stimulus::stimulus.plot'
           validate.dots(f,...) #see validate.R function 3
           
       #Variables names from the dataset
@@ -114,7 +116,11 @@
      #Check data.frame has all the necessary variables
         validate.data(f, data, dv, condition, stimulus, sort.by,participant,dataname)  #validate.data.R
                      
-          
+       
+      #Keep only variables we will use to speed up calculations
+        data=data[,names(data) %in% c('r',dv,condition,stimulus,participant)]
+        
+           
   #----[/preparation]------------------------------------------------------------------------
             
      #Drop missing values
@@ -134,19 +140,20 @@
            mean(drop.stim.rows)
            data=data[!drop.stim.rows,]
            n3=nrow(data)
-           message2('stimulus.plot() says: ',n3-n2,' observations were dropped because their value of "',stimulus,'" appears in only one condition')
+           message2('stimulus.plot() says: ',n2-n3,' observations were dropped because their value of "',stimulus,'" appears in only one condition')
            
            }
-           
-     
-      
-          
           
     #If saving to svg or png: 
         if (save.as!='') {
       
+          
           #File
               filename=save.as
+              
+          #Create directory if it does not exist
+              dir.create(dirname(filename),recursive = TRUE,showWarnings = FALSE)
+              
               
           #Get extension of file name
               extension= tools::file_ext(filename)
@@ -247,12 +254,12 @@
             
         
       #If save as, rerun without save.as
-       if (save.as!='')
-         {
-         call.original <- match.call()
-         call.original$save.as=''
-         eval(call.original)
-        }
+       #if (save.as!='')
+         #{
+         #call.original <- match.call()
+         #call.original$save.as=''
+         #eval(call.original)
+        #}
          
 
           

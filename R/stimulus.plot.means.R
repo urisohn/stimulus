@@ -18,18 +18,18 @@
     #0 Is it a matched design?
           t = table(data[,stimulus],data[,condition])
           matched = FALSE
-          if (mean(t[,1]*t[,2]>0) ==1 ) matched=TRUE
+          if (mean(t[,1]*t[,2]>0) >.5 ) matched=TRUE
           
               #This computes the frequency of stimuli id by condition
               #if it is compared, a given ID appears only in one condition
               #if it is matched, it appears in both
-              #this classifies a design as matched if 100%
+              #this classifies a design as matched if 50%+
               #of stimuli appear in both conditions
              
 
     #1 Get the means by condition
           means.obs = get.means.condition(data=data,dv=dv,stimulus=stimulus,flip.conditions=flip.conditions, condition=condition,sort.by=sort.by)
-  
+
    #2 local names
       n=nrow(means.obs)/2
 
@@ -39,17 +39,12 @@
        cond1= paste0(condition,"_",ucond[1])
        cond2= paste0(condition,"_",ucond[2])
       
-      if (matched==TRUE) {
+      
         y1 = means.obs[,cond1] #Condition 1
         y2 = means.obs[,cond2] #Condition 2
         label1  =  sub(paste0(condition,"_"), "", cond1)
         label2  =  sub(paste0(condition,"_"), "", cond2)
-        
-        } else {
-          y1=means.obs[1:n,2]
-          y2=means.obs[(n+1):(2*n),2]
-      }
-
+      
       
       #Which value is higher for each stimulus
         bh=pmax(y1 , y2)
@@ -111,24 +106,20 @@
            
   #5 black dots
        n=length(y1)
-       if (dv.is.percentage==FALSE) plot(y1,pch=16,ylim=ylim,          xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),cex=1.5, ...)
-       if (dv.is.percentage==TRUE)  plot(y1,pch=16,ylim=ylim, yaxt='n',xaxt='n',xlab='',las=1,ylab='',xlim=c(1,n+3),cex=1.5, ...)
+       if (dv.is.percentage==FALSE) plot(y1,pch=16,ylim=ylim,          xaxt='n',xlab='',las=1,ylab='',xlim=c(1-.015*n,n+3 + n*.0125),cex=1.5, xaxs='i',...)
+       if (dv.is.percentage==TRUE)  plot(y1,pch=16,ylim=ylim, yaxt='n',xaxt='n',xlab='',las=1,ylab='',xlim=c(1-.015*n,n+3 + n*.0125),cex=1.5, xaxs='i',...)
        
   #6 Segments
-    if (matched==TRUE)
-    {
-      
     e=mean(means.obs$effect)    
     lty=ifelse( (y1 - y2)*(m1-m2)>0 ,1,2)
-    col=ifelse( (y1 - y2)*(m1-m2)>0 ,col1, col2)
-    segments(x0=1:n, x1=1:n,y0=y1, y1=y2,lty=lty,col=col)
-    }
-   
+    col12=ifelse( (y1 - y2)*(m1-m2)>0 ,col1, col2)
+    segments(x0=1:n, x1=1:n,y0=y1, y1=y2,lty=lty,col=col12)
+    
   #7 White dots   
       points(y2,pch=21,col='black',bg='white',cex=1.5)
  
   #8 Redo black dots to cover any red lines
-    if (matched==TRUE) points(y1,pch=16,cex=1.5)
+    points(y1,pch=16,cex=1.5)
     
   #9 Value labels
     
@@ -153,9 +144,11 @@
       }
    
   #10 Overall means
-      if (matched==TRUE) segments(x0=n+3, x1=n+3,y0=m1, y1=m2)
+    segments(x0=n+3, x1=n+3,y0=m1, y1=m2)
+    
     points(n+3,m1,pch=16,cex=1.5*1.5) 
     points(n+3,m2,pch=21,cex=1.5*1.5,col='black',bg='white')
+    
     axis(side=1,at=n+3,"MEAN",font=2)
     
     
@@ -195,16 +188,11 @@
   #12 X-axis
     
     #12.1 Stimuli labels
-        if (matched==TRUE) text(1:n,par('usr')[3] , paste0(means.obs[,stimulus],"  "),srt=80,xpd=TRUE,adj=1)
-        if (matched==FALSE) {
-          text(1:n-.25,par('usr')[3] , paste0(means.obs[1:n ,stimulus],"  "),srt=80,xpd=TRUE,adj=1)
-          text(1:n+.25,par('usr')[3] , paste0(means.obs[(n+1):(2*n) , stimulus],"  "),srt=80,xpd=TRUE,adj=1,font=2)
-          }
-
+        text(1:n,par('usr')[3] , paste0(means.obs[,stimulus],"  "),srt=80,xpd=TRUE,adj=1,col=col12)
+       
     #12.2 Headers
-        if (xlab2=="" & matched==TRUE  & sort.by=='') xlab2='(sorted by effect size)'
-        if (xlab2=="" & matched==FALSE & sort.by=='') xlab2='(sorted by raw means)'
-        if (xlab2=="" & sort.by!='')                  xlab2=paste0('(sorted by ',sort.by,')')
+        if (xlab2=="" & sort.by=='') xlab2='(sorted by effect size)'
+        if (xlab2=="" & sort.by!='') xlab2=paste0('(sorted by ',sort.by,')')
 
             #For matched stimuli, the default is the above text
         

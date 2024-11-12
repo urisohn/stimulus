@@ -41,8 +41,8 @@
         ciL = obs$ciL
         ciH = obs$ciH
         n = length(d)
-        label2  =  sub(paste0("^",condition,"_"), "", names(obs[2]))
-        label1  =  sub(paste0("^",condition,"_"), "", names(obs[1]))
+        label2  =  sub(paste0("^",condition,"_"), "", names(obs[3]))
+        label1  =  sub(paste0("^",condition,"_"), "", names(obs[2]))
        
         if (flip.conditions)
         {
@@ -148,10 +148,10 @@
 
     #5 xlim 
       n1 = length(overall.estimate)
-      xmax = ifelse(n1 > 0, length(d) + n1 +1, length(d)+.25)
-      xlim = c(1,xmax)
-              
+      xmax = ifelse(n1 > 0, length(d) + n1 +1, length(d)+2)
+      xlim = c(-1,xmax)
       
+ 
     #6 Margins
 
           #Get current margins
@@ -182,8 +182,8 @@
         
     
   #6 Black dots
-     if (dv.is.percentage==FALSE)  plot(d,          pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=1.5, xlim=xlim, ...)
-     if (dv.is.percentage==TRUE )  plot(d,yaxt='n', pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=1.5, xlim=xlim, ...)
+     if (dv.is.percentage==FALSE)  plot(d,          pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=1.5, xlim=xlim, xaxs='i', ...)
+     if (dv.is.percentage==TRUE )  plot(d,yaxt='n', pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=1.5, xlim=xlim, xaxs='i', ...)
 
 
       #horizontal line

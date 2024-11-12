@@ -14,6 +14,7 @@
       means.all=matrix(nrow=simtot,ncol=length(unique(data[,stimulus])))
       for (k in 1:simtot)
       {
+        if (k==1) t1=Sys.time()
         
       #Shuffle item within condition
         data[,paste0(stimulus,"_shuffled")]  <- ave(data[,stimulus], data[,condition], FUN = function(x) sample(x))
@@ -25,7 +26,13 @@
         means.all[k,] = sort(tk$effect)
         
       #Counter
-        if (k%%50==0) cat('...',k)
+        if (k==1) {
+          t2=Sys.time()
+          seconds <- as.numeric(difftime(t2, t1, units = "secs"))
+          counter.interval= get.counter.interval(seconds)
+          }
+        
+        if (k%%counter.interval==0) cat('...',k)
     }
         cat("\n")
       

@@ -3,7 +3,6 @@
 
   get.means.condition <- function(data, dv, stimulus, condition,sort.by,flip.conditions) {
       
-     
 
     #  Process stimulus and condition values
         #Stimulus
@@ -16,30 +15,26 @@
           
     
          
-    #2 Compute the mean of the dv for each combination of stimulus and condition
+    #2 Compute means and CI via t-test
+        
+      # Split data by `stimulus`
+          split_data <- split(data, data[,stimulus])
           
-          k=1
-          for (stimk in stimulus.all)
-          {
-            #Row with tidy t-test (as data.frame row)
-               datak=data[data[,stimulus]==stimk,]
-               tk=tidy_t(t.test(datak[,dv]~datak[,condition]))
-                #tidy_t puts the t-test results in a dataframe | See #utils.r #4
-              
-            #Start or add
-              if (k == 1) t.all = tk
-              if (k > 1)  t.all = rbind(t.all, tk)
-              k=k+1
-          } #End for loop
-           
+          # Apply t-test for each split, then extract p-value and statistic
+          t.all_list <- lapply(split_data, function(sub_data) {
+            test <- t.test(sub_data[,dv] ~sub_data[,condition])
+            tk=tidy_t(test)
+            tk
+          })
           
-      #Add the stimulus identifier     
-        t.all[,stimulus]=stimulus.all
+        # Combine the results into a dataframe
+          t.all <- do.call(rbind, t.all_list)
+          t.all <- data.frame(stimulus = rownames(t.all), t.all, row.names = NULL)
           
               
       # Rename the means columns
-        names(t.all)[1:2] <- c(paste0(condition,"_",ucond[1]), paste0(condition,"_",ucond[2]))
-           
+        names(t.all)[2:3] <- c(paste0(condition,"_",ucond[1]), paste0(condition,"_",ucond[2]))
+        names(t.all)[1] <-stimulus 
       # Sort rows
           #Default: effect size
             if (sort.by=='') {

@@ -127,23 +127,24 @@ format_percent <- function(x) {
     
 #10 Number of decimals
     auto.decimals <- function(x) {
-  sapply(x, function(num) {
-    num=abs(num)
-    if (is.na(num)) {
-      return(NA)
-    } else if (num > 100) {
-      return(0)
-    } else if (num > 10) {
-      return(1)
-    } else if (num > 0.1) {
-      return(2)
-    } else if (num > 0.01) {
-      return(3)
-    } else {
-      return(4)
-    }
-  })
-}
+      
+      sapply(x, function(num) {
+      num=abs(num)
+      if (is.na(num)) {
+        return(NA)
+      } else if (num > 100) {
+        return(0)
+      } else if (num > 10) {
+        return(1)
+      } else if (num > 0.1) {
+        return(2)
+      } else if (num > 0.01) {
+        return(3)
+      } else {
+        return(4)
+      }
+    })
+  }
 
     
 #11 # Function to compute the MD5 hash of a dataframe
@@ -254,4 +255,24 @@ format_msg <- function(msg,width=70, header='IMPORTANT.', pre="| ")
       msg.formatted<-c(sep.line, msg.formatted)
     
     return(msg.formatted)
-    }
+}
+
+
+
+#Set how often feedback of interactions is shown 
+  get.counter.interval = function(seconds)
+  {
+  # Predefined set of possible intervals
+      intervals <- c(1,5, 10,20,25,50,seq(100,1000,100))
+    
+  # Calculate approximate interval to achieve roughly a 10-second print frequency
+    target_time <- 3 #we want to show feedback every 3 seconds
+    approx_interval <- target_time / seconds
+    
+  # Find the closest interval from the predefined set
+    return(intervals[which.min(abs(intervals - approx_interval))])
+    
+  }
+  
+  
+  
