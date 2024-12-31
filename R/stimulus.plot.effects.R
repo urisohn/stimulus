@@ -14,6 +14,7 @@
                                 simtot,
                                 ylim,
                                 seed, 
+                                main,
                                 ...)
     {
     
@@ -32,7 +33,7 @@
       args_to_drop=c(decimals, dv.is.percentage,ylab1,ylab2,xlab1,xlab2)
       args <- args[!(names(args) %in% args_to_drop)]
 
-      
+      print(names(args))
     #2 Compute means by stimulus
        obs = get.means.condition(data=data,dv=dv,stimulus=stimulus,condition=condition,sort.by=sort.by,flip.conditions=flip.conditions)
 
@@ -148,17 +149,26 @@
 
     #5 xlim 
       n1 = length(overall.estimate)
-      xmax = ifelse(n1 > 0, length(d) + n1 +1, length(d)+2)
-      xlim = c(-1,xmax)
+      xmax = ifelse(n1 > 0, length(d) + n1 +1, length(d)+1)
+      xlim = c(0,xmax)
       
  
     #6 Margins
-
+      #Get current margins
+        mar.before =  par("mar")
+        mar.after  =  mar.before
+         
+      #Only change margin if not the default (so users can set own)
+        custom_mar <- getOption("graphics.par")$mar   #see if user has set different margins by default
+        if (is.null(custom_mar))  mar.default = c(5.1, 4.1, 2, 2.1)
+        if (!is.null(custom_mar)) mar.default = custom_mar
+        
+        
           #Get current margins
             mar.before =  par("mar")
             mar.after  =  mar.before
-                  
-              
+            
+
           #Label calculations for bottom margin 
             max.length = max(nchar(unique(data[,stimulus])))
             xlabel.buffer = max(0,max.length-3)*.3
@@ -170,8 +180,8 @@
           
           #Top
             #Drop top margin if there is no main header
-              mar.after[3] = ifelse ("main" %in% names(args),3,1)
-          
+              mar.after[3] = ifelse (main=="",1,2)
+
           #Left
                width.y.label = nchar(max(d))
                mar.after[2] = max(width.y.label/3, 5.1)
@@ -182,8 +192,14 @@
         
     
   #6 Black dots
-     if (dv.is.percentage==FALSE)  plot(d,          pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=1.5, xlim=xlim, xaxs='i', ...)
-     if (dv.is.percentage==TRUE )  plot(d,yaxt='n', pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=1.5, xlim=xlim, xaxs='i', ...)
+     if (dv.is.percentage==FALSE)  {
+        plot(d,         pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=1.5, xlim=xlim, xaxs='i', ...)
+     }
+        
+      
+     if (dv.is.percentage==TRUE )  {
+       plot(d,yaxt='n', pch=16,ylim=ylim,xaxt='n',xlab='',las=1,ylab='', cex=1.5, xlim=xlim, xaxs='i', ...)
+      }
 
 
       #horizontal line
@@ -229,8 +245,7 @@
         if (dv.is.percentage==TRUE) axis(side=2,at=ys,paste0(ys*100,"%"),las=1)
       }
 
-      
-      
+  
       
     #10 x-axis
       #Skip if xaxt='n' is set
@@ -329,6 +344,10 @@
   #Redo dots
     points(d, pch=16,cex=1.5)
       
+  #Main header
+    if (main!=''){
+      mtext(side=3,line=.5, font=2,cex=1.5,main)
+    }
       
     par(mar=mar.before)
     

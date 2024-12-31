@@ -33,6 +33,7 @@ stimulus.plot(
   watermark = TRUE,
   seed = 2024,
   ylim = c(),
+  main = "",
   ...
 )
 }

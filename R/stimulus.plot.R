@@ -65,6 +65,7 @@
                     watermark = TRUE,
                     seed=2024,
                     ylim=c(),
+                    main='',
                     ...
                     )
         {
@@ -72,7 +73,7 @@
 
 #----[VALIDATION]------------------------------------------------------------------------
   
-        args_passed <- as.list(match.call())[-1]  # Remove the function name
+      args_passed <- as.list(match.call())[-1]  # Remove the function name
 
            
       #Ensure data is a data.frame
@@ -86,8 +87,6 @@
        #Grab the dataname
           dataname  <- clean_string(deparse(substitute(data)))
           
-          
-        
       #Validate arguments type and length
         validate.stimulus.plot(plot.type,data,dv, condition, stimulus, 
                               save.as, svg.width,
@@ -100,8 +99,6 @@
                               simtot, watermark, seed, ylim, 
                               args_passed)
     
-    
-        
        #Validate dots
           f='stimulus::stimulus.plot'
           validate.dots(f,...) #see validate.R function 3
@@ -115,7 +112,9 @@
       
      #Check data.frame has all the necessary variables
         validate.data(f, data, dv, condition, stimulus, sort.by,participant,dataname)  #validate.data.R
-                     
+         
+      #Colors
+        
        
       #Keep only variables we will use to speed up calculations
         data=data[,names(data) %in% c('r',dv,condition,stimulus,participant)]
@@ -193,6 +192,7 @@
                                     flip.conditions=flip.conditions,
                                     legend.title=legend.title,
                                     ylim=ylim,
+                                    main=main,
                                     ...)
             
     
@@ -222,6 +222,7 @@
                                     decimals=decimals,
                                     ylim=ylim,
                                     seed=seed,
+                                    main=main,
                                     ...)
              
                  
@@ -237,32 +238,7 @@
      
     
             
-         
-       #Saved file feedback
-          if (save.as!='')
-            {
-            message2("\nFigure was saved as '", save.as,"'")
-            if (svg.width=="" & svg.height=="") {
-                message2(paste0(
-                        "NOTE: We used default width=",w,", and height=",h,", customize with svg.width & svg.height arguments."))
-              }
-            
-          #Close the graph
-            dev.off()
-           
-          }
-            
-        
-      #If save as, rerun without save.as
-       #if (save.as!='')
-         #{
-         #call.original <- match.call()
-         #call.original$save.as=''
-         #eval(call.original)
-        #}
-         
-
-          
+     
         
       invisible(res)
 

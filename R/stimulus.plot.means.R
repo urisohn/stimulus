@@ -4,16 +4,19 @@
                     ylab1, ylab2,  xlab1, xlab2, 
                     decimals, 
                     dv.is.percentage,
-                    legend.title, col1,col2,ylim,...)
+                    legend.title, col1,col2,ylim,main,...)
     
       {
 
     #Grab the arguments passed on to ...  
      args = list(...)
-   
+      
+     
+    #Hard code the colors
       col1='black'
       col2='red4'
       
+    
       
     #0 Is it a matched design?
           t = table(data[,stimulus],data[,condition])
@@ -87,7 +90,7 @@
         
         #4.2 Top
           #Drop top margin if there is no main header
-            mar.after[3] = ifelse ("main" %in% names(args),3,1)
+            mar.after[3] = ifelse (main=='',1,2)
         
         #4.3 Left
            width.y.label = nchar(max(pretty(y1)))
@@ -106,8 +109,8 @@
            
   #5 black dots
        n=length(y1)
-       if (dv.is.percentage==FALSE) plot(y1,pch=16,ylim=ylim,          xaxt='n',xlab='',las=1,ylab='',xlim=c(1-.015*n,n+3 + n*.0125),cex=1.5, xaxs='i',...)
-       if (dv.is.percentage==TRUE)  plot(y1,pch=16,ylim=ylim, yaxt='n',xaxt='n',xlab='',las=1,ylab='',xlim=c(1-.015*n,n+3 + n*.0125),cex=1.5, xaxs='i',...)
+       if (dv.is.percentage==FALSE) plot(y1,pch=16,ylim=ylim,          xaxt='n',xlab='',las=1,ylab='',xlim=c(.5-.015*n,n+4 + n*.0125),cex=1.5, xaxs='i',...)
+       if (dv.is.percentage==TRUE)  plot(y1,pch=16,ylim=ylim, yaxt='n',xaxt='n',xlab='',las=1,ylab='',xlim=c(.5-.015*n,n+4 + n*.0125),cex=1.5, xaxs='i',...)
        
   #6 Segments
     e=mean(means.obs$effect)    
@@ -209,7 +212,13 @@
         if (legend.title=='') leg1 = legend('topleft',pch=c(16,1), labels ,inset=.02,bty='n',cex=1.3, y.intersp = 1)
         if (legend.title!='') leg1 = legend('topleft',pch=c(16,1), labels ,inset=.02,bty='n',cex=1.3, title.cex = 1.3,  x.intersp = 0.5, y.intersp = 1,title=legend.title,title.font=2, text.width = strwidth("W"))
         
-    
+  #14 Main header
+    if (main!=''){
+      mtext(side=3,line=.5, font=2,cex=1.5,main)
+    }
+      
+        
+        
   #14 Return margins to where they were
     par(mar=mar.before)
     
