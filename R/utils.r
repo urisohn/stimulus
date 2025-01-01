@@ -1,10 +1,25 @@
 
 #Functions
-  #1 Rounding
-  #2 Exit
-  #3 Clean string
-  #4 tidy.t
 
+#1 round2()        - Rounding
+#2 exit()          - message to show when executoin ends early
+#3 clean_string()  - Remove everything except letters, numbers, and underscores
+#4 tidy.t()        - t.test outputs to data.frame
+#5 formatted.p () - turn p-value into a formatted string (e.g. p=.023 or p<.001)
+#6 get.ci()       - Get confidence interval from model
+#7 add_named_if_exists() 
+#8 namedList()    - automatically name objects in listAutomatically name elements in list with name of the objects in the list
+#9 format_percent() - format number as a percent
+#10 auto.decimals() - Number of decimals determined automatically
+#11 get.md5()       - Compute the MD5 hash of a dataframe
+#12 does.cache.d.exist() - Does cache exist
+#13 eval2()         - Evaluate string as formula
+#14 eval.arguments()
+#15 message2()     - show message on screen with 'groundhog' color (not red, blue or black, which are not usually friendly texts)
+#16 round_smart()  - automatically set number of digits
+#17 Format format_msg() - turns a long character string into a fixed withd with possible header and pre text.
+#18 get.counter.interval() - set how many interactions in counter before output is shown 
+ 
 
 
 #----------------------------------
@@ -176,7 +191,7 @@ format_percent <- function(x) {
      model_string <- gsub("dv", dv, model_string)
      model_string <- gsub("condition", condition, model_string)
      model_string <- gsub("stimulus", stimulus, model_string)
-     model_string <- gsub("df2", data, model_string)
+     model_string <- gsub("df2", dataname, model_string)
      model_string <- gsub("participant", participant, model_string)
     return(model_string)
  }
@@ -259,7 +274,7 @@ format_msg <- function(msg,width=70, header='IMPORTANT.', pre="| ")
 
 
 
-#Set how often feedback of interactions is shown 
+#18 Set how often feedback of interactions is shown 
   get.counter.interval = function(seconds)
   {
   # Predefined set of possible intervals

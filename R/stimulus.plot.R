@@ -238,7 +238,7 @@
      
     
             
-     
+      if (save.as!='') dev.off()
         
       invisible(res)
 
