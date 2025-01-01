@@ -186,12 +186,13 @@ format_percent <- function(x) {
 
 
 #14 eval.arguments
- eval.arguments = function(model_string, dv, condition, stimulus, participant,data)
+ eval.arguments = function(model_string, dv, condition, stimulus, participant,dataname)
    {
      model_string <- gsub("dv", dv, model_string)
      model_string <- gsub("condition", condition, model_string)
      model_string <- gsub("stimulus", stimulus, model_string)
-     model_string <- gsub("df2", dataname, model_string)
+     model_string <- gsub(",data=df2", '', model_string)
+     #model_string <- gsub("df2", dataname, model_string,fixed=TRUE)
      model_string <- gsub("participant", participant, model_string)
     return(model_string)
  }

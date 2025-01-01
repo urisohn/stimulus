@@ -33,7 +33,6 @@
       args_to_drop=c(decimals, dv.is.percentage,ylab1,ylab2,xlab1,xlab2)
       args <- args[!(names(args) %in% args_to_drop)]
 
-      print(names(args))
     #2 Compute means by stimulus
        obs = get.means.condition(data=data,dv=dv,stimulus=stimulus,condition=condition,sort.by=sort.by,flip.conditions=flip.conditions)
 
@@ -149,7 +148,7 @@
 
     #5 xlim 
       n1 = length(overall.estimate)
-      xmax = ifelse(n1 > 0, length(d) + n1 +1, length(d)+1)
+      xmax = ifelse(n1 > 0, length(d) + n1 +2, length(d)+1)
       xlim = c(0,xmax)
       
  

@@ -80,14 +80,22 @@
           if ("data.frame" %in% class(data)) data=data.frame(data)
           if (!"data.frame" %in% class(data)) exit("stimulus.plot() says: the argument data must be a data.frame, but '",dataname,"' is not a dataframe.")
           
+          
+          
+          
       #Force to be data.frame type
           data=data.frame(data)
           
           
        #Grab the dataname
-          dataname  <- clean_string(deparse(substitute(data)))
+           # Convert the name of 'data' to a string
+             dataname <- deparse(substitute(data))
+          # Optional: Clean the string (if clean_string is necessary)
+              dataname <- clean_string(dataname)  # Assuming clean_string outputs a character
+
+
           
-      #Validate arguments type and length
+                #Validate arguments type and length
         validate.stimulus.plot(plot.type,data,dv, condition, stimulus, 
                               save.as, svg.width,
                               svg.height, sort.by, flip.conditions,
