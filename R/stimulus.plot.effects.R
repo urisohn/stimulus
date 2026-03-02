@@ -224,7 +224,7 @@
         if (decimals!='auto') d.decimals=decimals
       
       if (dv.is.percentage==FALSE) text(1:n,d ,round2(d , d.decimals),col='blue4',cex=.65,pos=4)
-      if (dv.is.percentage==TRUE)  text(1:n,d ,format_percent(d), col='blue4',cex=.65,pos=4) #utils.R #9 <-- 'format_percent()'
+      if (dv.is.percentage==TRUE)  text(1:n,d ,format_percent(d,decimals), col='blue4',cex=.65,pos=4) #utils.R #9 <-- 'format_percent()'
 
      
   #7 CI
@@ -335,7 +335,7 @@
 
      #Overall value label
             if (dv.is.percentage==FALSE)  text(xs,overall.estimate , round(overall.estimate, auto.decimals(overall.estimate)),    cex=.65,col='purple',pos=4)
-            if (dv.is.percentage==TRUE)   text(xs,overall.estimate , format_percent(overall.estimate),                            cex=.65,col='purple',pos=4)      
+            if (dv.is.percentage==TRUE)   text(xs,overall.estimate , format_percent(overall.estimate, decimals),                  cex=.65,col='purple',pos=4)      
       }
       
       

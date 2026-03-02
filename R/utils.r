@@ -131,10 +131,10 @@
     }
     
 #9 Format as percent
-format_percent <- function(x) {
-  decimal_places <- auto.decimals(x * 100)
+format_percent <- function(x,decimals) {
+  if (decimals=='auto') decimals <- auto.decimals(x * 100)
   formatted_number <- sapply(1:length(x), function(i) {
-    paste0(formatC(x[i] * 100, format = "f", digits = decimal_places[i]), "%")
+    paste0(formatC(x[i] * 100, format = "f", digits = decimals), "%")
   })
   return(formatted_number)
 }

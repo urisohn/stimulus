@@ -95,7 +95,7 @@
 
 
           
-                #Validate arguments type and length
+      #Validate arguments type and length
         validate.stimulus.plot(plot.type,data,dv, condition, stimulus, 
                               save.as, svg.width,
                               svg.height, sort.by, flip.conditions,

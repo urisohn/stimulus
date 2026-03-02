@@ -142,8 +142,8 @@
       
       if (dv.is.percentage==TRUE)
       {
-      text(1:n,bh,format_percent(bh),col=col.h,cex=.75,pos=3)
-      text(1:n,bl,format_percent(bl),col=col.l,cex=.75,pos=1)
+      text(1:n,bh,format_percent(bh,decimals),col=col.h,cex=.75,pos=3)
+      text(1:n,bl,format_percent(bl,decimals),col=col.l,cex=.75,pos=1)
       }
    
   #10 Overall means
@@ -166,8 +166,8 @@
     
       if (dv.is.percentage==TRUE)
       {
-      text(n+3,m1 , format_percent(m1),cex=.8,col='black',pos=d.pos[1])
-      text(n+3,m2 , format_percent(m2),cex=.8,col='black',pos=d.pos[2])
+      text(n+3,m1 , format_percent(m1,decimals),cex=.8,col='black',pos=d.pos[1])
+      text(n+3,m2 , format_percent(m2,decimals),cex=.8,col='black',pos=d.pos[2])
       }
 
 
